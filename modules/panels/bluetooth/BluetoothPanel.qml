@@ -190,21 +190,19 @@ PanelWindow {
             }
 
             // Disabled state message
-            Rectangle {
+            Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                radius: ScalerService.s(12)
-                color: theme.primary.dim_background
                 visible: !adapter?.enabled
 
                 Column {
                     anchors.centerIn: parent
                     spacing: ScalerService.s(16)
 
-                    Text {
-                        text: "📶"
-                        color: theme.primary.dim_foreground
-                        font.pixelSize: ScalerService.s(48)
+                    IconText {
+                        name: "android_cell_5_bar_off"
+                        textColor: theme.primary.dim_foreground
+                        size: "2xl"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 

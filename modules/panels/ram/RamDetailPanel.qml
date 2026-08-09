@@ -17,29 +17,18 @@ PanelWindow {
     anchors {
         top: Settings.bar.position === "top"
         bottom: Settings.bar.position === "bottom"
-        left: Settings.bar.position === "top"
-              || Settings.bar.position === "bottom"
-              || Settings.bar.position === "left"
+        left: Settings.bar.position === "top" || Settings.bar.position === "bottom" || Settings.bar.position === "left"
         right: Settings.bar.position === "right"
     }
 
     margins {
-        top: Settings.bar.position === "top"
-             ? ScalerService.s(10)
-             : 0
+        top: Settings.bar.position === "top" ? ScalerService.s(10) : 0
 
-        bottom: Settings.bar.position === "bottom"
-                ? ScalerService.s(10)
-                : 0
+        bottom: Settings.bar.position === "bottom" ? ScalerService.s(10) : 0
 
-        left: (Settings.bar.position === "top"
-               || Settings.bar.position === "bottom")
-              ? ScalerService.s(400)
-              : ScalerService.s(10)
+        left: (Settings.bar.position === "top" || Settings.bar.position === "bottom") ? ScalerService.s(495) : ScalerService.s(10)
 
-        right: Settings.bar.position === "right"
-               ? ScalerService.s(10)
-               : 0
+        right: Settings.bar.position === "right" ? ScalerService.s(10) : 0
     }
 
     exclusiveZone: 0
@@ -62,14 +51,12 @@ PanelWindow {
     }
 
     Component.onCompleted: {
-        openPanel = true
+        openPanel = true;
     }
 
     function tryStartContentAnimation() {
-        if (!widthAnim.running
-            && !heightAnim.running
-            && animationProgress === 0) {
-            contentAnimation.start()
+        if (!widthAnim.running && !heightAnim.running && animationProgress === 0) {
+            contentAnimation.start();
         }
     }
 
@@ -89,9 +76,7 @@ PanelWindow {
         color: theme.primary.background
         border.color: theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
-        border.width: Settings.appearance.enableBorder
-                      ? ScalerService.s(3)
-                      : 0
+        border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 
         Behavior on implicitHeight {
             NumberAnimation {

@@ -6,7 +6,7 @@ import qs.components
 import qs.commons
 
 Rectangle {
-    id: statusCard
+    id: root
     required property var adapter
     required property int connectedCount
 
@@ -32,6 +32,9 @@ Rectangle {
                 textColor: adapter?.enabled ? theme.button.text : theme.primary.dim_foreground
                 isBold: true
             }
+            Item {
+                Layout.fillHeight: true
+            }
 
             CustomText {
                 name: `${connectedCount} ` + (lang?.bluetooth?.devices_connected || "thiết bị đã kết nối")
@@ -45,57 +48,15 @@ Rectangle {
             Layout.fillWidth: true
         }
 
-        // Toggle button
-        Rectangle {
-            width: ScalerService.s(56)
-            height: ScalerService.s(32)
-            radius: ScalerService.s(16)
-            color: adapter?.enabled ? theme.button.text : theme.button.background
-            opacity: adapter ? 1 : 0.5
-
-            scale: toggleMouseArea.containsPress ? 0.95 : (toggleMouseArea.containsMouse ? 1.05 : 1.0)
-            Behavior on scale {
-                NumberAnimation {
-                    duration: 150
-                    easing.type: Easing.OutBack
-                }
-            }
-            Behavior on color {
-                ColorAnimation {
-                    duration: 300
-                }
-            }
-
-            Rectangle {
-                x: adapter?.enabled ? parent.width - width - ScalerService.s(4) : ScalerService.s(4)
-                y: ScalerService.s(4)
-                width: ScalerService.s(24)
-                height: ScalerService.s(24)
-                radius: ScalerService.s(12)
-                color: theme.primary.dim_background
-
-                Behavior on x {
-                    NumberAnimation {
-                        duration: 200
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            MouseArea {
-                id: toggleMouseArea
-                anchors.fill: parent
-                enabled: !!adapter
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    if (adapter) {
-                        adapter.enabled = !adapter.enabled;
-                        if (adapter.enabled) {
-                            // When enabling Bluetooth, set necessary modes
-                            adapter.pairable = true;
-                            adapter.discoverable = true;
-                        }
+        CustomToggleSwitch {
+            adapter: root.adapter.enabled
+            onClicked: {
+                if (root.adapter) {
+                    root.adapter.enabled = !root.adapter.enabled;
+                    if (root.adapter.enabled) {
+                        // When enabling Bluetooth, set necessary modes
+                        root.adapter.pairable = true;
+                        root.adapter.discoverable = true;
                     }
                 }
             }

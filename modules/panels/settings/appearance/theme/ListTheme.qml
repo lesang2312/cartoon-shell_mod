@@ -79,6 +79,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Layout.preferredHeight: ScalerService.s(60)
                 radius: ScalerService.s(8)
+
                 opacity: 0
 
                 SequentialAnimation on opacity {
@@ -95,9 +96,14 @@ ColumnLayout {
                     }
                 }
                 color: !theme.button ? Qt.alpha(theme.button.text, 0.6) : (themeMouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.6) : Qt.alpha(theme.button.background, 0.6))
-                border.color: !theme.button ? Qt.alpha(theme.button.text, 0.6) : (themeMouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.6))
+                border.color: {
+                    if (Settings.appearance.theme === modal.type) {
+                        return Qt.alpha(theme.button.text, 0.8);
+                    }
+                    return themeMouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.3);
+                }
 
-                border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
+                border.width: ScalerService.s(2)
                 property var modal: ({
                         name: modelData.name,
                         type: modelData.type,
@@ -109,11 +115,10 @@ ColumnLayout {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        // Chỉ đổi theme nếu khác theme hiện tại
+                        SoundService.playSound("pick");
                         if (Settings.appearance.theme !== modal.type) {
                             Settings.appearance.theme = modal.type;
 
-                            // Nếu theme là "matugen", bật dynamic, ngược lại tắt dynamic
                             if (modal.type === "matugen") {
                                 Settings.appearance.dynamic = true;
                             } else {
