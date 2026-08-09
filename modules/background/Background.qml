@@ -116,13 +116,8 @@ Variants {
                     root.setWallpaperInitial();
                 }
             }
-
-            // Current wallpaper - can be Image or Video
             Item {
-                id: currentWallpaperContainer
                 anchors.fill: parent
-                visible: !root.transitioning || root.transitionProgress === 0
-
                 MouseArea {
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -149,6 +144,14 @@ Variants {
                         }
                     }
                 }
+            }
+
+            // Current wallpaper - can be Image or Video
+            Item {
+                id: currentWallpaperContainer
+                anchors.fill: parent
+                visible: !root.transitioning || root.transitionProgress === 0
+
                 Image {
                     id: currentImage
                     anchors.fill: parent
