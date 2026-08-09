@@ -192,8 +192,8 @@ Singleton {
         property color fillColor: "#000000"
         property int shaders: 0
         property list<var> monitors: []
-        property int transitionDuration: 500
-        property real transitionEdgeSmoothness: 0.05
+        property int transitionDuration: 1500
+        property real transitionEdgeSmoothness: 0.1
         // Video-specific properties
         property bool videoMuted: true
         property bool videoLoop: true
