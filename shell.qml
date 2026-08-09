@@ -44,6 +44,7 @@ ShellRoot {
         MouseArea {
             anchors.fill: parent
             z: -1
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
             onClicked: {
                 VisibleService.closeAllPanels();
             }

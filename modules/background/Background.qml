@@ -129,21 +129,23 @@ Variants {
                     z: 1
 
                     onClicked: mouse => {
+                        let isVisible = VisibleService.getPanelVisible("shortcutMenu");
                         if (mouse.button === Qt.RightButton) {
-                            if (VisibleService.getPanelVisible("shortcutMenu")) {
-                                VisibleService.togglePanel("shortcutMenu");
-                                root.xMargins = mouse.x;
-                                root.yMargins = mouse.y - ScalerService.s(heightBar[Settings.bar.style]);
-                                VisibleService.togglePanel("shortcutMenu");
+                            if (mouse.x > Number(parent.width) - ScalerService.s(250)) {
+                                root.xMargins = mouse.x - ScalerService.s(250);
                             } else {
                                 root.xMargins = mouse.x;
+                            }
+                            if (mouse.y > Number(parent.height - ScalerService.s(heightBar[Settings.bar.style])) - ScalerService.s(400)) {
+                                root.yMargins = mouse.y - ScalerService.s(heightBar[Settings.bar.style]) - ScalerService.s(400);
+                            } else {
                                 root.yMargins = mouse.y - ScalerService.s(heightBar[Settings.bar.style]);
-                                VisibleService.togglePanel("shortcutMenu");
                             }
-                        } else {
-                            if (VisibleService.getPanelVisible("shortcutMenu")) {
+                            VisibleService.togglePanel("shortcutMenu");
+                            if (isVisible)
                                 VisibleService.togglePanel("shortcutMenu");
-                            }
+                        } else if (isVisible) {
+                            VisibleService.togglePanel("shortcutMenu");
                         }
                     }
                 }
