@@ -27,6 +27,17 @@ Variants {
             readonly property real edgeSmoothness: Settings.wallpaper.transitionEdgeSmoothness
             readonly property bool transitioning: transitionAnimation.running
 
+            Loader {
+                active: VisibleService.shortcutMenu
+                source: "../panels/shortcutMenu/ShortcutMenuPanel.qml"
+                onLoaded: {
+                    item.visible = VisibleService.shortcutMenu;
+                    item.xMargins = root.xMargins;
+                    item.yMargins = root.yMargins;
+                }
+            }
+            property real xMargins: 0
+            property real yMargins: 0
             // Wipe direction: 0=left, 1=right, 2=up, 3=down
             property real wipeDirection: 0
 
@@ -41,6 +52,11 @@ Variants {
 
             // Used to debounce wallpaper changes
             property string futureWallpaper: ""
+            readonly property var heightBar: ({
+                    "style1": 50,
+                    "style2": 40,
+                    "style3": 50
+                })
 
             // Fillmode default is "crop"
             property real fillMode: WallpaperService.getFillModeUniform()
@@ -107,7 +123,30 @@ Variants {
                 anchors.fill: parent
                 visible: !root.transitioning || root.transitionProgress === 0
 
-                // Image for image wallpapers
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    z: 1
+
+                    onClicked: mouse => {
+                        if (mouse.button === Qt.RightButton) {
+                            if (VisibleService.getPanelVisible("shortcutMenu")) {
+                                VisibleService.togglePanel("shortcutMenu");
+                                root.xMargins = mouse.x;
+                                root.yMargins = mouse.y - ScalerService.s(heightBar[Settings.bar.style]);
+                                VisibleService.togglePanel("shortcutMenu");
+                            } else {
+                                root.xMargins = mouse.x;
+                                root.yMargins = mouse.y - ScalerService.s(heightBar[Settings.bar.style]);
+                                VisibleService.togglePanel("shortcutMenu");
+                            }
+                        } else {
+                            if (VisibleService.getPanelVisible("shortcutMenu")) {
+                                VisibleService.togglePanel("shortcutMenu");
+                            }
+                        }
+                    }
+                }
                 Image {
                     id: currentImage
                     anchors.fill: parent

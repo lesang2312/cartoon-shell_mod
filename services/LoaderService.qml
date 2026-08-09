@@ -108,6 +108,7 @@ Item {
             item.visible = VisibleService.music;
         }
     }
+
     Loader {
         active: false
         source: "../modules/panels/win11/actionCenter/ActionCenterPanel.qml"
@@ -115,6 +116,7 @@ Item {
             item.visible = false;
         }
     }
+
     Loader {
         source: "../modules/panels/wifi/WifiPanel.qml"
         active: VisibleService.wifi

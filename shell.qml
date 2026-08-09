@@ -45,9 +45,7 @@ ShellRoot {
             anchors.fill: parent
             z: -1
             onClicked: {
-                if (!VisibleService.getPanelVisible("filedialog")) {
-                    VisibleService.closeAllPanels();
-                }
+                VisibleService.closeAllPanels();
             }
         }
     }
