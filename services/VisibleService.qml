@@ -118,6 +118,7 @@ Singleton {
                 if (launcher === false) {
                     cpu = false;
                     ram = false;
+                    shortcutMenu = false;
                     weather = false;
                     if (isVertical) {
                         flag = false;
@@ -147,6 +148,7 @@ Singleton {
                     calendar = false;
                     flag = false;
                     music = false;
+                    shortcutMenu = false;
                     weather = false;
                     launcher = false;
                     dashboard = false;
@@ -166,6 +168,7 @@ Singleton {
                     calendar = false;
                     flag = false;
                     music = false;
+                    shortcutMenu = false;
                     weather = false;
                     launcher = false;
                     dashboard = false;
@@ -182,6 +185,7 @@ Singleton {
                 if (!calendar) {
                     ram = false;
                     cpu = false;
+                    shortcutMenu = false;
                     weather = false;
                     keybind = false;
                     flag = false;
@@ -212,6 +216,7 @@ Singleton {
                     weather = false;
                     flag = false;
                     launcher = false;
+                    shortcutMenu = false;
                     cpu = false;
                     if (isVertical) {
                         battery = false;
@@ -240,6 +245,7 @@ Singleton {
                     mixer = false;
                     keybind = false;
                     wifi = false;
+                    shortcutMenu = false;
                     bluetooth = false;
                     battery = false;
                     cpu = false;
@@ -261,6 +267,7 @@ Singleton {
                     weather = false;
                     music = false;
                     flag = true;
+                    shortcutMenu = false;
                     dashboard = false;
                     if (isVertical) {
                         launcher = false;
@@ -283,6 +290,7 @@ Singleton {
                 if (!bluetooth) {
                     wifi = false;
                     mixer = false;
+                    shortcutMenu = false;
                     battery = false;
                     tray = false;
                     bluetooth = true;
@@ -308,6 +316,7 @@ Singleton {
                     wifi = true;
                     mixer = false;
                     bluetooth = false;
+                    shortcutMenu = false;
                     battery = false;
                     keybind = false;
                     if (isVertical) {
@@ -330,6 +339,7 @@ Singleton {
             {
                 if (!mixer) {
                     mixer = true;
+                    shortcutMenu = false;
                     wifi = false;
                     bluetooth = false;
                     if (isVertical) {
@@ -355,6 +365,7 @@ Singleton {
                 if (!battery) {
                     mixer = false;
                     bluetooth = false;
+                    shortcutMenu = false;
                     wifi = false;
                     battery = true;
                     dashboard = false;
@@ -378,6 +389,7 @@ Singleton {
                 if (!packagePanel) {
                     launcher = false;
                     battery = false;
+                    shortcutMenu = false;
                     wifi = false;
                     bluetooth = false;
                     mixer = false;
@@ -402,6 +414,7 @@ Singleton {
                 if (!dashboard) {
                     launcher = false;
                     battery = false;
+                    shortcutMenu = false;
                     wifi = false;
                     bluetooth = false;
                     mixer = false;
@@ -427,6 +440,7 @@ Singleton {
                     launcher = false;
                     battery = false;
                     wifi = false;
+                    shortcutMenu = false;
                     bluetooth = false;
                     mixer = false;
                     calendar = false;
@@ -452,6 +466,7 @@ Singleton {
                     wifi = false;
                     mixer = false;
                     bluetooth = false;
+                    shortcutMenu = false;
                     battery = false;
                     weather = false;
                     dashboard = false;
@@ -464,22 +479,26 @@ Singleton {
                 calendar = false;
                 flag = false;
                 setting = true;
+                shortcutMenu = false;
                 keybind = false;
                 break;
             }
         case "fullsetting":
             {
                 fullsetting = !fullsetting;
+                shortcutMenu = false;
                 break;
             }
         case "filedialog":
             {
                 filedialog = !filedialog;
+                shortcutMenu = false;
                 break;
             }
         case "listLauncher":
             {
                 setting = false;
+                shortcutMenu = false;
                 break;
             }
         }

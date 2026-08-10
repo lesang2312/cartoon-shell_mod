@@ -266,6 +266,9 @@ ColumnLayout {
                                 Settings.bar.iconWorkspace = modelData.name;
                             }
                         }
+                        onEntered: {
+                            SoundService.playSound("hover");
+                        }
                     }
                 }
             }

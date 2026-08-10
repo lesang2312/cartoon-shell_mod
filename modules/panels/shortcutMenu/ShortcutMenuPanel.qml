@@ -2,7 +2,6 @@ import QtQuick
 import Quickshell
 import QtQuick.Layouts
 import QtQuick.Controls
-import Quickshell
 import qs.services
 import qs.components
 import qs.commons
@@ -12,10 +11,16 @@ PanelWindow {
     id: root
 
     implicitWidth: ScalerService.s(250)
-    implicitHeight: ScalerService.s(400)
+    implicitHeight: ScalerService.s(600) // Tăng chiều cao để chứa danh sách Category nằm dọc
     property real animationProgress: 0
     property real xMargins: 0
     property real yMargins: 0
+
+    property string selectedCategory: "All"
+
+    // Danh sách Category
+    readonly property var categoryList: ["Accessories", "Programming", "Graphics", "Internet", "Office", "Sound & Video", "System", "Preferences", "Other"]
+
     SequentialAnimation on animationProgress {
         running: true
 
@@ -69,7 +74,7 @@ PanelWindow {
             sourceComponent: FloatingCircles {
                 circleColor: theme.button.text
                 anchors.fill: parent
-                circleCount: 4
+                circleCount: 2
             }
         }
         color: theme.primary.background
@@ -81,38 +86,66 @@ PanelWindow {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: ScalerService.s(16)
-            spacing: ScalerService.s(12)
-            Item {
+            spacing: ScalerService.s(5)
+
+            Com.SearchMenu {}
+
+            Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: ScalerService.s(32)
-                RowLayout {
-                    spacing: ScalerService.s(12)
+                Layout.preferredHeight: ScalerService.s(1)
+                radius: ScalerService.s(1)
+                color: theme.primary.dim_foreground
+            }
 
-                    Item {
-                        Layout.preferredHeight: ScalerService.s(28)
-                        Layout.preferredWidth: ScalerService.s(28)
-                        Image {
-                            source: "image://icon/kitty"
-                            anchors.fill: parent
-                            anchors.margins: ScalerService.s(2)
+            Com.ItemShortcut {
+                icon: "image://icon/kitty"
+                name: "Terminal"
+            }
+            Com.ItemShortcut {
+                icon: "image://icon/zen-browser"
+                name: "Browser"
+            }
+            Com.ItemShortcut {
+                icon: "image://icon/nautilus"
+                name: "File explorer"
+            }
 
-                            fillMode: Image.PreserveAspectFit
-                            smooth: true
-                            mipmap: true
-                        }
-                    }
-                    CustomText {
-                        name: "Terminal"
-                        size: "small"
-                        isBold: true
-                    }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: ScalerService.s(1)
+                radius: ScalerService.s(1)
+                color: theme.primary.dim_foreground
+            }
 
-                    Item {
-                        Layout.fillWidth: true
-                    }
+            // --- PHẦN CATEGORY (Xếp dọc giống ItemShortcut, Icon để trống) ---
+            Repeater {
+                model: root.categoryList
+
+                delegate: Com.ItemShortcut {
+                    required property string modelData
+                    required property int index
+                    icon: "image://icon/nautilus"
+                    name: modelData
                 }
             }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: ScalerService.s(1)
+                radius: ScalerService.s(1)
+                color: theme.primary.dim_foreground
+            }
+
+            Com.ItemShortcut {
+                icon: Directories.assetsPath + "/system/sys-lock.png"
+                name: "Lock"
+            }
+            Com.ItemShortcut {
+                icon: Directories.assetsPath + "/system/sys-exit.png"
+                name: "Exit"
+            }
         }
+
         Loader {
             anchors.fill: parent
 

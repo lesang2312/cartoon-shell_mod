@@ -134,12 +134,6 @@ Singleton {
 
         backend.focusedWindowIndexChanged.connect(() => {
             focusedWindowIndex = backend.focusedWindowIndex;
-            if (VisibleService.getPanelVisible("shortcutMenu")) {
-                VisibleService.togglePanel("shortcutMenu");
-            }
-            if (VisibleService.getPanelVisible("hasPanel")) {
-                VisibleService.closeAllPanels();
-            }
         });
 
         syncWorkspaces();

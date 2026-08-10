@@ -333,6 +333,9 @@ Item {
                                         SoundService.playSound("pick");
                                         setLanguageEditor(modelData.code);
                                     }
+                                    onEntered: {
+                                        SoundService.playSound("hover");
+                                    }
                                 }
 
                                 // Checkmark for selected language
