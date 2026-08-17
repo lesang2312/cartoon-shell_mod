@@ -16,6 +16,7 @@ Singleton {
     property bool fullsetting: false
     property bool tray: false
     property bool listLauncher: false
+    property bool keyboard: false
 
     property bool filedialog: false
 
@@ -111,6 +112,11 @@ Singleton {
         case "shortcutMenu":
             {
                 shortcutMenu = !shortcutMenu;
+                break;
+            }
+        case "keyboard":
+            {
+                keyboard = !keyboard;
                 break;
             }
         case "launcher":

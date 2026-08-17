@@ -19,17 +19,21 @@ Item {
             easing.type: Easing.Linear
         }
     }
-    ScrollView {
+
+    ListView {
         id: scrollView
         anchors.fill: parent
         clip: true
         anchors.margins: ScalerService.s(20)
+        flickableDirection: Flickable.VerticalFlick
+        boundsBehavior: Flickable.StopAtBounds
+        focus: true
+        contentHeight: mainLayout.implicitHeight
 
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-        ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-            width: scrollView.availableWidth
+        model: 1
+        delegate: ColumnLayout {
+            id: mainLayout
+            width: scrollView.width
             spacing: ScalerService.s(25)
 
             // Header
@@ -51,14 +55,9 @@ Item {
                 Layout.fillWidth: true
                 animationProgress: root.animationProgress
             }
-            Com.IconWorkspace {
-                Layout.fillWidth: true
-                animationProgress: root.animationProgress
-            }
             Com.WorkspaceCount {}
             Com.PanelPositionSelector {}
             Com.Border {}
-            Com.PanelSystemStats {}
 
             // Spacer
             Item {

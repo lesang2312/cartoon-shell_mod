@@ -28,7 +28,7 @@ Item {
         spacing: ScalerService.s(10)
         Bar.TopNavigationBar {
             animationProgress: root.animationProgress
-            indexCategoegory: 1
+            indexCategory: 1
             onCurrentTab: function (index) {
                 root.currentTab = index;
             }
@@ -68,64 +68,20 @@ Item {
                 sourceComponent: Com.Fonts {}
             }
 
-            // Tab 4: Icons
-            ColumnLayout {
-                width: parent.width
-                spacing: ScalerService.s(20)
+            Loader {
+                anchors.fill: parent
 
-                Text {
-                    text: lang?.appearance?.icons || "Icons"
-                    color: theme.primary.foreground
-                    font {
-                        family: "ComicShannsMono Nerd Font"
-                        pixelSize: ScalerService.s(24)
-                        bold: true
-                    }
-                }
+                active: root.currentTab === 4
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: ScalerService.s(1)
-                    color: theme.primary.foreground
-                    opacity: 0.3
-                }
-
-                // Icons settings content
-                Text {
-                    text: "Icons settings content"
-                    color: theme.primary.foreground
-                    font.pixelSize: ScalerService.s(14)
-                }
+                sourceComponent: Com.Icons {}
             }
 
-            // Tab 5: Effects
-            ColumnLayout {
-                width: parent.width
-                spacing: ScalerService.s(20)
+            Loader {
+                anchors.fill: parent
 
-                Text {
-                    text: lang?.appearance?.effects || "Effects"
-                    color: theme.primary.foreground
-                    font {
-                        family: "ComicShannsMono Nerd Font"
-                        pixelSize: ScalerService.s(24)
-                        bold: true
-                    }
-                }
+                active: root.currentTab === 5
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: ScalerService.s(1)
-                    color: theme.primary.foreground
-                    opacity: 0.3
-                }
-
-                // Effects settings content
-                Text {
-                    text: "Effects settings content"
-                    color: theme.primary.foreground
-                    font.pixelSize: ScalerService.s(14)
-                }
+                sourceComponent: Com.Effects {}
             }
 
             // Tab 6: Dashboard

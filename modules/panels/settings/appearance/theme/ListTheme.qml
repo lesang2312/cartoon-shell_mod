@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.commons
+import qs.components
 import qs.services
 
 ColumnLayout {
@@ -22,20 +23,17 @@ ColumnLayout {
         }
     }
 
-    Text {
+    CustomText {
         text: "Preset Themes"
         color: theme.primary ? theme.primary.foreground : "#d8dee9"
         opacity: root.animationProgress > 0.1 ? 1 : 0
+        size: "small"
         Behavior on opacity {
             NumberAnimation {
                 duration: 200
             }
         }
-        font {
-            family: "ComicShannsMono Nerd Font"
-            pixelSize: ScalerService.s(18)
-            bold: true
-        }
+        isBold: true
         Layout.alignment: Qt.AlignLeft
     }
 
@@ -95,15 +93,9 @@ ColumnLayout {
                         easing.type: Easing.OutCubic
                     }
                 }
-                color: !theme.button ? Qt.alpha(theme.button.text, 0.6) : (themeMouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.6) : Qt.alpha(theme.button.background, 0.6))
-                border.color: {
-                    if (Settings.appearance.theme === modal.type) {
-                        return Qt.alpha(theme.button.text, 0.8);
-                    }
-                    return themeMouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.3);
-                }
-
-                border.width: ScalerService.s(2)
+                color: Settings.appearance.theme === modal.type ? Qt.alpha(theme.button.text, 0.6) : (themeMouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.6) : Qt.alpha(theme.button.background, 0.6))
+                border.color: Settings.appearance.theme === modal.type ? Qt.alpha(theme.button.text, 0.6) : (themeMouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.6))
+                border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
                 property var modal: ({
                         name: modelData.name,
                         type: modelData.type,
@@ -137,16 +129,15 @@ ColumnLayout {
                     width: ScalerService.s(20)
                     height: ScalerService.s(20)
                     radius: ScalerService.s(10)
-                    color: theme.normal ? theme.normal.blue : "#81a1c1"
+                    color: theme.button.text
                     anchors.top: parent.top
                     anchors.right: parent.right
                     anchors.margins: ScalerService.s(5)
 
-                    Text {
-                        text: "✓"
-                        color: theme.primary ? theme.primary.background : "#2e3440"
-                        font.pixelSize: ScalerService.s(12)
-                        font.bold: true
+                    IconText {
+                        name: "check"
+                        size: "xs"
+                        textColor: theme.primary.background
                         anchors.centerIn: parent
                     }
                 }
@@ -163,17 +154,14 @@ ColumnLayout {
                         color: modal.accent
                     }
 
-                    Text {
-                        text: modal.name
+                    CustomText {
+                        name: modal.name
                         color: theme.primary ? theme.primary.foreground : "#d8dee9"
                         wrapMode: Text.WordWrap
                         width: ScalerService.s(40)
                         horizontalAlignment: Text.AlignLeft
-                        font {
-                            family: "ComicShannsMono Nerd Font"
-                            pixelSize: ScalerService.s(12)  // Đã sửa từ: panelManager.fullsetting ? 16 : 12
-                            bold: true
-                        }
+                        isBold: true
+                        size: "small"
                     }
                 }
             }

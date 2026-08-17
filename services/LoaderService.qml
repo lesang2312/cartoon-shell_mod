@@ -102,6 +102,13 @@ Item {
         }
     }
     Loader {
+        source: "../modules/panels/keyboard/KeyboardPanel.qml"
+        active: VisibleService.keyboard
+        onLoaded: {
+            item.visible = VisibleService.keyboard;
+        }
+    }
+    Loader {
         active: VisibleService.music
         source: "../modules/panels/music/MusicPanel.qml"
         onLoaded: {
@@ -239,6 +246,12 @@ Item {
         target: "battery"
         function getToggle() {
             VisibleService.togglePanel("battery");
+        }
+    }
+    IpcHandler {
+        target: "keyboard"
+        function getToggle() {
+            VisibleService.togglePanel("keyboard");
         }
     }
     IpcHandler {

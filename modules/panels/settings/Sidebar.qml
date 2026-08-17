@@ -85,6 +85,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.5 ? 1 : 0
                         rotation: mouseAreaGeneral.containsMouse ? 20 : 0
                         scale: mouseAreaGeneral.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -95,6 +96,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "home"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -172,6 +178,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.55 ? 1 : 0
                         rotation: mouseAreaAppearance.containsMouse ? -20 : 0
                         scale: mouseAreaAppearance.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -182,6 +189,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "format_paint"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -259,6 +271,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.6 ? 1 : 0
                         rotation: mouseAreaNetwork.containsMouse ? 15 : 0
                         scale: mouseAreaNetwork.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -269,6 +282,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "captive_portal"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -346,6 +364,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.65 ? 1 : 0
                         rotation: mouseAreaAudio.containsMouse ? -10 : 0
                         scale: mouseAreaAudio.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -356,6 +375,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "brand_awareness"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -433,6 +457,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.7 ? 1 : 0
                         rotation: mouseAreaPerformance.containsMouse ? 30 : 0
                         scale: mouseAreaPerformance.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -443,6 +468,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "avg_pace"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -519,6 +549,7 @@ Rectangle {
                         path: "settings/keyboard.png"
                         opacity: root.animationProgress > 0.75 ? 1 : 0
                         rotation: mouseAreaShortcuts.containsMouse ? -15 : 0
+                        visible: Settings.appearance.styleIcons === "image"
                         scale: mouseAreaShortcuts.containsMouse ? 1.05 : 1.0
                         Behavior on rotation {
                             NumberAnimation {
@@ -530,6 +561,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "keyboard"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -607,6 +643,7 @@ Rectangle {
                         opacity: root.animationProgress > 0.8 ? 1 : 0
                         rotation: mouseAreaSystem.containsMouse ? 10 : 0
                         scale: mouseAreaSystem.containsMouse ? 1.05 : 1.0
+                        visible: Settings.appearance.styleIcons === "image"
                         Behavior on rotation {
                             NumberAnimation {
                                 duration: 500
@@ -617,6 +654,11 @@ Rectangle {
                                 duration: 200
                             }
                         }
+                    }
+                    IconText {
+                        name: "info"
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {

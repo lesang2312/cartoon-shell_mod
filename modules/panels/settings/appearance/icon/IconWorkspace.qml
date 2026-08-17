@@ -16,6 +16,7 @@ ColumnLayout {
 
         CustomText {
             name: "Icon Workspace"
+            size: "small"
             isBold: true
             Layout.fillWidth: true
         }
@@ -168,8 +169,22 @@ ColumnLayout {
                     implicitWidth: 0
                     anchors.centerIn: delegateItem
                     implicitHeight: 0
-                    SequentialAnimation on implicitWidth {
+                    property real currentOpacity: 0
+                    SequentialAnimation on currentOpacity {
                         running: root.animationProgress > 0.2
+
+                        PauseAnimation {
+                            duration: index * 15
+                        }
+
+                        NumberAnimation {
+                            to: 1
+                            duration: 500
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    SequentialAnimation on implicitWidth {
+                        running: root.animationProgress > 0.1
 
                         PauseAnimation {
                             duration: index * 15
@@ -182,7 +197,7 @@ ColumnLayout {
                         }
                     }
                     SequentialAnimation on implicitHeight {
-                        running: root.animationProgress > 0.2
+                        running: root.animationProgress > 0.1
 
                         PauseAnimation {
                             duration: index * 15
@@ -196,21 +211,9 @@ ColumnLayout {
                     }
                     anchors.margins: ScalerService.s(2)
                     radius: ScalerService.s(12)
-
-                    color: {
-                        if (Settings.bar.iconWorkspace === modelData.name) {
-                            return Qt.alpha(theme.button.text, 0.15);
-                        }
-                        return mouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.4) : Qt.alpha(theme.button.background, 0.2);
-                    }
-
-                    border.color: {
-                        if (Settings.bar.iconWorkspace === modelData.name) {
-                            return Qt.alpha(theme.button.text, 0.8);
-                        }
-                        return mouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.3);
-                    }
-                    border.width: ScalerService.s(2)
+                    color: Settings.bar.iconWorkspace === modelData.name ? Qt.alpha(theme.button.text, 0.6) : (mouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.6) : Qt.alpha(theme.button.background, 0.6))
+                    border.color: Settings.bar.iconWorkspace === modelData.name ? Qt.alpha(theme.button.text, 0.6) : (mouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.6))
+                    border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
 
                     // Animation cho border và background
                     Behavior on color {
@@ -230,6 +233,7 @@ ColumnLayout {
                         visible: modelData.style === "image"
                         anchors.centerIn: parent
                         path: `workspace/${modelData.name}/active.png`
+                        opacity: container.currentOpacity
                     }
                     IconText {
                         visible: modelData.style === "icon"
@@ -237,6 +241,7 @@ ColumnLayout {
                         fontFamily: "Symbols Nerd Font"
                         textColor: theme.button.text
                         anchors.centerIn: parent
+                        opacity: container.currentOpacity
                     }
                     CustomText {
                         name: numberIcon[modelData.name]
@@ -244,6 +249,7 @@ ColumnLayout {
                         textColor: theme.button.text
                         anchors.centerIn: parent
                         isBold: true
+                        opacity: container.currentOpacity
                     }
 
                     // Mouse area

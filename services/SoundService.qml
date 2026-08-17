@@ -7,15 +7,9 @@ import qs.commons
 
 Singleton {
     function playSound(name) {
-        if (clickProcess.running)
-            return
+        clickProcess.command = ["pw-play", Directories.assetsPath + "/sounds/" + name + ".wav"];
 
-        clickProcess.command = [
-            "pw-play",
-            Directories.assetsPath + "/sounds/" + name + ".wav"
-        ]
-
-        clickProcess.running = true
+        clickProcess.running = true;
     }
 
     Process {

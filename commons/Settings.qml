@@ -13,6 +13,7 @@ Singleton {
     readonly property alias appearance: adapter.appearance
     readonly property alias wallpaper: adapter.wallpaper
     readonly property alias general: adapter.general
+    readonly property alias effects: adapter.effects
     readonly property alias clock: adapter.clock
     readonly property alias weather: adapter.weather
     readonly property alias bar: adapter.bar
@@ -71,12 +72,16 @@ Singleton {
         property Wallpaper wallpaper: Wallpaper {}
         property Appearance appearance: Appearance {}
         property General general: General {}
+        property Effects effects: Effects {}
         property Clock clock: Clock {}
         property Weather weather: Weather {}
         property Bar bar: Bar {}
         property Dashboard dashboard: Dashboard {}
     }
 
+    component Effects: JsonObject {
+        property string workspaceAnimation: ""
+    }
     component Dashboard: JsonObject {
         property string fullname: "long"
         property string urlAvatar: ""
@@ -161,6 +166,7 @@ Singleton {
         property string mode: "dark"
         property string countryFlag: "vietnam"
         property string fonts: ""
+        property string styleIcons: "image"
         property int radius1: 22
         property int radius2: 16
         property int radius3: 8

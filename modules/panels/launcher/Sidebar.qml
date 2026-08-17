@@ -62,6 +62,13 @@ Rectangle {
                         path: "launcher/dashboard"
                         rotation: mouseAreaLauncher.containsMouse ? 0 : 90
                         opacity: root.animationProgress > 0.2 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "apps"
+                        textColor: theme.button.text
+                        opacity: root.animationProgress > 0.2 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -141,6 +148,14 @@ Rectangle {
                         path: "system/setting.png"
                         rotation: mouseAreaSettings.containsMouse ? 360 : 0
                         opacity: root.animationProgress > 0.3 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "settings"
+                        rotation: mouseAreaSettings.containsMouse ? 360 : 0
+                        opacity: root.animationProgress > 0.3 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -219,6 +234,13 @@ Rectangle {
                         path: "system/sys-sleep.png"
                         rotation: mouseAreaSleep.containsMouse ? 5 : 0
                         opacity: root.animationProgress > 0.4 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "moon_stars"
+                        opacity: root.animationProgress > 0.4 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -295,6 +317,13 @@ Rectangle {
                         path: "system/sys-lock.png"
                         rotation: mouseAreaLock.containsMouse ? 5 : 0
                         opacity: root.animationProgress > 0.5 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "lock_clock"
+                        opacity: root.animationProgress > 0.5 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -371,6 +400,13 @@ Rectangle {
                         path: "system/sys-exit.png"
                         rotation: mouseAreaLogout.containsMouse ? -5 : 0
                         opacity: root.animationProgress > 0.6 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "logout"
+                        opacity: root.animationProgress > 0.6 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -447,6 +483,13 @@ Rectangle {
                         path: "system/sys-reboot.png"
                         rotation: mouseAreaRestart.containsMouse ? 180 : 0
                         opacity: root.animationProgress > 0.7 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "refresh"
+                        opacity: root.animationProgress > 0.7 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {
@@ -523,6 +566,13 @@ Rectangle {
                         path: "system/poweroff.png"
                         scale: mouseAreaShutdown.containsMouse ? 1.1 : 1.0
                         opacity: root.animationProgress > 0.8 ? 1 : 0
+                        visible: Settings.appearance.styleIcons === "image"
+                    }
+                    IconText {
+                        name: "power_settings_new"
+                        opacity: root.animationProgress > 0.7 ? 1 : 0
+                        textColor: theme.button.text
+                        visible: Settings.appearance.styleIcons === "icon"
                     }
 
                     CustomText {

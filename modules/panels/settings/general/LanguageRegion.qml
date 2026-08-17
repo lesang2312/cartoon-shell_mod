@@ -364,11 +364,10 @@ Item {
                                         }
                                     }
 
-                                    Text {
-                                        text: "✓"
-                                        color: theme.primary.background
-                                        font.pixelSize: ScalerService.s(12)
-                                        font.bold: true
+                                    IconText {
+                                        name: "check"
+                                        size: "xs"
+                                        textColor: theme.primary.background
                                         anchors.centerIn: parent
                                     }
                                 }

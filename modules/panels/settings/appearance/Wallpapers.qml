@@ -2,513 +2,590 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
 import Qt.labs.folderlistmodel
+import Qt.labs.platform
 import qs.services
+import qs.components
 import qs.commons
 
 Item {
-    id: systemSettings
+    id: root
+
+    // Animation progress tương tự mẫu
+    property real animationProgress: 0
+    SequentialAnimation on animationProgress {
+        running: true
+        NumberAnimation {
+            from: 0
+            to: 1
+            duration: 500
+            easing.type: Easing.Linear
+        }
+    }
+
+    // System & Path Properties
     property string homePath: Directories.home
-    property string wallpapersPath: "file://" + Directories.home + "/Pictures/Wallpapers/"
-    property string wallpaperPath: ""
-    property string currentWallpaper: ""  // Lưu đường dẫn đã chuẩn hóa (không có file://)
+    property url currentPath: "file://" + Directories.home + "/Pictures/Wallpapers/"
+    property string currentWallpaper: ""
     property int currentScreenIndex: 0
     property var currentScreen: Quickshell.screens[currentScreenIndex] || null
 
-    // Đường dẫn thư mục lưu thumbnail tạm
-    property string thumbnailDir: homePath ? homePath + "/.cache/quickshell/wallpapers_thumbs" : ""
+    // State cho Modal Xem Chi Tiết & Xác Nhận Xóa
+    property var selectedItem: null
+    property bool showDetailModal: false
+    property bool showDeleteConfirmModal: false
 
-    // Hàm helper để chuẩn hóa đường dẫn (bỏ file://)
+    // Helper chuẩn hóa đường dẫn
     function normalizePath(path) {
         if (!path)
             return "";
-        var strPath = path.toString();
-        return strPath.replace(/^file:\/\//, "");
+        return path.toString().replace(/^file:\/\//, "");
     }
 
-    // Process để set wallpaper
-    Process {
-        id: wallpaperProcess
-
-        stdout: StdioCollector {
-            onTextChanged: {}
-        }
-
-        onRunningChanged: {
-            if (!running) {
-                currentWallpaper = normalizePath(wallpaperPath);
-                showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
-            }
-        }
-    }
-
-    // Process để xóa file (bao gồm cả xóa thumbnail)
-    Process {
-        id: deleteProcess
-
-        stdout: StdioCollector {
-            onTextChanged: {}
-        }
-
-        onRunningChanged: {
-            if (!running) {
-                showNotification(lang?.wallpapers?.success_delete || "Đã xóa ảnh thành công!");
-            }
-        }
-    }
-
-    // Process để tạo thumbnail cho video sử dụng ffmpeg tối ưu
-    Process {
-        id: thumbnailProcess
-
-        onRunningChanged: {
-            if (!running) {
-                // Refresh lại model hoặc grid sau khi tạo xong nếu cần
-            }
-        }
-    }
-
-    // Process chạy ngầm để dọn dẹp các thumbnail mồ côi
-    Process {
-        id: cleanupProcess
-    }
-
-    // FolderListModel để liệt kê ảnh & video
+    // Model duyệt danh sách file/folder
     FolderListModel {
         id: folderModel
-        folder: wallpapersPath
-        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.gif", "*.mp4", "*.webm", "*.mkv", "*.avi", "*.mov", "*.flv", "*.wmv", "*.m4v", "*.mpg", "*.mpeg"]
-        showDirs: false
+        folder: root.currentPath
+        showDirs: true
         showFiles: true
         showHidden: false
+        showDirsFirst: true
+        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.gif", "*.mp4", "*.webm", "*.mkv", "*.avi", "*.mov"]
         sortField: FolderListModel.Name
         caseSensitive: false
-
-        onStatusChanged: {
-            if (status === FolderListModel.Ready) {
-                cleanupOldThumbnails();
-            }
-        }
     }
 
-    ScrollView {
+    // ListView cấu hình giống form mẫu
+    ListView {
         id: scrollView
         anchors.fill: parent
-        anchors.margins: ScalerService.s(20)
         clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+        anchors.margins: ScalerService.s(20)
 
-        ColumnLayout {
-            width: parent.width
-            spacing: ScalerService.s(15)
+        // Vuốt cảm ứng & hiệu ứng mượt
+        flickableDirection: Flickable.VerticalFlick
+        boundsBehavior: Flickable.StopAtBounds
+        focus: true
 
-            // Header
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: ScalerService.s(10)
+        // Tính chiều cao nội dung theo Layout
+        contentHeight: mainLayout.implicitHeight
 
-                Text {
-                    text: lang?.wallpapers?.title || "Quản lý hình ảnh"
-                    color: theme.primary.foreground
-                    font.pixelSize: ScalerService.s(24)
-                    font.bold: true
-                    font.family: "ComicShannsMono Nerd Font"
-                }
+        model: 1
+        delegate: ColumnLayout {
+            id: mainLayout
+            width: scrollView.width
+            spacing: ScalerService.s(20)
 
-                Item {
-                    Layout.fillWidth: true
-                }
+            // Header Section
+            HeaderSettings {
+                name: root.lang?.wallpapers?.title || "Wallpapers"
             }
 
+            // Separator
             Rectangle {
                 Layout.fillWidth: true
                 height: ScalerService.s(1)
                 color: theme.primary.foreground
+                opacity: 0.2
+                Layout.bottomMargin: ScalerService.s(5)
             }
 
-            // Screen selector
+            // Path & Navigation Header
             RowLayout {
                 Layout.fillWidth: true
-                spacing: ScalerService.s(5)
+                spacing: ScalerService.s(10)
+
+                Rectangle {
+                    Layout.preferredHeight: ScalerService.s(36)
+                    Layout.fillWidth: true
+                    radius: ScalerService.s(8)
+                    color: theme.button.background
+                    border.color: theme.button.border
+                    border.width: ScalerService.s(1)
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: ScalerService.s(12)
+                        anchors.rightMargin: ScalerService.s(12)
+                        spacing: ScalerService.s(8)
+
+                        CustomText {
+                            name: "Total Items:"
+                            textColor: theme.primary.dim_foreground
+                            size: "small"
+                        }
+
+                        CustomText {
+                            name: folderModel.count
+                            textColor: theme.normal.blue
+                            size: "small"
+                            isBold: true
+                        }
+
+                        CustomText {
+                            name: "|"
+                            textColor: theme.primary.dim_foreground
+                            size: "small"
+                        }
+
+                        CustomText {
+                            name: normalizePath(folderModel.folder)
+                            textColor: theme.primary.foreground
+                            size: "small"
+                            elide: Text.ElideMiddle
+                            Layout.fillWidth: true
+                        }
+                    }
+                }
+            }
+
+            // Display Selector
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: ScalerService.s(8)
 
                 Repeater {
                     model: Quickshell.screens
 
                     delegate: Rectangle {
-                        Layout.preferredWidth: ScalerService.s(100)
-                        Layout.preferredHeight: ScalerService.s(30)
+                        Layout.preferredWidth: ScalerService.s(110)
+                        Layout.preferredHeight: ScalerService.s(32)
                         radius: ScalerService.s(6)
-                        color: systemSettings.currentScreenIndex === index ? theme.normal.blue : theme.button.background
+                        color: root.currentScreenIndex === index ? theme.normal.blue : theme.button.background
                         border.color: theme.button.border
                         border.width: ScalerService.s(1)
 
-                        Text {
+                        CustomText {
                             anchors.centerIn: parent
-                            text: modelData.name || `Screen ${index + 1}`
-                            color: systemSettings.currentScreenIndex === index ? theme.primary.background : theme.primary.foreground
-                            font.pixelSize: ScalerService.s(12)
-                            font.family: "ComicShannsMono Nerd Font"
+                            name: modelData.name || `Display ${index + 1}`
+                            textColor: root.currentScreenIndex === index ? theme.primary.background : theme.primary.foreground
+                            size: "small"
+                            isBold: true
                         }
 
                         MouseArea {
                             anchors.fill: parent
-                            onClicked: systemSettings.currentScreenIndex = index
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.currentScreenIndex = index
                         }
                     }
                 }
             }
 
-            // Statistics
-            RowLayout {
+            // Wallpapers Grid View
+            Grid {
+                id: wallpapersGrid
                 Layout.fillWidth: true
-                spacing: ScalerService.s(20)
+                columns: 3
+                columnSpacing: ScalerService.s(12)
+                rowSpacing: ScalerService.s(12)
 
-                Rectangle {
-                    Layout.preferredHeight: ScalerService.s(40)
-                    Layout.fillWidth: true
-                    radius: ScalerService.s(8)
-                    color: theme.button.background
-                    border.color: theme.button.border
-                    border.width: ScalerService.s(2)
+                Repeater {
+                    model: folderModel
 
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: ScalerService.s(8)
+                    delegate: Rectangle {
+                        width: (mainLayout.width - ScalerService.s(24)) / 3
+                        height: width * 0.85
+                        color: Qt.alpha(theme.button.background, 0.5)
+                        border.color: theme.button.border
+                        radius: ScalerService.s(Settings.appearance.radius3)
+                        border.width: Settings.appearance.enableBorder ? (isSelected ? ScalerService.s(2) : ScalerService.s(1)) : 0
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: ScalerService.s(8)
+                            spacing: ScalerService.s(6)
 
-                        Text {
-                            text: lang?.wallpapers?.total_images || "Tổng số ảnh:"
-                            font.family: "ComicShannsMono Nerd Font"
-                            color: theme.primary.dim_foreground
-                            font.pixelSize: ScalerService.s(15)
-                        }
+                            // Thumbnail Preview
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: ScalerService.s(Settings.appearance.radius3)
+                                clip: true
+                                color: folderModel.isFolder(index) ? Qt.alpha(theme.normal.blue, 0.15) : "transparent"
 
-                        Text {
-                            text: folderModel.count
-                            color: theme.normal.blue
-                            font.family: "ComicShannsMono Nerd Font"
-                            font.pixelSize: ScalerService.s(18)
-                            font.bold: true
-                        }
+                                Text {
+                                    visible: folderModel.isFolder(index)
+                                    anchors.centerIn: parent
+                                    text: "🖿"
+                                    font.pixelSize: ScalerService.s(42)
+                                }
 
-                        Text {
-                            text: "|"
-                            color: theme.primary.dim_foreground
-                            font.pixelSize: ScalerService.s(15)
-                        }
+                                Image {
+                                    id: previewImg
+                                    visible: !folderModel.isFolder(index)
+                                    anchors.fill: parent
+                                    source: fileUrl
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                    cache: true
+                                    smooth: true
+                                }
 
-                        Text {
-                            text: homePath ? (lang?.wallpapers?.path || "Đường dẫn:") + " ~/Pictures/Wallpapers/" : (lang?.wallpapers?.loading || "Đang tải...")
-                            font.family: "ComicShannsMono Nerd Font"
-                            color: theme.primary.dim_foreground
-                            font.pixelSize: ScalerService.s(15)
-                            elide: Text.ElideMiddle
-                        }
-                    }
-                }
-            }
-
-            // Wallpapers Section
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: ScalerService.s(10)
-
-                Text {
-                    text: lang?.wallpapers?.wallpapers_label || "Hình nền:"
-                    color: theme.primary.foreground
-                    font {
-                        family: "ComicShannsMono Nerd Font"
-                        pixelSize: ScalerService.s(16)
-                    }
-                }
-
-                // Status indicator
-                Text {
-                    visible: folderModel.status === FolderListModel.Loading
-                    text: lang?.wallpapers?.loading || "Đang tải..."
-                    color: theme.primary.dim_foreground
-                    font.pixelSize: ScalerService.s(14)
-                    Layout.alignment: Qt.AlignCenter
-                }
-
-                // Wallpapers Grid
-                Grid {
-                    id: wallpapersGrid
-                    Layout.fillWidth: true
-                    columns: 3
-                    columnSpacing: ScalerService.s(10)
-                    rowSpacing: ScalerService.s(10)
-
-                    Repeater {
-                        model: folderModel
-
-                        delegate: Rectangle {
-                            width: systemSettings.width / 4
-                            height: systemSettings.width / 4
-                            radius: ScalerService.s(12)
-                            color: Qt.alpha(theme.button.background, 0.5)
-                            border.color: theme.button.border
-                            border.width: ScalerService.s(1)
-
-                            Column {
-                                anchors.fill: parent
-                                anchors.margins: ScalerService.s(8)
-                                spacing: ScalerService.s(8)
-
-                                // Thumbnail
                                 Rectangle {
-                                    width: parent.width
-                                    height: parent.height - ScalerService.s(70)
-                                    radius: ScalerService.s(8)
-                                    clip: true
-                                    color: "transparent"
+                                    visible: isVideoFile(fileName) && !folderModel.isFolder(index)
+                                    anchors.bottom: parent.bottom
+                                    anchors.left: parent.left
+                                    anchors.margins: ScalerService.s(6)
+                                    width: ScalerService.s(22)
+                                    height: ScalerService.s(22)
+                                    radius: ScalerService.s(11)
+                                    color: theme.normal.magenta
 
-                                    Component.onCompleted: {
-                                        if (isVideoFile(fileName)) {
-                                            generateThumbnail(fileUrl);
-                                        }
+                                    Text {
+                                        text: "▶"
+                                        color: theme.primary.background
+                                        font.pixelSize: ScalerService.s(10)
+                                        font.bold: true
+                                        anchors.centerIn: parent
+                                    }
+                                }
+
+                                Rectangle {
+                                    visible: !folderModel.isFolder(index) && normalizePath(fileUrl) === root.currentWallpaper
+                                    anchors.top: parent.top
+                                    anchors.right: parent.right
+                                    anchors.margins: ScalerService.s(6)
+                                    width: ScalerService.s(22)
+                                    height: ScalerService.s(22)
+                                    radius: ScalerService.s(11)
+                                    color: theme.normal.green
+
+                                    Text {
+                                        text: "✓"
+                                        color: theme.primary.background
+                                        font.pixelSize: ScalerService.s(10)
+                                        font.bold: true
+                                        anchors.centerIn: parent
+                                    }
+                                }
+                            }
+
+                            // Filename
+                            Text {
+                                text: fileName
+                                color: theme.primary.foreground
+                                font.pixelSize: ScalerService.s(11)
+                                elide: Text.ElideMiddle
+                                Layout.fillWidth: true
+                            }
+
+                            // Actions Bar
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: ScalerService.s(4)
+                                visible: !folderModel.isFolder(index)
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    height: ScalerService.s(24)
+                                    radius: ScalerService.s(4)
+                                    color: normalizePath(fileUrl) === root.currentWallpaper ? theme.normal.green : theme.normal.blue
+
+                                    CustomText {
+                                        anchors.centerIn: parent
+                                        name: normalizePath(fileUrl) === root.currentWallpaper ? "Applied" : "Apply"
+                                        textColor: theme.primary.background
+                                        size: "xs"
+                                        isBold: true
                                     }
 
-                                    Image {
-                                        id: thumbnailImage
+                                    MouseArea {
                                         anchors.fill: parent
-                                        source: isVideoFile(fileName) ? getThumbnailPath(fileUrl) : fileUrl
-                                        fillMode: Image.PreserveAspectCrop
-                                        asynchronous: true
-                                        cache: true
-                                        smooth: true
-                                        mipmap: true
-
-                                        onStatusChanged: {
-                                            if (status === Image.Error && isVideoFile(fileName)) {
-                                                generateThumbnail(fileUrl);
-                                            }
-                                        }
-                                    }
-
-                                    // Video indicator
-                                    Rectangle {
-                                        visible: isVideoFile(fileName)
-                                        anchors.bottom: parent.bottom
-                                        anchors.left: parent.left
-                                        anchors.margins: ScalerService.s(5)
-                                        width: ScalerService.s(24)
-                                        height: ScalerService.s(24)
-                                        radius: ScalerService.s(12)
-                                        color: theme.normal.magenta
-
-                                        Text {
-                                            text: "▶"
-                                            color: theme.primary.background
-                                            font.pixelSize: ScalerService.s(12)
-                                            font.bold: true
-                                            anchors.centerIn: parent
-                                        }
-                                    }
-
-                                    // Current Wallpaper Indicator
-                                    Rectangle {
-                                        visible: normalizePath(fileUrl) === systemSettings.currentWallpaper
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        anchors.margins: ScalerService.s(5)
-                                        width: ScalerService.s(24)
-                                        height: ScalerService.s(24)
-                                        radius: ScalerService.s(12)
-                                        color: theme.normal.green
-
-                                        Text {
-                                            text: "✓"
-                                            color: theme.primary.background
-                                            font.pixelSize: ScalerService.s(12)
-                                            font.bold: true
-                                            anchors.centerIn: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            SoundService.playSound("pick");
+                                            setWallpaper(fileUrl);
                                         }
                                     }
                                 }
 
-                                // File Info & Actions
-                                Column {
-                                    width: parent.width
-                                    spacing: ScalerService.s(6)
+                                Rectangle {
+                                    Layout.preferredWidth: ScalerService.s(24)
+                                    height: ScalerService.s(24)
+                                    radius: ScalerService.s(4)
+                                    color: theme.button.background
+                                    border.color: theme.button.border
 
                                     Text {
-                                        text: fileName
+                                        anchors.centerIn: parent
+                                        text: "ℹ"
                                         color: theme.primary.foreground
-                                        font.pixelSize: ScalerService.s(12)
-                                        elide: Text.ElideMiddle
-                                        width: parent.width
+                                        font.pixelSize: ScalerService.s(11)
                                     }
 
-                                    Row {
-                                        width: parent.width
-                                        spacing: ScalerService.s(8)
-                                        Text {
-                                            text: Math.round(fileSize / 1024) + " KB"
-                                            color: theme.primary.dim_foreground
-                                            font.pixelSize: ScalerService.s(9)
-                                        }
-                                        Text {
-                                            text: new Date(fileModified).toLocaleDateString(Qt.locale(), "dd/MM/yyyy")
-                                            color: theme.primary.dim_foreground
-                                            font.pixelSize: ScalerService.s(9)
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            SoundService.playSound("pick");
+                                            root.selectedItem = {
+                                                index: index,
+                                                name: fileName,
+                                                url: fileUrl,
+                                                path: normalizePath(fileUrl),
+                                                size: fileSize,
+                                                modified: fileModified,
+                                                width: previewImg.sourceSize.width,
+                                                height: previewImg.sourceSize.height,
+                                                isVideo: isVideoFile(fileName)
+                                            };
+                                            root.showDetailModal = true;
                                         }
                                     }
+                                }
 
-                                    Row {
-                                        width: parent.width
-                                        spacing: ScalerService.s(6)
+                                Rectangle {
+                                    Layout.preferredWidth: ScalerService.s(24)
+                                    height: ScalerService.s(24)
+                                    radius: ScalerService.s(4)
+                                    color: theme.normal.red
 
-                                        // Set Wallpaper
-                                        Rectangle {
-                                            width: (parent.width - ScalerService.s(6)) / 2
-                                            height: ScalerService.s(28)
-                                            radius: ScalerService.s(6)
-                                            color: normalizePath(fileUrl) === systemSettings.currentWallpaper ? theme.normal.green : theme.normal.blue
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "🗑"
+                                        color: theme.primary.background
+                                        font.pixelSize: ScalerService.s(11)
+                                    }
 
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: normalizePath(fileUrl) === systemSettings.currentWallpaper ? (lang?.wallpapers?.already_set || "Đã đặt") : (lang?.wallpapers?.set_wallpaper || "Đặt nền")
-                                                color: theme.primary.background
-                                                font.pixelSize: ScalerService.s(10)
-                                                font.bold: true
-                                            }
-
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: {
-                                                    setWallpaper(fileUrl);
-                                                }
-                                            }
-                                        }
-
-                                        // Delete Button
-                                        Rectangle {
-                                            width: (parent.width - ScalerService.s(6)) / 2
-                                            height: ScalerService.s(28)
-                                            radius: ScalerService.s(6)
-                                            color: theme.normal.red
-
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: lang?.wallpapers?.delete || "Xóa"
-                                                color: theme.primary.background
-                                                font.pixelSize: ScalerService.s(10)
-                                                font.bold: true
-                                            }
-
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: showDeleteDialog(fileName, fileUrl)
-                                            }
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            SoundService.playSound("pick");
+                                            root.selectedItem = {
+                                                index: index,
+                                                name: fileName,
+                                                url: fileUrl
+                                            };
+                                            root.showDeleteConfirmModal = true;
                                         }
                                     }
                                 }
                             }
                         }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            enabled: folderModel.isFolder(index)
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.currentPath = fileUrl
+                        }
                     }
-                }
-
-                // No images message
-                Text {
-                    visible: folderModel.count === 0 && homePath && folderModel.status === FolderListModel.Ready
-                    text: lang?.wallpapers?.no_images || "Không tìm thấy ảnh nào trong thư mục ~/Pictures/Wallpapers"
-                    color: theme.primary.dim_foreground
-                    font.pixelSize: ScalerService.s(14)
-                    Layout.alignment: Qt.AlignCenter
-                }
-
-                // Loading message
-                Text {
-                    visible: !homePath
-                    text: lang?.wallpapers?.loading_info || "Đang tải thông tin..."
-                    color: theme.primary.dim_foreground
-                    font.pixelSize: ScalerService.s(14)
-                    Layout.alignment: Qt.AlignCenter
                 }
             }
 
+            // Empty State
+            Text {
+                visible: folderModel.count === 0 && folderModel.status === FolderListModel.Ready
+                text: "No images or directories found in the current location."
+                color: theme.primary.dim_foreground
+                font.pixelSize: ScalerService.s(13)
+                Layout.alignment: Qt.AlignCenter
+            }
+
+            // Spacer
             Item {
                 Layout.fillHeight: true
+                Layout.minimumHeight: ScalerService.s(20)
             }
         }
     }
 
-    // Delete dialog
+    // Modal Details View
     Rectangle {
-        id: deleteDialog
-        visible: false
-        anchors.centerIn: parent
-        width: ScalerService.s(300)
-        height: ScalerService.s(160)
-        radius: ScalerService.s(12)
-        color: theme.primary.background
-        border.color: theme.normal.red
-        border.width: ScalerService.s(2)
-        z: 1000
+        id: detailModal
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.7)
+        visible: root.showDetailModal
+        z: 2000
 
-        property string fileNameToDelete: ""
-        property string filePathToDelete: ""
-
-        Column {
+        MouseArea {
             anchors.fill: parent
-            anchors.margins: ScalerService.s(20)
-            spacing: ScalerService.s(15)
+        }
 
-            Text {
-                text: (lang?.wallpapers?.delete_confirm || "Xác nhận xóa") + "\n" + deleteDialog.fileNameToDelete
-                color: theme.normal.red
-                font.pixelSize: ScalerService.s(16)
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-            }
+        Rectangle {
+            anchors.centerIn: parent
+            width: ScalerService.s(440)
+            height: ScalerService.s(380)
+            radius: ScalerService.s(12)
+            color: theme.primary.background
+            border.color: theme.button.border
+            border.width: ScalerService.s(1)
 
-            Row {
-                spacing: ScalerService.s(15)
-                anchors.horizontalCenter: parent.horizontalCenter
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: ScalerService.s(20)
+                spacing: ScalerService.s(10)
 
-                // Cancel
+                Text {
+                    text: "🛈 File Details"
+                    color: theme.normal.blue
+                    font.pixelSize: ScalerService.s(16)
+                    font.bold: true
+                }
+
                 Rectangle {
-                    width: ScalerService.s(100)
-                    height: ScalerService.s(35)
+                    Layout.fillWidth: true
+                    height: ScalerService.s(1)
+                    color: theme.button.border
+                }
+
+                Image {
+                    Layout.preferredHeight: ScalerService.s(110)
+                    Layout.fillWidth: true
+                    source: root.selectedItem ? root.selectedItem.url : ""
+                    fillMode: Image.PreserveAspectFit
+                    horizontalAlignment: Image.AlignHCenter
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: ScalerService.s(4)
+
+                    Text {
+                        text: "File Name: " + (root.selectedItem ? root.selectedItem.name : "")
+                        color: theme.primary.foreground
+                        font.pixelSize: ScalerService.s(12)
+                        elide: Text.ElideMiddle
+                        Layout.fillWidth: true
+                    }
+                    Text {
+                        text: "Path: " + (root.selectedItem ? root.selectedItem.path : "")
+                        color: theme.primary.dim_foreground
+                        font.pixelSize: ScalerService.s(11)
+                        elide: Text.ElideMiddle
+                        Layout.fillWidth: true
+                    }
+                    Text {
+                        text: "File Size: " + (root.selectedItem ? formatBytes(root.selectedItem.size) : "")
+                        color: theme.primary.foreground
+                        font.pixelSize: ScalerService.s(12)
+                    }
+                    Text {
+                        text: "Resolution: " + (root.selectedItem && root.selectedItem.width ? root.selectedItem.width + " x " + root.selectedItem.height + " px" : "N/A")
+                        color: theme.primary.foreground
+                        font.pixelSize: ScalerService.s(12)
+                    }
+                    Text {
+                        text: "Last Modified: " + (root.selectedItem && root.selectedItem.modified ? root.selectedItem.modified.toLocaleString() : "N/A")
+                        color: theme.primary.foreground
+                        font.pixelSize: ScalerService.s(12)
+                    }
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+
+                Rectangle {
+                    Layout.preferredWidth: ScalerService.s(90)
+                    Layout.preferredHeight: ScalerService.s(30)
+                    Layout.alignment: Qt.AlignRight
                     radius: ScalerService.s(6)
                     color: theme.button.background
                     border.color: theme.button.border
 
                     Text {
                         anchors.centerIn: parent
-                        text: lang?.wallpapers?.cancel || "Hủy"
+                        text: "Close"
                         color: theme.primary.foreground
-                        font.pixelSize: ScalerService.s(14)
                     }
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: deleteDialog.visible = false
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.showDetailModal = false
                     }
                 }
+            }
+        }
+    }
 
-                // Confirm delete
-                Rectangle {
-                    width: ScalerService.s(100)
-                    height: ScalerService.s(35)
-                    radius: ScalerService.s(6)
+    // Modal Confirm Delete
+    Rectangle {
+        id: deleteModal
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.7)
+        visible: root.showDeleteConfirmModal
+        z: 2000
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: ScalerService.s(360)
+            height: ScalerService.s(160)
+            radius: ScalerService.s(12)
+            color: theme.primary.background
+            border.color: theme.normal.red
+            border.width: ScalerService.s(1)
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: ScalerService.s(18)
+                spacing: ScalerService.s(12)
+
+                Text {
+                    text: "⚠️ Confirm Deletion"
                     color: theme.normal.red
+                    font.pixelSize: ScalerService.s(15)
+                    font.bold: true
+                }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: lang?.wallpapers?.delete || "Xóa"
-                        color: theme.primary.background
-                        font.pixelSize: ScalerService.s(14)
+                Text {
+                    text: "Are you sure you want to delete: " + (root.selectedItem ? root.selectedItem.name : "") + "?"
+                    color: theme.primary.foreground
+                    font.pixelSize: ScalerService.s(12)
+                    wrapMode: Text.Wrap
+                    Layout.fillWidth: true
+                }
+
+                RowLayout {
+                    Layout.alignment: Qt.AlignRight
+                    spacing: ScalerService.s(8)
+
+                    Rectangle {
+                        Layout.preferredWidth: ScalerService.s(75)
+                        Layout.preferredHeight: ScalerService.s(30)
+                        radius: ScalerService.s(6)
+                        color: theme.button.background
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Cancel"
+                            color: theme.primary.foreground
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: root.showDeleteConfirmModal = false
+                        }
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            deleteWallpaper(deleteDialog.filePathToDelete);
-                            deleteDialog.visible = false;
+                    Rectangle {
+                        Layout.preferredWidth: ScalerService.s(75)
+                        Layout.preferredHeight: ScalerService.s(30)
+                        radius: ScalerService.s(6)
+                        color: theme.normal.red
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Delete"
+                            color: theme.primary.background
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (root.selectedItem) {
+                                    deleteFile(root.selectedItem.url);
+                                }
+                                root.showDeleteConfirmModal = false;
+                            }
                         }
                     }
                 }
@@ -516,34 +593,34 @@ Item {
         }
     }
 
-    // Notification
+    // Toast Notification
     Rectangle {
         id: successNotification
         visible: false
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: ScalerService.s(20)
-        width: ScalerService.s(250)
-        height: ScalerService.s(50)
+        width: ScalerService.s(260)
+        height: ScalerService.s(40)
         radius: ScalerService.s(8)
         color: theme.normal.green
-        z: 1001
+        z: 3000
 
         Row {
             anchors.centerIn: parent
-            spacing: ScalerService.s(10)
-            Text {
-                text: "✓"
+            spacing: ScalerService.s(8)
+            CustomText {
+                name: "✓"
                 color: theme.primary.background
-                font.bold: true
-                font.pixelSize: ScalerService.s(16)
+                isBold: true
+                size: "small"
             }
-            Text {
+            CustomText {
                 id: notificationText
-                color: theme.primary.background
-                text: ""
-                font.bold: true
-                font.pixelSize: ScalerService.s(16)
+                textColor: theme.primary.background
+                name: ""
+                isBold: true
+                size: "small"
             }
         }
 
@@ -554,7 +631,19 @@ Item {
         }
     }
 
-    // ===== HÀM XỬ LÝ =====
+    // Helper Functions
+    function deleteFile(filePath) {
+        if (!filePath)
+            return;
+        var cleanPath = normalizePath(filePath);
+        var success = File.remove(cleanPath);
+
+        if (success) {
+            showNotification("File deleted successfully!");
+        } else {
+            showNotification("Failed to delete file!");
+        }
+    }
 
     function setWallpaper(filePath) {
         Settings.wallpaper.shaders = Math.floor(Math.random() * 4);
@@ -565,7 +654,7 @@ Item {
                 WallpaperService.changeWallpaper(cleanPath, Quickshell.screens[i].name);
             }
         } else {
-            var screen = systemSettings.currentScreen;
+            var screen = root.currentScreen;
             if (screen) {
                 WallpaperService.changeWallpaper(cleanPath, screen.name);
             } else if (Quickshell.screens.length > 0) {
@@ -573,24 +662,17 @@ Item {
             }
         }
 
-        showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
-        systemSettings.currentWallpaper = cleanPath;
+        showNotification("Wallpaper applied!");
+        root.currentWallpaper = cleanPath;
     }
 
-    // Tạo thumbnail bằng lệnh ffmpeg nhẹ nhất
-    function generateThumbnail(filePath) {
-        if (!homePath || !thumbnailDir)
-            return;
-
-        var actualPath = normalizePath(filePath);
-        var fileName = actualPath.split('/').pop();
-        var thumbnailPath = thumbnailDir + "/" + fileName + ".jpg";
-
-        // Lệnh ffmpeg tối ưu dung lượng và tốc độ
-        var cmd = `mkdir -p "${thumbnailDir}" && test -f "${thumbnailPath}" || ffmpeg -y -i "${actualPath}" -vframes 1 -vf "scale=320:-1" -sws_flags fast_bilinear -q:v 10 "${thumbnailPath}" 2>/dev/null`;
-
-        thumbnailProcess.command = ["sh", "-c", cmd];
-        thumbnailProcess.running = true;
+    function formatBytes(bytes) {
+        if (!bytes || bytes === 0)
+            return '0 Bytes';
+        var k = 1024;
+        var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     function isVideoFile(fileName) {
@@ -600,69 +682,16 @@ Item {
         return ["mp4", "webm", "mkv", "avi", "mov", "flv", "wmv", "m4v", "mpg", "mpeg"].indexOf(ext) !== -1;
     }
 
-    function getThumbnailPath(filePath) {
-        if (!homePath || !thumbnailDir)
-            return "";
-        var actualPath = normalizePath(filePath);
-        var fileName = actualPath.split('/').pop();
-        return "file://" + thumbnailDir + "/" + fileName + ".jpg";
-    }
-
-    // Xóa file gốc và xóa luôn thumbnail tương ứng nếu có
-    function deleteWallpaper(filePath) {
-        var actualPath = normalizePath(filePath);
-        var fileName = actualPath.split('/').pop();
-        var thumbnailPath = thumbnailDir + "/" + fileName + ".jpg";
-
-        deleteProcess.command = ["sh", "-c", `rm -f "${actualPath}" "${thumbnailPath}"`];
-        deleteProcess.running = true;
-    }
-
-    // Xóa các thumbnail cũ không còn tệp video gốc tương ứng
-    function cleanupOldThumbnails() {
-        if (!thumbnailDir || folderModel.count === 0)
-            return;
-
-        var validThumbnails = [];
-        for (var i = 0; i < folderModel.count; i++) {
-            var name = folderModel.get(i, "fileName");
-            if (isVideoFile(name)) {
-                validThumbnails.push(name + ".jpg");
-            }
-        }
-
-        // Tạo chuỗi danh sách các file cần giữ lại để xử lý shell
-        var keepList = validThumbnails.map(function (item) {
-            return `-not -name "${item}"`;
-        }).join(" ");
-
-        var cleanupCmd = `if [ -d "${thumbnailDir}" ]; then find "${thumbnailDir}" -type f -name "*.jpg" ${keepList} -delete; fi`;
-
-        cleanupProcess.command = ["sh", "-c", cleanupCmd];
-        cleanupProcess.running = true;
-    }
-
-    function showDeleteDialog(fileName, filePath) {
-        deleteDialog.fileNameToDelete = fileName;
-        deleteDialog.filePathToDelete = filePath;
-        deleteDialog.visible = true;
-    }
-
     function showNotification(message) {
         notificationText.text = message;
         successNotification.visible = true;
         notificationTimer.start();
     }
 
-    function isCurrentWallpaper(filePath) {
-        if (!currentScreen)
-            return false;
-        var currentWallpaper = WallpaperService.getWallpaper(currentScreen.name);
-        return normalizePath(filePath) === normalizePath(currentWallpaper);
-    }
-
     Component.onCompleted: {
-        var wallpaper = WallpaperService.getWallpaper(currentScreen.name);
-        systemSettings.currentWallpaper = normalizePath(wallpaper);
+        if (currentScreen) {
+            var wallpaper = WallpaperService.getWallpaper(currentScreen.name);
+            root.currentWallpaper = normalizePath(wallpaper);
+        }
     }
 }
