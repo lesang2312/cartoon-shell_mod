@@ -61,7 +61,7 @@ ColumnLayout {
                     accent: "#f5eee6"
                 },
                 {
-                    name: "Tokyonight Storm",
+                    name: "Tokyo Storm",
                     type: "tokyonightStorm",
                     accent: "#7aa2f7"
                 },
@@ -69,6 +69,16 @@ ColumnLayout {
                     name: "Nord",
                     type: "nord",
                     accent: "#88c0d0"
+                },
+                {
+                    name: "Dracula",
+                    type: "dracula",
+                    accent: "#BD93F9"
+                },
+                {
+                    name: "One dark",
+                    type: "one_dark",
+                    accent: "#61AFEF"
                 }
             ]
 
@@ -161,7 +171,7 @@ ColumnLayout {
                         width: ScalerService.s(40)
                         horizontalAlignment: Text.AlignLeft
                         isBold: true
-                        size: "small"
+                        size: "xs"
                     }
                 }
             }

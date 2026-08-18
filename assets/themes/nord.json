@@ -5,11 +5,11 @@
         "dim_background": "#3B4252",
         "foreground": "#D8DEE9",
         "dim_foreground": "#4C566A",
-        "bright_foreground": "#ECEFF4"
+        "bright_foreground": "#88C0D0"
     },
     "button": {
         "background": "#434C5E",
-        "text": "#D8DEE9",
+        "text": "#88C0D0",
         "background_select": "#4C566A",
         "border": "#81A1C1",
         "border_select": "#88C0D0"
