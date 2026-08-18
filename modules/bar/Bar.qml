@@ -10,7 +10,7 @@ PanelWindow {
     id: panel
     readonly property var widthBar: ({
             "style1": 40,
-            "style2": 45,
+            "style2": 38,
             "style3": 35
         })
 

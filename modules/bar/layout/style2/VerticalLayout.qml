@@ -83,8 +83,8 @@ ColumnLayout {
         running: true
         NumberAnimation {
             from: 0
-            to: 1
-            duration: 500
+            to: 2
+            duration: 1000
             easing.type: Easing.Linear
         }
     }
@@ -102,8 +102,10 @@ ColumnLayout {
             radius: ScalerService.s(Settings.appearance.radius2)
             border.color: theme.button.border
             border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
+            implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
+            implicitHeight: root.animationProgress > 0.1 ? parent.height * 0.95 : 0
+            anchors.centerIn: parent
 
-            anchors.fill: parent
             visible: root.animationProgress > 0.1
 
             ColumnLayout {
@@ -123,6 +125,7 @@ ColumnLayout {
                     onClicked: {
                         VisibleService.togglePanel("launcher");
                     }
+                    opacity: root.animationProgress > 0.3 ? 1 : 0
                 }
 
                 Item {
@@ -136,6 +139,7 @@ ColumnLayout {
                     radius: ScalerService.s(Settings.appearance.radius2)
                     Layout.alignment: Qt.AlignHCenter
 
+                    opacity: root.animationProgress > 0.2 ? 1 : 0
                     ColumnLayout {
                         id: contentRam
                         anchors.centerIn: parent
@@ -145,11 +149,13 @@ ColumnLayout {
                             textColor: theme.normal.green
                             size: "xs"
                             Layout.alignment: Qt.AlignHCenter
+                            opacity: root.animationProgress > 0.35 ? 1 : 0
                         }
                         CustomText {
                             size: "xs"
                             name: RamSimpleService.ramPercent + "%"
                             Layout.alignment: Qt.AlignHCenter
+                            opacity: root.animationProgress > 0.4 ? 1 : 0
                         }
                     }
                 }
@@ -160,6 +166,7 @@ ColumnLayout {
                     implicitHeight: ScalerService.s(55)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     Layout.alignment: Qt.AlignHCenter
+                    opacity: root.animationProgress > 0.25 ? 1 : 0
 
                     ColumnLayout {
                         id: contentCpu
@@ -170,11 +177,13 @@ ColumnLayout {
                             textColor: theme.normal.red
                             size: "xs"
                             Layout.alignment: Qt.AlignHCenter
+                            opacity: root.animationProgress > 0.45 ? 1 : 0
                         }
                         CustomText {
                             size: "xs"
                             name: CpuSimpleService.cpuPercent + "%"
                             Layout.alignment: Qt.AlignHCenter
+                            opacity: root.animationProgress > 0.5 ? 1 : 0
                         }
                     }
                 }
@@ -190,6 +199,7 @@ ColumnLayout {
                         textColor: theme.normal.blue
                         Layout.alignment: Qt.AlignHCenter
                         onClicked: Players?.mprisPlayer.previous()
+                        opacity: root.animationProgress > 0.55 ? 1 : 0
                     }
                     ButtonIconText {
                         name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
@@ -197,6 +207,7 @@ ColumnLayout {
                         Layout.alignment: Qt.AlignHCenter
                         textColor: theme.normal.green
                         onClicked: Players?.mprisPlayer.togglePlaying()
+                        opacity: root.animationProgress > 0.6 ? 1 : 0
                     }
                     ButtonIconText {
                         name: "skip_next"
@@ -204,6 +215,7 @@ ColumnLayout {
                         textColor: theme.normal.blue
                         Layout.alignment: Qt.AlignHCenter
                         onClicked: Players?.mprisPlayer.next()
+                        opacity: root.animationProgress > 0.65 ? 1 : 0
                     }
                 }
 
@@ -212,10 +224,12 @@ ColumnLayout {
                     radius: ScalerService.s(Settings.appearance.radius2)
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
+                    opacity: root.animationProgress > 0.3 ? 1 : 0
 
                     Layout.alignment: Qt.AlignHCenter
 
                     Com.WorkspaceSectionVertical {
+                        opacity: root.animationProgress > 0.7 ? 1 : 0
                         anchors.centerIn: parent
                     }
                 }
@@ -228,6 +242,7 @@ ColumnLayout {
                         size: "small"
                         name: `${DateTimeService.currentHour}`
                         Layout.alignment: Qt.AlignHCenter
+                        opacity: root.animationProgress > 0.75 ? 1 : 0
                     }
                     RowLayout {
                         Layout.fillWidth: true
@@ -235,6 +250,8 @@ ColumnLayout {
                             Layout.fillWidth: true
                         }
                         CustomRectangle {
+                            opacity: root.animationProgress > 0.8 ? 1 : 0
+
                             Layout.preferredWidth: ScalerService.s(25)
                             Layout.preferredHeight: ScalerService.s(2)
                             color: theme.primary.foreground
@@ -248,6 +265,7 @@ ColumnLayout {
 
                     CustomText {
                         size: "small"
+                        opacity: root.animationProgress > 0.85 ? 1 : 0
                         name: `${DateTimeService.currentMinus}`
                         Layout.alignment: Qt.AlignHCenter
                     }
@@ -259,6 +277,7 @@ ColumnLayout {
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(55)
                     Layout.alignment: Qt.AlignHCenter
+                    opacity: root.animationProgress > 0.35 ? 1 : 0
 
                     ColumnLayout {
                         id: contentBri
@@ -268,11 +287,13 @@ ColumnLayout {
                             textColor: theme.button.text
                             Layout.alignment: Qt.AlignHCenter
                             size: "small"
+                            opacity: root.animationProgress > 0.9 ? 1 : 0
                         }
                         CustomText {
                             name: Math.floor(BrightnessService.currentBrightness * 100) + "%"
                             Layout.alignment: Qt.AlignHCenter
                             size: "xs"
+                            opacity: root.animationProgress > 0.95 ? 1 : 0
                         }
                     }
                     MouseArea {
@@ -305,6 +326,7 @@ ColumnLayout {
                 CustomRectangle {
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
+                    opacity: root.animationProgress > 0.4 ? 1 : 0
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(55)
                     Layout.alignment: Qt.AlignHCenter
@@ -321,11 +343,13 @@ ColumnLayout {
                             }
                             Layout.alignment: Qt.AlignHCenter
                             textColor: theme.button.text
+                            opacity: root.animationProgress > 1 ? 1 : 0
                         }
                         CustomText {
                             name: sink ? Math.round(sink.audio.volume * 100) + "%" : "0%"
                             Layout.alignment: Qt.AlignHCenter
                             size: "xs"
+                            opacity: root.animationProgress > 1.05 ? 1 : 0
                         }
                     }
                     MouseArea {
@@ -359,6 +383,7 @@ ColumnLayout {
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
+                    opacity: root.animationProgress > 0.45 ? 1 : 0
                     implicitHeight: ScalerService.s(60)
                     Layout.alignment: Qt.AlignHCenter
 
@@ -369,12 +394,15 @@ ColumnLayout {
                             name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPower.displayDevice.percentage, UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
                             textColor: UPower.displayDevice.isLaptopBattery ? theme.button.text : theme.normal.red
                             Layout.alignment: Qt.AlignHCenter
+                            opacity: root.animationProgress > 1.1 ? 1 : 0
                         }
                         CustomText {
                             visible: UPower.displayDevice.isLaptopBattery
                             name: Math.round(UPower.displayDevice.percentage * 100) + "%"
                             size: "xs"
                             Layout.alignment: Qt.AlignHCenter
+
+                            opacity: root.animationProgress > 1.15 ? 1 : 0
                         }
                     }
                     MouseArea {
@@ -390,6 +418,8 @@ ColumnLayout {
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(70)
+                    opacity: root.animationProgress > 0.5 ? 1 : 0
+
                     Layout.alignment: Qt.AlignHCenter
 
                     ColumnLayout {
@@ -409,12 +439,16 @@ ColumnLayout {
                                     VisibleService.togglePanel("wifi");
                                 }
                             }
+
+                            opacity: root.animationProgress > 1.2 ? 1 : 0
                         }
                         IconText {
                             name: "bluetooth"
                             size: "small"
                             textColor: theme.button.text
                             Layout.alignment: Qt.AlignHCenter
+
+                            opacity: root.animationProgress > 1.25 ? 1 : 0
                         }
                     }
                 }
@@ -428,6 +462,7 @@ ColumnLayout {
                     name: "󰐥"
                     textColor: theme.normal.red
                     Layout.alignment: Qt.AlignHCenter
+                    opacity: root.animationProgress > 1.3 ? 1 : 0
                 }
 
                 Item {
