@@ -18,6 +18,7 @@ ColumnLayout {
 
     readonly property var sink: Pipewire.defaultAudioSink
     property real currentBrightness: BrightnessService.currentBrightness
+
     function getBrightnessIcon() {
         if (currentBrightness <= 0)
             return "brightness_1";
@@ -33,6 +34,7 @@ ColumnLayout {
             return "brightness_6";
         return "brightness_7";
     }
+
     function getBatteryIcon(level, status) {
         if (status === "Charging") {
             return "battery_android_frame_bolt";
@@ -54,6 +56,7 @@ ColumnLayout {
             return "battery_android_frame_full";
         }
     }
+
     function changeVolume(delta) {
         if (!sink)
             return;
@@ -85,44 +88,54 @@ ColumnLayout {
             easing.type: Easing.Linear
         }
     }
+
     Item {
         Layout.preferredHeight: ScalerService.s(5)
     }
+
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
+
         CustomRectangle {
             color: theme.primary.background
             radius: ScalerService.s(Settings.appearance.radius2)
             border.color: theme.button.border
             border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
-            anchors.centerIn: parent
-            implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
-            implicitHeight: root.animationProgress > 0.1 ? parent.height : 0
+
+            anchors.fill: parent
+            visible: root.animationProgress > 0.1
 
             ColumnLayout {
                 spacing: ScalerService.s(12)
                 anchors.margins: ScalerService.s(2)
                 anchors.fill: parent
+
                 Item {
                     Layout.preferredHeight: ScalerService.s(0)
                 }
+
                 ButtonIconText {
                     fontFamily: "Symbols Nerd Font"
                     name: "󰣇"
                     textColor: theme.button.text
+                    Layout.alignment: Qt.AlignHCenter
                     onClicked: {
                         VisibleService.togglePanel("launcher");
                     }
                 }
+
                 Item {
                     Layout.fillHeight: true
                 }
+
                 CustomRectangle {
                     color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(28)
+                    implicitWidth: ScalerService.s(30)
                     implicitHeight: ScalerService.s(55)
                     radius: ScalerService.s(Settings.appearance.radius2)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         id: contentRam
                         anchors.centerIn: parent
@@ -140,11 +153,14 @@ ColumnLayout {
                         }
                     }
                 }
+
                 CustomRectangle {
                     color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(28)
+                    implicitWidth: ScalerService.s(30)
                     implicitHeight: ScalerService.s(55)
                     radius: ScalerService.s(Settings.appearance.radius2)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         id: contentCpu
                         anchors.centerIn: parent
@@ -162,24 +178,23 @@ ColumnLayout {
                         }
                     }
                 }
+
                 ColumnLayout {
                     id: controlsRow
-
                     spacing: ScalerService.s(2)
+                    Layout.alignment: Qt.AlignHCenter
 
                     ButtonIconText {
                         name: "skip_previous"
                         size: "normal"
-
                         textColor: theme.normal.blue
-                        Layout.alignment: Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignHCenter
                         onClicked: Players?.mprisPlayer.previous()
                     }
                     ButtonIconText {
                         name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
                         size: "normal"
-
-                        Layout.alignment: Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignHCenter
                         textColor: theme.normal.green
                         onClicked: Players?.mprisPlayer.togglePlaying()
                     }
@@ -187,18 +202,28 @@ ColumnLayout {
                         name: "skip_next"
                         size: "normal"
                         textColor: theme.normal.blue
-
-                        Layout.alignment: Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignHCenter
                         onClicked: Players?.mprisPlayer.next()
                     }
                 }
 
-                Com.WorkspaceSectionVertical {}
-                Item {
-                    Layout.preferredWidth: ScalerService.s(12)
+                CustomRectangle {
+                    Layout.preferredHeight: ScalerService.s(240)
+                    radius: ScalerService.s(Settings.appearance.radius2)
+                    color: theme.primary.dim_background
+                    implicitWidth: ScalerService.s(30)
+
+                    Layout.alignment: Qt.AlignHCenter
+
+                    Com.WorkspaceSectionVertical {
+                        anchors.centerIn: parent
+                    }
                 }
+
                 ColumnLayout {
                     spacing: ScalerService.s(5)
+                    Layout.alignment: Qt.AlignHCenter
+
                     CustomText {
                         size: "small"
                         name: `${DateTimeService.currentHour}`
@@ -228,14 +253,13 @@ ColumnLayout {
                     }
                 }
 
-                Item {
-                    Layout.preferredWidth: ScalerService.s(12)
-                }
                 CustomRectangle {
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(55)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         id: contentBri
                         anchors.centerIn: parent
@@ -283,6 +307,8 @@ ColumnLayout {
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(55)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         id: contentVlo
                         anchors.centerIn: parent
@@ -328,16 +354,19 @@ ColumnLayout {
                         }
                     }
                 }
+
                 CustomRectangle {
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(60)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         anchors.centerIn: parent
                         IconText {
                             size: "small"
-                            name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
+                            name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPower.displayDevice.percentage, UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
                             textColor: UPower.displayDevice.isLaptopBattery ? theme.button.text : theme.normal.red
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -355,17 +384,21 @@ ColumnLayout {
                         cursorShape: Qt.PointingHandCursor
                     }
                 }
+
                 CustomRectangle {
                     color: theme.primary.dim_background
                     implicitWidth: ScalerService.s(30)
                     radius: ScalerService.s(Settings.appearance.radius2)
                     implicitHeight: ScalerService.s(70)
+                    Layout.alignment: Qt.AlignHCenter
+
                     ColumnLayout {
                         anchors.centerIn: parent
                         IconText {
                             name: NetworkService.wifi_icon_text_2
                             size: "small"
                             textColor: theme.button.text
+                            Layout.alignment: Qt.AlignHCenter
                             MouseArea {
                                 anchors.fill: parent
                                 hoverEnabled: true
@@ -381,6 +414,7 @@ ColumnLayout {
                             name: "bluetooth"
                             size: "small"
                             textColor: theme.button.text
+                            Layout.alignment: Qt.AlignHCenter
                         }
                     }
                 }
@@ -388,17 +422,21 @@ ColumnLayout {
                 Item {
                     Layout.fillHeight: true
                 }
+
                 ButtonIconText {
                     fontFamily: "Symbols Nerd Font"
                     name: "󰐥"
                     textColor: theme.normal.red
+                    Layout.alignment: Qt.AlignHCenter
                 }
+
                 Item {
                     Layout.preferredHeight: ScalerService.s(0)
                 }
             }
         }
     }
+
     Item {
         Layout.preferredHeight: ScalerService.s(5)
     }
