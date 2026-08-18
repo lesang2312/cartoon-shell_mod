@@ -20,6 +20,8 @@ Item {
             }
             return mouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.4) : Qt.alpha(theme.button.background, 0.2);
         }
+        border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
+
         RowLayout {
             anchors.margins: ScalerService.s(5)
             spacing: ScalerService.s(8)
@@ -71,7 +73,6 @@ Item {
             }
             return mouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.3);
         }
-        border.width: ScalerService.s(2)
 
         Behavior on color {
             ColorAnimation {

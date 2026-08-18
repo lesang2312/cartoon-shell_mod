@@ -109,11 +109,8 @@ RowLayout {
         panelName: "battery"
         visible: UPower.displayDevice.isLaptopBattery
 
-        BatteryIcon {
+        BatteryStat {
             anchors.centerIn: parent
-            textColor: theme.primary.foreground
-            iconWidth: ScalerService.s(35)
-            iconHeight: ScalerService.s(20)
         }
     }
 

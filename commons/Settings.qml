@@ -136,6 +136,10 @@ Singleton {
             "style": 1,
             "active": true
         }
+        property var brightness: {
+            "style": 1,
+            "active": true
+        }
         property var bluetooth: {
             "style": 1,
             "active": true

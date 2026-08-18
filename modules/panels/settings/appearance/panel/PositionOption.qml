@@ -13,9 +13,10 @@ Rectangle {
     property bool isSelected: false
 
     radius: ScalerService.s(10)
-    color: theme.primary.dim_background
-    border.color: isSelected ? theme.button.text : "transparent"
-    border.width: ScalerService.s(2)
+    color: isSelected ? Qt.alpha(theme.button.text, 0.6) : (mouseArea.containsMouse ? Qt.alpha(theme.button.background_select, 0.6) : Qt.alpha(theme.button.background, 0.6))
+
+    border.color: isSelected ? Qt.alpha(theme.button.text, 0.6) : (mouseArea.containsPress ? Qt.alpha(theme.button.border_select, 0.6) : Qt.alpha(theme.button.border, 0.6))
+    border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
 
     // Layout chính
     RowLayout {
@@ -61,6 +62,7 @@ Rectangle {
 
     // Interaction
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: true

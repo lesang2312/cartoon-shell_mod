@@ -8,6 +8,7 @@ Item {
     id: root
 
     property real currentBrightness: BrightnessService.currentBrightness
+    property int style: Settings.bar.brightness.style
 
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
@@ -33,17 +34,15 @@ Item {
         anchors.fill: parent
         spacing: ScalerService.s(2)
 
+        IconImage {
+            path: "bright/brightness.png"
+            visible: [1].includes(root.style)
+        }
         IconText {
+            visible: [2].includes(root.style)
             name: root.getBrightnessIcon()
             textColor: theme.button.text
             size: isVertical ? "small" : "normal"
-        }
-
-        CustomText {
-            visible: root.style === 1 && (Settings.bar.position === "top" || Settings.bar.position === "bottom")
-            name: currentBrightness
-            isBold: true
-            size: "small"
         }
     }
 

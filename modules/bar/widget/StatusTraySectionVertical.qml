@@ -105,11 +105,8 @@ ColumnLayout {
         opacity: root.animationProgress > 0.8 ? 1 : 0
         panelName: "battery"
         visible: UPower.displayDevice.isLaptopBattery
-        BatteryIcon {
+        BatteryStat {
             anchors.centerIn: parent
-            textColor: theme.primary.foreground
-            iconWidth: ScalerService.s(28)
-            iconHeight: ScalerService.s(18)
         }
     }
 
