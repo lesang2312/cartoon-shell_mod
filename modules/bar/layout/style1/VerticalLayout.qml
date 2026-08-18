@@ -41,7 +41,7 @@ ColumnLayout {
 
     // WorkspaceSection
     Item {
-        Layout.preferredHeight: Settings.bar.workspaceCount * ScalerService.s(32)
+        Layout.preferredHeight: Settings.bar.workspaceCount * ScalerService.s(34)
         Layout.fillWidth: true
         Com.WorkspaceSection {
             animationProgress: vertical.animationProgress
