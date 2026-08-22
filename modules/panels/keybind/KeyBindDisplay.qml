@@ -1,188 +1,162 @@
-// KeyBindDisplay.qml
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import qs.services
 import qs.components
-import "." as Com
+import Quickshell
+import Quickshell.Io
 
 Item {
-  id: root
+  id: rootView
+  anchors.fill: parent
+  property string pendingCategoryId: ""
+  property string pendingShortcutId: ""
 
-  property var shortcutsData: [
-  {
-    title: "Basic Window Management",
-    shortcuts: [
-    { key: "SUPER + RETURN", action: "Open Terminal (kitty)" },
-    { key: "SUPER + Q", action: "Close Window" },
-    { key: "SUPER + M", action: "Exit Hyprland" },
-    { key: "SUPER + E", action: "File Manager (thunar)" },
-    { key: "SUPER + SPACE", action: "Toggle Launcher Panel" },
-    { key: "SUPER + V", action: "Toggle Floating Mode" },
-    { key: "SUPER + F", action: "Toggle Fullscreen" },
-    { key: "SUPER + P", action: "Toggle Pseudo Tiling" }
-    ]
-  },
-  {
-    title: "Window Focus",
-    shortcuts: [
-    { key: "SUPER + ←", action: "Focus Left Window" },
-    { key: "SUPER + →", action: "Focus Right Window" },
-    { key: "SUPER + ↑", action: "Focus Up Window" },
-    { key: "SUPER + ↓", action: "Focus Down Window" }
-    ]
-  },
-  {
-    title: "Workspace Management",
-    shortcuts: [
-    { key: "SUPER + 1-9", action: "Switch to Workspace 1-9" },
-    { key: "SUPER + SHIFT + 1-9", action: "Move Window to Workspace 1-9" },
-    { key: "SUPER + S", action: "Toggle Special Workspace (magic)" },
-    { key: "SUPER + SHIFT + S", action: "Move Window to Special Workspace" },
-    { key: "SUPER + Scroll Down", action: "Next Workspace" },
-    { key: "SUPER + Scroll Up", action: "Previous Workspace" }
-    ]
-  },
-  {
-    title: "Mouse Window Control",
-    shortcuts: [
-    { key: "SUPER + Left Click + Drag", action: "Move Window" },
-    { key: "SUPER + Right Click + Drag", action: "Resize Window" }
-    ]
-  },
-  {
-    title: "Dashboard & Panels",
-    shortcuts: [
-    { key: "SUPER + D", action: "Toggle Dashboard" },
-    { key: "SUPER + L", action: "Lock Screen" },
-    { key: "SUPER + A", action: "Toggle Calendar" },
-    { key: "SUPER + B", action: "Toggle Bluetooth Panel" },
-    { key: "SUPER + C", action: "Toggle CPU Monitor" },
-    { key: "SUPER + R", action: "Toggle RAM Monitor" },
-    { key: "SUPER + W", action: "Toggle Weather" },
-    { key: "SUPER + I", action: "Toggle WiFi Panel" },
-    { key: "SUPER + H", action: "Toggle Keybind Help Panel" },
-    { key: "SUPER + U", action: "Toggle Volume Mixer" },
-    { key: "SUPER + Y", action: "Toggle Battery Info" }
-    ]
-  },
-  {
-    title: "Media Control",
-    shortcuts: [
-    { key: "XF86AudioPlay", action: "Play/Pause" },
-    { key: "XF86AudioPause", action: "Play/Pause" },
-    { key: "XF86AudioNext", action: "Next Track" },
-    { key: "XF86AudioPrev", action: "Previous Track" },
-    { key: "XF86AudioRaiseVolume", action: "Volume Up +5%" },
-    { key: "XF86AudioLowerVolume", action: "Volume Down -5%" },
-    { key: "XF86AudioMute", action: "Toggle Master Mute" },
-    { key: "XF86AudioMicMute", action: "Toggle Microphone Mute" }
-    ]
-  },
-  {
-    title: "Display Brightness",
-    shortcuts: [
-    { key: "XF86MonBrightnessUp", action: "Brightness Up +5%" },
-    { key: "XF86MonBrightnessDown", action: "Brightness Down -5%" }
-    ]
-  },
-  {
-    title: "Screenshots",
-    shortcuts: [
-    { key: "PRINT", action: "Fullscreen Screenshot (Save & Copy)" },
-    { key: "SUPER + PRINT", action: "Area Screenshot (Select region)" }
-    ]
-  }
-  ]
+  Process { id: pyRunnerConflict }
 
-  function parseKey(keyText) {
-    var parts = keyText.split("+").map(p => p.trim())
-    var result = []
-    for (var i = 0; i < parts.length; i++) {
-      if (parts[i] === "SUPER") {
-        result.push({ type: "icon", value: "window" })
-      } else {
-        result.push({ type: "text", value: parts[i] })
-      }
-      if (i < parts.length - 1) {
-        result.push({ type: "separator", value: "+" })
-      }
+  Connections {
+    target: KeybindsService
+    function onConflictDetected(existingCategoryId, existingShortcutId, existingKey) {
+      conflictDialog.categoryId = rootView.pendingCategoryId;
+      conflictDialog.shortcutId = rootView.pendingShortcutId;
+      conflictDialog.newKey = existingKey;
+      conflictDialog.open();
     }
-    return result
+  }
+
+  function columnCategories(colIndex) {
+    return KeybindsService.categories.filter((_, i) => i % 3 === colIndex);
   }
 
   ScrollView {
+    id: scrollViewDisplay
     anchors.fill: parent
-    anchors.margins: ScalerService.s(10)
+    anchors.margins: ScalerService.s(16)
     clip: true
+    contentHeight: mainLayout.implicitHeight
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     ColumnLayout {
-      width: parent.parent.width - ScalerService.s(20)
-      spacing: ScalerService.s(20)
-      // Grid Layout for categories
-      RowLayout {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+      id: mainLayout
+      width: scrollViewDisplay.availableWidth
+      spacing: ScalerService.s(16)
 
-        ColumnLayout {
-          spacing: ScalerService.s(32)
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[0]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[3]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[5]
-          }
-          Item {
-            Layout.fillHeight: true
-          }
-        }
-        Item {
-          Layout.fillWidth: true
-        }
-        ColumnLayout {
-          spacing: ScalerService.s(32)
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[1]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[4]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[6]
-          }
-          Item {
-            Layout.fillHeight: true
-          }
-        }
-        Item {
-          Layout.fillWidth: true
-        }
-        ColumnLayout {
-          spacing: ScalerService.s(32)
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[2]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[4]
-          }
-          Com.ItemCategory {
-            categoryData: root.shortcutsData[7]
-          }
-          Item {
-            Layout.fillHeight: true
-          }
-        }
-
+      // Đã bỏ title "⌨️ Keybind Quick View" ở đây: header ngoài
+      // (KeyBindHeader.qml -> "All keyboard shortcuts in Hyprland") đã hiển
+      // thị title rồi, để cả 2 gây đè chữ lên nhau khi header co lại nhỏ hơn
+      // nội dung thật. Divider + dòng hướng dẫn vẫn giữ nguyên bên dưới.
+      Rectangle {
+        Layout.fillWidth: true; height: ScalerService.s(1)
+        color: theme.primary.foreground; opacity: 0.3
+        Layout.topMargin: ScalerService.s(6)
       }
 
-      Item {
-        Layout.fillHeight: true
-        Layout.preferredHeight: ScalerService.s(20)
+      Text {
+        text: "💡 View only · Remove shortcuts here · Edit keys in Settings → Shortcuts · 🔒 = locked"
+        color: theme.primary.foreground; opacity: 0.7
+        font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
+        Layout.fillWidth: true; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter
+      }
+
+      RowLayout {
+        Layout.fillWidth: true; Layout.fillHeight: true; spacing: ScalerService.s(16)
+        Repeater {
+          model: 3
+          delegate: ColumnLayout {
+            spacing: ScalerService.s(16); Layout.fillWidth: true; Layout.alignment: Qt.AlignTop
+            Repeater {
+              model: rootView.columnCategories(index)
+              delegate: ShortcutCategoryPanel { 
+                categoryData: modelData
+                readOnly: true
+                allowDelete: false
+                dialogAnchorItem: rootView
+                onEditInitiated: (catId, scId) => {
+                  rootView.pendingCategoryId = catId;
+                  rootView.pendingShortcutId = scId;
+                }
+              }
+            }
+            Item { Layout.fillHeight: true }
+          }
+        }
+      }
+      Item { Layout.fillHeight: true; Layout.preferredHeight: ScalerService.s(20) }
+    }
+  }
+
+  Dialog {
+    id: conflictDialog
+    property string categoryId: ""
+    property string shortcutId: ""
+    property string newKey: ""
+
+    parent: rootView
+    modal: true
+    anchors.centerIn: parent
+    padding: ScalerService.s(20)
+
+    enter: Transition {
+      NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 160; easing.type: Easing.OutCubic }
+      NumberAnimation { property: "scale"; from: 0.9; to: 1.0; duration: 160; easing.type: Easing.OutBack }
+    }
+    exit: Transition {
+      NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: 120; easing.type: Easing.InCubic }
+      NumberAnimation { property: "scale"; from: 1.0; to: 0.92; duration: 120; easing.type: Easing.InCubic }
+    }
+
+    background: Rectangle {
+      color: theme.primary.dim_background; radius: ScalerService.s(12)
+      border.width: ScalerService.s(2); border.color: theme.normal.black
+    }
+
+    contentItem: ColumnLayout {
+      spacing: ScalerService.s(15); width: ScalerService.s(340)
+
+      Text {
+        text: "⚠️ Shortcut Conflict"
+        color: "#ff4444"
+        font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(18); bold: true }
+        Layout.alignment: Qt.AlignHCenter
+      }
+
+      Text {
+        text: "The key combination \"" + conflictDialog.newKey + "\" is already assigned.\nDo you want to overwrite it?"
+        color: theme.primary.foreground
+        font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
+        wrapMode: Text.WordWrap; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter
+      }
+
+      RowLayout {
+        Layout.fillWidth: true; Layout.topMargin: ScalerService.s(10); spacing: ScalerService.s(10)
+        
+        Rectangle {
+          Layout.fillWidth: true; implicitHeight: ScalerService.s(38)
+          color: theme.button.background; radius: ScalerService.s(6)
+          border.width: ScalerService.s(1); border.color: theme.button.border
+          Text { anchors.centerIn: parent; text: "Cancel"; color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) } }
+          MouseArea {
+            anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+            onClicked: { KeybindsService.cancelEdit(); conflictDialog.reject(); }
+          }
+        }
+        
+        Rectangle {
+          Layout.fillWidth: true; implicitHeight: ScalerService.s(38)
+          color: "#ff4444"; radius: ScalerService.s(6)
+          Text { anchors.centerIn: parent; text: "Overwrite"; color: theme.primary.background; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14); bold: true } }
+          MouseArea {
+            anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+            onClicked: {
+              KeybindsService.updateShortcut(conflictDialog.categoryId, conflictDialog.shortcutId, conflictDialog.newKey, true);
+              let pyCmd = "python3 ~/.config/quickshell/cartoon-shell/update_keybinds.py update '" + conflictDialog.categoryId + "' '" + conflictDialog.shortcutId + "' '" + conflictDialog.newKey + "'";
+              pyRunnerConflict.command = ["bash", "-c", pyCmd];
+              pyRunnerConflict.running = true;
+              conflictDialog.accept();
+            }
+          }
+        }
       }
     }
   }

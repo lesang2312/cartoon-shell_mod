@@ -1,0 +1,531 @@
+{
+    "categories": [
+        {
+            "id": "basic",
+            "shortcuts": [
+                {
+                    "action": "Open Terminal",
+                    "args": [
+                        "kitty --single-instance"
+                    ],
+                    "id": "open_terminal",
+                    "key": "SUPER + RETURN",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Close Window",
+                    "args": [
+                    ],
+                    "id": "close_window",
+                    "key": "SUPER + Q",
+                    "locked": false,
+                    "type": "window.close"
+                },
+                {
+                    "action": "Exit Hyprland",
+                    "args": [
+                    ],
+                    "id": "exit_hl",
+                    "key": "SUPER + M",
+                    "locked": false,
+                    "type": "exit"
+                },
+                {
+                    "action": "File Manager",
+                    "args": [
+                        "thunar"
+                    ],
+                    "id": "file_manager",
+                    "key": "SUPER + E",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Floating",
+                    "args": [
+                        {
+                            "action": "toggle"
+                        }
+                    ],
+                    "id": "toggle_float",
+                    "key": "SUPER + V",
+                    "locked": false,
+                    "type": "window.float"
+                },
+                {
+                    "action": "Pseudo Tiling",
+                    "args": [
+                    ],
+                    "id": "pseudo_tile",
+                    "key": "SUPER + P",
+                    "locked": false,
+                    "type": "window.pseudo"
+                },
+                {
+                    "action": "Fullscreen",
+                    "args": [
+                    ],
+                    "id": "fullscreen",
+                    "key": "SUPER + F",
+                    "locked": false,
+                    "type": "window.fullscreen"
+                },
+                {
+                    "action": "Toggle Launcher Panel",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call rect getToggle"
+                    ],
+                    "id": "toggle_launcher",
+                    "key": "SUPER + SPACE",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "vs",
+                    "args": [
+                        "coccoc --no-sandbox"
+                    ],
+                    "id": "custom_1787409800377",
+                    "key": "ALT + V",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "cc",
+                    "args": [
+                        "kitty --hold -e bash -c 'coccoc --no-sandbox'"
+                    ],
+                    "id": "custom_1787409873731",
+                    "key": "ALT + C",
+                    "locked": false,
+                    "type": "exec_cmd"
+                }
+            ],
+            "title": "🪟 Basic Window Management"
+        },
+        {
+            "id": "focus",
+            "shortcuts": [
+                {
+                    "action": "Focus Left Window",
+                    "args": [
+                        {
+                            "direction": "left"
+                        }
+                    ],
+                    "id": "focus_left",
+                    "key": "SUPER + left",
+                    "locked": false,
+                    "type": "focus"
+                },
+                {
+                    "action": "Focus Right Window",
+                    "args": [
+                        {
+                            "direction": "right"
+                        }
+                    ],
+                    "id": "focus_right",
+                    "key": "SUPER + right",
+                    "locked": false,
+                    "type": "focus"
+                },
+                {
+                    "action": "Focus Up Window",
+                    "args": [
+                        {
+                            "direction": "up"
+                        }
+                    ],
+                    "id": "focus_up",
+                    "key": "SUPER + up",
+                    "locked": false,
+                    "type": "focus"
+                },
+                {
+                    "action": "Focus Down Window",
+                    "args": [
+                        {
+                            "direction": "down"
+                        }
+                    ],
+                    "id": "focus_down",
+                    "key": "SUPER + down",
+                    "locked": false,
+                    "type": "focus"
+                }
+            ],
+            "title": "🎯 Window Focus"
+        },
+        {
+            "id": "workspace",
+            "shortcuts": [
+                {
+                    "action": "Switch to Workspace 1-9",
+                    "args": [
+                        {
+                            "shift": false
+                        }
+                    ],
+                    "editable": false,
+                    "id": "ws_switch",
+                    "key": "SUPER + 1-9",
+                    "locked": false,
+                    "type": "workspace_range"
+                },
+                {
+                    "action": "Move Window to Workspace 1-9",
+                    "args": [
+                        {
+                            "shift": true
+                        }
+                    ],
+                    "editable": false,
+                    "id": "ws_move",
+                    "key": "SUPER + SHIFT + 1-9",
+                    "locked": false,
+                    "type": "workspace_range"
+                },
+                {
+                    "action": "Toggle Special Workspace (magic)",
+                    "args": [
+                        "magic"
+                    ],
+                    "id": "ws_special",
+                    "key": "SUPER + S",
+                    "locked": false,
+                    "type": "workspace.toggle_special"
+                },
+                {
+                    "action": "Move Window to Special Workspace",
+                    "args": [
+                        {
+                            "workspace": "special:magic"
+                        }
+                    ],
+                    "id": "ws_move_special",
+                    "key": "SUPER + SHIFT + S",
+                    "locked": false,
+                    "type": "window.move"
+                },
+                {
+                    "action": "Next Workspace",
+                    "args": [
+                        {
+                            "workspace": "e+1"
+                        }
+                    ],
+                    "id": "ws_scroll_down",
+                    "key": "SUPER + mouse_down",
+                    "locked": false,
+                    "type": "focus"
+                },
+                {
+                    "action": "Previous Workspace",
+                    "args": [
+                        {
+                            "workspace": "e-1"
+                        }
+                    ],
+                    "id": "ws_scroll_up",
+                    "key": "SUPER + mouse_up",
+                    "locked": false,
+                    "type": "focus"
+                }
+            ],
+            "title": "🎨 Workspace Management"
+        },
+        {
+            "id": "mouse",
+            "shortcuts": [
+                {
+                    "action": "Move Window",
+                    "args": [
+                    ],
+                    "extra": {
+                        "mouse": true
+                    },
+                    "id": "mouse_move",
+                    "key": "SUPER + mouse:272",
+                    "locked": false,
+                    "type": "window.drag"
+                },
+                {
+                    "action": "Resize Window",
+                    "args": [
+                    ],
+                    "extra": {
+                        "mouse": true
+                    },
+                    "id": "mouse_resize",
+                    "key": "SUPER + mouse:273",
+                    "locked": false,
+                    "type": "window.resize"
+                }
+            ],
+            "title": "🖱️ Mouse Window Control"
+        },
+        {
+            "id": "panels",
+            "shortcuts": [
+                {
+                    "action": "Toggle Dashboard",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call dashboard getToggle"
+                    ],
+                    "id": "toggle_dashboard",
+                    "key": "SUPER + D",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Lock Screen",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call lock lock"
+                    ],
+                    "id": "lock_screen",
+                    "key": "SUPER + L",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Calendar",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call calendar getToggle"
+                    ],
+                    "id": "toggle_calendar",
+                    "key": "SUPER + A",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Bluetooth Panel",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call bluetooth getToggle"
+                    ],
+                    "id": "toggle_bluetooth",
+                    "key": "SUPER + B",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle CPU Monitor",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call cpu getToggle"
+                    ],
+                    "id": "toggle_cpu",
+                    "key": "SUPER + C",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle RAM Monitor",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call ram getToggle"
+                    ],
+                    "id": "toggle_ram",
+                    "key": "SUPER + R",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Weather",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call weather getToggle"
+                    ],
+                    "id": "toggle_weather",
+                    "key": "SUPER + W",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Keybind Help Panel",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call keybind getToggle"
+                    ],
+                    "id": "toggle_keybind",
+                    "key": "SUPER + H",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle WiFi Panel",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call wifi getToggle"
+                    ],
+                    "id": "toggle_wifi",
+                    "key": "SUPER + I",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Volume Mixer",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call mixer getToggle"
+                    ],
+                    "id": "toggle_mixer",
+                    "key": "SUPER + U",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Battery Info",
+                    "args": [
+                        "qs ipc --path ~/.config/quickshell/cartoon-shell call battery getToggle"
+                    ],
+                    "id": "toggle_battery",
+                    "key": "SUPER + Y",
+                    "locked": false,
+                    "type": "exec_cmd"
+                }
+            ],
+            "title": "📊 Dashboard & Panels"
+        },
+        {
+            "id": "media",
+            "shortcuts": [
+                {
+                    "action": "Volume Up +5%",
+                    "args": [
+                        "wpctl set-volume -l 2.0 @DEFAULT_AUDIO_SINK@ 5%+"
+                    ],
+                    "id": "vol_up",
+                    "key": "XF86AudioRaiseVolume",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Volume Down -5%",
+                    "args": [
+                        "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+                    ],
+                    "id": "vol_down",
+                    "key": "XF86AudioLowerVolume",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Master Mute",
+                    "args": [
+                        "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+                    ],
+                    "id": "vol_mute",
+                    "key": "XF86AudioMute",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Microphone Mute",
+                    "args": [
+                        "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+                    ],
+                    "id": "mic_mute",
+                    "key": "XF86AudioMicMute",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Next Track",
+                    "args": [
+                        "playerctl next"
+                    ],
+                    "id": "media_next",
+                    "key": "XF86AudioNext",
+                    "locked": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Play/Pause",
+                    "args": [
+                        "playerctl play-pause"
+                    ],
+                    "id": "media_pause",
+                    "key": "XF86AudioPause",
+                    "locked": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Play/Pause",
+                    "args": [
+                        "playerctl play-pause"
+                    ],
+                    "id": "media_play",
+                    "key": "XF86AudioPlay",
+                    "locked": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Previous Track",
+                    "args": [
+                        "playerctl previous"
+                    ],
+                    "id": "media_prev",
+                    "key": "XF86AudioPrev",
+                    "locked": true,
+                    "type": "exec_cmd"
+                }
+            ],
+            "title": "🎵 Media Control"
+        },
+        {
+            "id": "brightness",
+            "shortcuts": [
+                {
+                    "action": "Brightness Up +5%",
+                    "args": [
+                        "sh -c 'brightnessctl -e4 -n2 set 5%+; qs ipc --path ~/.config/quickshell/cartoon-shell call brightness set \"$(awk \"BEGIN {print $(brightnessctl g)/$(brightnessctl m)}\")\"'"
+                    ],
+                    "id": "bright_up",
+                    "key": "XF86MonBrightnessUp",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Brightness Down -5%",
+                    "args": [
+                        "sh -c 'brightnessctl -e4 -n2 set 5%-; qs ipc --path ~/.config/quickshell/cartoon-shell call brightness set \"$(awk \"BEGIN {print $(brightnessctl g)/$(brightnessctl m)}\")\"'"
+                    ],
+                    "id": "bright_down",
+                    "key": "XF86MonBrightnessDown",
+                    "locked": true,
+                    "repeating": true,
+                    "type": "exec_cmd"
+                }
+            ],
+            "title": "🔆 Display Brightness"
+        },
+        {
+            "id": "screenshots",
+            "shortcuts": [
+                {
+                    "action": "Area Screenshot (copy to clipboard)",
+                    "args": [
+                        "FILE=/home/linux-sieu-cap-pro-cua-le/Screenshorts/screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\""
+                    ],
+                    "id": "screenshot_area",
+                    "key": "ALT + A",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Toggle Area Screen Recording",
+                    "args": [
+                        "pidof wf-recorder && pkill -x wf-recorder || wf-recorder -r 60 -x yuv444p -p preset=ultrafast -p crf=5 -g \"$(slurp)\" -f /home/linux-sieu-cap-pro-cua-le/Recordings/recording_$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+                    ],
+                    "id": "record_area",
+                    "key": "ALT + SHIFT + A",
+                    "locked": false,
+                    "type": "exec_cmd"
+                }
+            ],
+            "title": "📸 Screenshots"
+        }
+    ],
+    "mainMod": "SUPER"
+}

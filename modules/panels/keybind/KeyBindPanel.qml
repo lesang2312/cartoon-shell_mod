@@ -75,8 +75,9 @@ PanelWindow {
       anchors.margins: ScalerService.s(20)
       spacing: ScalerService.s(16)
       Com.KeyBindHeader{
+        id: keybindHeader
         Layout.fillWidth: true
-        Layout.preferredHeight: ScalerService.s(40)
+        Layout.preferredHeight: keybindHeader.implicitHeight
       }
       Com.KeyBindDisplay{
         Layout.fillWidth: true
