@@ -109,8 +109,27 @@ RowLayout {
         panelName: "battery"
         visible: UPower.displayDevice.isLaptopBattery
 
-        BatteryStat {
+        BatteryIcon {
             anchors.centerIn: parent
+            textColor: theme.primary.foreground
+            iconWidth: ScalerService.s(35)
+            iconHeight: ScalerService.s(20)
+        }
+    }
+
+    Item {
+        Layout.fillWidth: true
+    }
+
+    // Kitty opacity
+    StatContainer {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        // không set panelName vì widget tự quản lý popup riêng (PopupWindow + grabFocus)
+
+        KittyOpacityStat {
+            anchors.centerIn: parent
+            isVertical: root.isVertical
         }
     }
 

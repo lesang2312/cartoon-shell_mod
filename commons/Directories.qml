@@ -11,6 +11,13 @@ Singleton {
   readonly property string pictures: Quickshell.env("XDG_PICTURES_DIR") || `${home}/Pictures`
   readonly property string videos: Quickshell.env("XDG_VIDEOS_DIR") || `${home}/Videos`
 
+  // --- BỔ SUNG THÊM CÁC DÒNG NÀY ---
+  readonly property string documents: Quickshell.env("XDG_DOCUMENTS_DIR") || `${home}/Documents`
+  readonly property string downloads: Quickshell.env("XDG_DOWNLOAD_DIR") || `${home}/Downloads`
+  readonly property string music: Quickshell.env("XDG_MUSIC_DIR") || `${home}/Music`
+  readonly property string local: `${home}/.local`
+  // ----------------------------------
+
   readonly property string data: `${Quickshell.env("XDG_DATA_HOME") || `${home}/.local/share`}`
   readonly property string state: `${Quickshell.env("XDG_STATE_HOME") || `${home}/.local/state`}`
   readonly property string cache: `${Quickshell.env("XDG_CACHE_HOME") || `${home}/.cache`}`

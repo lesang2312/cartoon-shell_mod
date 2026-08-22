@@ -88,30 +88,39 @@ Singleton {
         property string username: "mailong2401"
         property var appGrid: [
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/animal.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/anime.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/camera.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cartoon.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/vietnam.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cartoon.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cinema.png",
                 "name": "firefox"
             },
             {
+                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/panda.png",
                 "name": "firefox"
             },
             {
+                "icon": "kitty",
                 "name": "firefox"
             }
         ]

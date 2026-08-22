@@ -48,7 +48,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        acceptedButtons: Qt.RightButton
+        acceptedButtons: Qt.leftButton | Qt.RightButton
         propagateComposedEvents: true
         cursorShape: Qt.PointingHandCursor
 

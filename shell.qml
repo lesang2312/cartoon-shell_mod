@@ -9,6 +9,7 @@ import QtQuick.Effects
 import qs.components
 import qs.modules.dialogs
 import qs.modules.panels
+import qs.modules.panels.calendar
 import qs.modules.bar
 import qs.modules.background
 import qs.services
@@ -22,6 +23,7 @@ ShellRoot {
     }
     LoaderService {
         id: loaderService
+        onConfirmRequested: (action, actionLabel) => root.showConfirmDialog(action, actionLabel)
     }
     property var theme: ThemeService.theme
     property var lang: LanguageService.translations
@@ -44,9 +46,10 @@ ShellRoot {
         MouseArea {
             anchors.fill: parent
             z: -1
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
             onClicked: {
-                VisibleService.closeAllPanels();
+                if (!VisibleService.getPanelVisible("filedialog")) {
+                    VisibleService.closeAllPanels();
+                }
             }
         }
     }
@@ -70,6 +73,7 @@ ShellRoot {
 
             Background {}
             Bar {}
+            AlarmBannerPanel {}
             NotificationPopup {}
             VolumeOsd {}
             BrightnessOsd {}

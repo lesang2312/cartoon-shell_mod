@@ -42,36 +42,42 @@ Item {
       Com.FileItem {
         icon: "filebrowser/documents.png"
         label: "Documents"
+        itemPath: Directories.documents
         animationProgress: root.animationProgress
         revealThreshold: 1
       }
       Com.FileItem {
         icon: "filebrowser/downloads.png"
         label: "Downloads"
+        itemPath: Directories.downloads
         animationProgress: root.animationProgress
         revealThreshold: 1.1
       }
       Com.FileItem {
         icon: "filebrowser/music.png"
         label: "Musics"
+        itemPath: Directories.music
         animationProgress: root.animationProgress
         revealThreshold: 1.2
       }
       Com.FileItem {
         icon: "filebrowser/pictures.png"
         label: "Pictures"
+        itemPath: Directories.pictures
         animationProgress: root.animationProgress
         revealThreshold: 1.3
       }
       Com.FileItem {
         icon: "filebrowser/config.png"
         label: "~/.config"
+        itemPath: Directories.config
         animationProgress: root.animationProgress
         revealThreshold: 1.4
       }
       Com.FileItem {
         icon: "filebrowser/local.png"
         label: "~/.local"
+        itemPath: Directories.local
         animationProgress: root.animationProgress
         revealThreshold: 1.5
       }

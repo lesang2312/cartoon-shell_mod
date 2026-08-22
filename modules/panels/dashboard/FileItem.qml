@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Fusion
+import Quickshell
 import qs.services
 import qs.components
 
@@ -8,6 +9,7 @@ Rectangle {
   id: root
   property string icon: ""
   property string label: ""
+  property string itemPath: "" // required to match FileBrowserCard.qml
   property real revealThreshold: 0.6
   property real animationProgress: 0
 
@@ -32,7 +34,6 @@ Rectangle {
       path: root.icon
       scale: mouseArea.containsMouse ? 1.1 : 1.0
       opacity: root.animationProgress > root.revealThreshold ? 1 : 0
-
     }
 
     CustomText {
@@ -53,8 +54,14 @@ Rectangle {
     cursorShape: Qt.PointingHandCursor
 
     onClicked: {
-      // Add click action here
-      console.log("Clicked:", root.label);
+      console.log("[DEBUG] Clicked:", root.label, " | Received path:", root.itemPath);
+
+      if (!root.itemPath || root.itemPath === "") {
+        console.log("[DEBUG] ERROR: itemPath is empty!");
+        return;
+      }
+
+      Quickshell.execDetached(["nautilus", "--new-window", root.itemPath]);
     }
   }
 }

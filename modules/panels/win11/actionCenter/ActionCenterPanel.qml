@@ -12,6 +12,10 @@ import qs.services
 PanelWindow {
     id: root
     readonly property var sink: Pipewire.defaultAudioSink
+    clickable: true
+    focus: true
+
+    readonly property var sink: Pipewire.defaultAudioSink
 
     function getIcon(volPercent) {
         if (volPercent < 10)

@@ -45,7 +45,7 @@ Item {
         model: Settings.dashboard.appGrid
 
         Com.AppIcon {
-          iconSource: modelData.name
+          iconSource: modelData.icon
           bgColor: theme.button.background
           animationProgress: root.animationProgress
           revealThreshold: 0.5 + (index * 0.1)

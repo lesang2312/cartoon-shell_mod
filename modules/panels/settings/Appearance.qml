@@ -40,57 +40,52 @@ Item {
             currentIndex: root.currentTab
 
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 0
-
-                sourceComponent: Com.Theme {}
+                source: "./appearance/Theme.qml"
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 0;
+                    });
+                }
             }
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 1
-
-                sourceComponent: Com.Panel {}
+                source: "./appearance/Panel.qml"
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 1;
+                    });
+                }
             }
-            Loader {
-                anchors.fill: parent
 
+            Loader {
                 active: root.currentTab === 2
-
-                sourceComponent: Com.ClockTime {}
+                source: "./appearance/ClockTime.qml"
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 2;
+                    });
+                }
             }
-            Loader {
-                anchors.fill: parent
 
+            // Tab 3: Fonts
+            Loader {
                 active: root.currentTab === 3
-
-                sourceComponent: Com.Fonts {}
+                source: "./appearance/Fonts.qml"
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 3;
+                    });
+                }
             }
 
-            Loader {
-                anchors.fill: parent
-
-                active: root.currentTab === 4
-
-                sourceComponent: Com.Icons {}
-            }
-
-            Loader {
-                anchors.fill: parent
-
-                active: root.currentTab === 5
-
-                sourceComponent: Com.Effects {}
-            }
-
-            // Tab 6: Dashboard
+            // Tab 4: Icons
             ColumnLayout {
                 width: parent.width
                 spacing: ScalerService.s(20)
 
                 Text {
-                    text: lang?.appearance?.layout || "Layout"
+                    text: lang?.appearance?.icons || "Icons"
                     color: theme.primary.foreground
                     font {
                         family: "ComicShannsMono Nerd Font"
@@ -106,20 +101,90 @@ Item {
                     opacity: 0.3
                 }
 
-                // Layout settings content
+                // Icons settings content
                 Text {
-                    text: "Layout settings content"
+                    text: "Icons settings content"
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(14)
                 }
             }
 
+            // Tab 5: Effects
             Loader {
-                anchors.fill: parent
+                id: effectsLoader
+                active: root.currentTab === 5
+                source: "./appearance/Effects.qml"
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 5;
+                    });
+                }
+                onStatusChanged: {
+                    if (status === Loader.Error) {
+                        console.log("[Appearance] Loader Effects.qml LỖI - xem chi tiết ở dòng cảnh báo QML phía trên trong log terminal");
+                    } else if (status === Loader.Ready) {
+                        console.log("[Appearance] Loader Effects.qml đã nạp thành công");
+                    }
+                }
+            }
 
-                active: root.currentTab === 7
+            // Tab 6: Dashboard (cách chia layout)
+            Loader {
+                id: dashboardLoader
+                active: root.currentTab === 6
+                source: "./appearance/dashboard/Dashboard.qml"
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                onLoaded: {
+                    item.visible = Qt.binding(function () {
+                        return root.currentTab === 6;
+                    });
+                }
+                onStatusChanged: {
+                    if (status === Loader.Error) {
+                        console.log("[Appearance] Loader Dashboard.qml LỖI - xem chi tiết ở dòng cảnh báo QML phía trên trong log terminal");
+                    } else if (status === Loader.Ready) {
+                        console.log("[Appearance] Loader Dashboard.qml đã nạp thành công");
+                    }
+                }
+            }
 
-                sourceComponent: Com.Wallpapers {}
+            // Tab 7: Wallpaper
+            Com.Wallpapers {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            // Tab 8: Advanced (nếu cần)
+            ColumnLayout {
+                width: parent.width
+                spacing: ScalerService.s(20)
+
+                Text {
+                    text: "Advanced"
+                    color: theme.primary.foreground
+                    font {
+                        family: "ComicShannsMono Nerd Font"
+                        pixelSize: ScalerService.s(24)
+                        bold: true
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: ScalerService.s(1)
+                    color: theme.primary.foreground
+                    opacity: 0.3
+                }
+
+                // Advanced settings content
+                Text {
+                    text: "Advanced settings content"
+                    color: theme.primary.foreground
+                    font.pixelSize: ScalerService.s(14)
+                }
             }
         }
     }

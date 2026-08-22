@@ -8,6 +8,8 @@ import qs.services
 Item {
     id: root
 
+    signal confirmRequested(string action, string actionLabel)
+
     Loader {
         source: "../modules/panels/package/PackagePanel.qml"
         active: VisibleService.packagePanel
@@ -179,10 +181,11 @@ Item {
         onLoaded: {
             item.visible = VisibleService.launcher;
             item.confirmRequested.connect(function (action, actionLabel) {
-                confirmDialog.show(action, actionLabel);
+                root.confirmRequested(action, actionLabel);
             });
         }
     }
+
     IpcHandler {
         id: ipc
         target: "rect"

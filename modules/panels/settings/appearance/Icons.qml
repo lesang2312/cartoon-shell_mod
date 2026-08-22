@@ -21,7 +21,7 @@ Item {
         }
     }
     ListView {
-        id: scrollView
+        id: scrollViewCategory nằm dọc
         anchors.fill: parent
         clip: true
         anchors.margins: ScalerService.s(20)
