@@ -83,6 +83,7 @@ Singleton {
         property string workspaceAnimation: ""
     }
     component Dashboard: JsonObject {
+        property string splitMethod: "dwindle_default"
         property string fullname: "long"
         property string urlAvatar: ""
         property string username: "mailong2401"

@@ -166,13 +166,32 @@ Item {
                         Layout.fillWidth: true
                         Layout.minimumWidth: ScalerService.s(120)
                         Layout.preferredHeight: ScalerService.s(180)
-                        radius: ScalerService.s(12)
+                        radius: ScalerService.s(16) // Bo tròn mượt mà hơn
                         color: Qt.alpha(theme.button.background, 0.5)
                         border.color: cardMouseArea.containsMouse ? theme.normal.blue : theme.button.border
                         border.width: ScalerService.s(effectsSettings.currentEffect === modelData.key ? 2 : 1)
 
                         property var effectData: modelData
                         property bool isCurrent: effectsSettings.currentEffect === modelData.key
+                        property real animatedScale: 0.0 // Thuộc tính xử lý tỷ lệ hiển thị ban đầu
+
+                        // Animation nảy khi hover
+                        scale: animatedScale * (cardMouseArea.containsMouse ? 1.04 : 1.0)
+                        Behavior on scale {
+                            NumberAnimation { 
+                                duration: 350; 
+                                easing.type: Easing.OutBack; 
+                                easing.overshoot: 2.0 
+                            }
+                        }
+
+                        // Animation xuất hiện lần lượt
+                        Component.onCompleted: entranceTimer.start()
+                        Timer {
+                            id: entranceTimer
+                            interval: index * 40
+                            onTriggered: effectCard.animatedScale = 1.0
+                        }
 
                         ColumnLayout {
                             anchors.fill: parent
@@ -184,7 +203,7 @@ Item {
                                 id: previewBox
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: ScalerService.s(85)
-                                radius: ScalerService.s(8)
+                                radius: ScalerService.s(10) // Tăng radius nhẹ cho khối xem trước
                                 clip: true
                                 color: Qt.alpha(theme.primary.background, 0.6)
 
@@ -313,24 +332,15 @@ Item {
 
                                     function getAnimation() {
                                         switch (effectCard.effectData.previewType) {
-                                        case "android":
-                                            return animAndroid;
-                                        case "zorin":
-                                            return animZorin;
-                                        case "jelly":
-                                            return animJelly;
-                                        case "deck":
-                                            return animDeck;
-                                        case "cinematic":
-                                            return animCinematic;
-                                        case "swift":
-                                            return animSwift;
-                                        case "zorinPlus":
-                                            return animZorinPlus;
-                                        case "zorinBounce":
-                                            return animZorinBounce;
-                                        default:
-                                            return animAndroid;
+                                        case "android": return animAndroid;
+                                        case "zorin": return animZorin;
+                                        case "jelly": return animJelly;
+                                        case "deck": return animDeck;
+                                        case "cinematic": return animCinematic;
+                                        case "swift": return animSwift;
+                                        case "zorinPlus": return animZorinPlus;
+                                        case "zorinBounce": return animZorinBounce;
+                                        default: return animAndroid;
                                         }
                                     }
 
@@ -392,13 +402,14 @@ Item {
                                 font.pixelSize: ScalerService.s(14)
                                 font.bold: true
                                 elide: Text.ElideRight
+                                horizontalAlignment: Text.AlignHCenter 
                             }
 
-                            // Apply button
+                            // Apply button - Đổi sang thiết kế bo tròn dạng viên thuốc
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: ScalerService.s(32)
-                                radius: ScalerService.s(6)
+                                radius: height / 2 
                                 color: effectCard.isCurrent ? theme.normal.green : theme.normal.blue
                                 Text {
                                     anchors.centerIn: parent
@@ -451,7 +462,7 @@ Item {
         }
     }
 
-    // Notification
+    // Notification - Đổi sang bo tròn dạng viên thuốc
     Rectangle {
         id: successNotification
         visible: false
@@ -460,7 +471,7 @@ Item {
         anchors.bottomMargin: ScalerService.s(30)
         width: ScalerService.s(280)
         height: ScalerService.s(45)
-        radius: ScalerService.s(22)
+        radius: height / 2 
         color: theme.normal.green
         z: 1001
 

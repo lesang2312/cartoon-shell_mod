@@ -92,12 +92,12 @@
                     "type": "exec_cmd"
                 },
                 {
-                    "action": "cc",
+                    "action": "reboot",
                     "args": [
-                        "kitty --hold -e bash -c 'coccoc --no-sandbox'"
+                        "kitty --hold -e bash -c 'reboot'"
                     ],
-                    "id": "custom_1787409873731",
-                    "key": "ALT + C",
+                    "id": "custom_1787458006318",
+                    "key": "CTRL + R",
                     "locked": false,
                     "type": "exec_cmd"
                 }
