@@ -100,6 +100,26 @@
                     "key": "CTRL + R",
                     "locked": false,
                     "type": "exec_cmd"
+                },
+                {
+                    "action": "Poweroff",
+                    "args": [
+                        "kitty --hold -e bash -c 'poweroff'"
+                    ],
+                    "id": "custom_1787641522630",
+                    "key": "ALT + P",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Yazi",
+                    "args": [
+                        "kitty --hold -e bash -c 'yazi'"
+                    ],
+                    "id": "custom_1787737612794",
+                    "key": "SUPER + Z",
+                    "locked": false,
+                    "type": "exec_cmd"
                 }
             ],
             "title": "🪟 Basic Window Management"

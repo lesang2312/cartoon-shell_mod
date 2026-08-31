@@ -40,130 +40,57 @@ Item {
             currentIndex: root.currentTab
 
             Loader {
+                anchors.fill: parent
+
                 active: root.currentTab === 0
-                source: "./appearance/Theme.qml"
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 0;
-                    });
-                }
+
+                sourceComponent: Com.Theme {}
             }
             Loader {
+                anchors.fill: parent
+
                 active: root.currentTab === 1
-                source: "./appearance/Panel.qml"
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 1;
-                    });
-                }
-            }
 
+                sourceComponent: Com.Panel {}
+            }
             Loader {
+                anchors.fill: parent
+
                 active: root.currentTab === 2
-                source: "./appearance/ClockTime.qml"
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 2;
-                    });
-                }
-            }
 
-            // Tab 3: Fonts
+                sourceComponent: Com.ClockTime {}
+            }
             Loader {
+                anchors.fill: parent
+
                 active: root.currentTab === 3
-                source: "./appearance/Fonts.qml"
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 3;
-                    });
-                }
+
+                sourceComponent: Com.Fonts {}
             }
 
-            // Tab 4: Icons
-            ColumnLayout {
-                width: parent.width
-                spacing: ScalerService.s(20)
-
-                Text {
-                    text: lang?.appearance?.icons || "Icons"
-                    color: theme.primary.foreground
-                    font {
-                        family: "ComicShannsMono Nerd Font"
-                        pixelSize: ScalerService.s(24)
-                        bold: true
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: ScalerService.s(1)
-                    color: theme.primary.foreground
-                    opacity: 0.3
-                }
-
-                // Icons settings content
-                Text {
-                    text: "Icons settings content"
-                    color: theme.primary.foreground
-                    font.pixelSize: ScalerService.s(14)
-                }
-            }
-
-            // Tab 5: Effects
             Loader {
-                id: effectsLoader
+                anchors.fill: parent
+
+                active: root.currentTab === 4
+
+                sourceComponent: Com.Icons {}
+            }
+
+            Loader {
+                anchors.fill: parent
+
                 active: root.currentTab === 5
-                source: "./appearance/Effects.qml"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 5;
-                    });
-                }
-                onStatusChanged: {
-                    if (status === Loader.Error) {
-                        console.log("[Appearance] Loader Effects.qml LỖI - xem chi tiết ở dòng cảnh báo QML phía trên trong log terminal");
-                    } else if (status === Loader.Ready) {
-                        console.log("[Appearance] Loader Effects.qml đã nạp thành công");
-                    }
-                }
+
+                sourceComponent: Com.Effects {}
             }
 
-            // Tab 6: Dashboard (cách chia layout)
-            Loader {
-                id: dashboardLoader
-                active: root.currentTab === 6
-                source: "./appearance/dashboard/Dashboard.qml"
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                onLoaded: {
-                    item.visible = Qt.binding(function () {
-                        return root.currentTab === 6;
-                    });
-                }
-                onStatusChanged: {
-                    if (status === Loader.Error) {
-                        console.log("[Appearance] Loader Dashboard.qml LỖI - xem chi tiết ở dòng cảnh báo QML phía trên trong log terminal");
-                    } else if (status === Loader.Ready) {
-                        console.log("[Appearance] Loader Dashboard.qml đã nạp thành công");
-                    }
-                }
-            }
-
-            // Tab 7: Wallpaper
-            Com.Wallpapers {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-
-            // Tab 8: Advanced (nếu cần)
+            // Tab 6: Dashboard
             ColumnLayout {
                 width: parent.width
                 spacing: ScalerService.s(20)
 
                 Text {
-                    text: "Advanced"
+                    text: lang?.appearance?.layout || "Layout"
                     color: theme.primary.foreground
                     font {
                         family: "ComicShannsMono Nerd Font"
@@ -179,12 +106,20 @@ Item {
                     opacity: 0.3
                 }
 
-                // Advanced settings content
+                // Layout settings content
                 Text {
-                    text: "Advanced settings content"
+                    text: "Layout settings content"
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(14)
                 }
+            }
+
+            Loader {
+                anchors.fill: parent
+
+                active: root.currentTab === 7
+
+                sourceComponent: Com.Wallpapers {}
             }
         }
     }

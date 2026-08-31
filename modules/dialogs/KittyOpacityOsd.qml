@@ -3,231 +3,139 @@ import QtQuick.Layouts
 import Quickshell
 import qs.commons
 import Quickshell.Io
+import Quickshell.Services.Pipewire
+import Quickshell.Widgets
 import qs.components
 import qs.services
 
 Scope {
     id: root
-
     property var theme: ThemeService.theme
     property var lang: LanguageService.translations
+    property bool shouldShowOsd: false
+    property real newCurrentKittyOpacy: KittyOpacityService.displayOpacity
+    property real currentKittyOpacy: newCurrentKittyOpacy / 100
+
+    Timer {
+        id: hideTimer
+        interval: 1000
+        onTriggered: root.shouldShowOsd = false
+    }
+
+    Connections {
+        target: KittyOpacityService
+
+        function onDisplayOpacityChanged () {
+            root.shouldShowOsd = true
+            hideTimer.restart()
+        }
+    }
+    
+    function lerpColor(a, b, t) {
+        const ar = parseInt(a.slice(1,3),16), ag = parseInt(a.slice(3,5),16), ab = parseInt(a.slice(5,7),16);
+        const br = parseInt(b.slice(1,3),16), bg = parseInt(b.slice(3,5),16), bb = parseInt(b.slice(5,7),16);
+        const r  = Math.round(ar + (br-ar)*t);
+        const g  = Math.round(ag + (bg-ag)*t);
+        const bl = Math.round(ab + (bb-ab)*t);
+        return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${bl.toString(16).padStart(2,'0')}`;
+    }
+
+    function barColor() {
+        //if (isKittyOpacyMuted) return theme.normal.black;
+        const v = Math.min(currentKittyOpacy / 1.0, 1.0);
+        if (v < 0.20) return lerpColor(theme.normal.blue, theme.normal.cyan, v / 0.20);
+        if (v < 0.40) return lerpColor(theme.normal.cyan, theme.normal.green, (v-0.20) / 0.20);
+        if (v < 0.58) return lerpColor(theme.normal.green, theme.normal.yellow, (v-0.40) / 0.18);
+        if (v < 0.73) return lerpColor(theme.normal.yellow, theme.normal.red, (v-0.58) / 0.15);
+        if (v < 0.88) return lerpColor(theme.normal.red, theme.bright.red, (v-0.73) / 0.15);
+        return lerpColor(theme.bright.red, theme.bright.red, (v-0.88) / 0.12);
+    }
 
     LazyLoader {
-        active: KittyOpacityService.popupVisible
+        active: root.shouldShowOsd
 
-        // Cửa sổ phủ toàn màn hình, chỉ để bắt sự kiện "nhấn ra ngoài là tắt"
         PanelWindow {
-            id: overlay
-            anchors {
-                top: true
-                bottom: true
-                left: true
-                right: true
-            }
+            anchors {bottom: true}
+
+            margins {bottom: ScalerService.s(120)}
+
             exclusiveZone: 0
+            implicitWidth: ScalerService.s(280)
+            implicitHeight: ScalerService.s(100)
             color: "transparent"
+            mask: Region {}
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: KittyOpacityService.closePopup()
-            }
-
-            // ==== NỘI DUNG POPUP (đặt gần góc phải, dưới thanh bar) ====
             Rectangle {
-                id: card
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.topMargin: ScalerService.s(58)
-                anchors.rightMargin: ScalerService.s(16)
-                implicitWidth: ScalerService.s(320)
-                implicitHeight: content.implicitHeight + ScalerService.s(28)
-                radius: ScalerService.s(Settings.appearance.radius1)
-                color: theme.primary.background
-                border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
+                anchors.fill: parent
                 border.color: theme.button.border
-
-                // chặn click bên trong card lan ra overlay phía sau
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {}
-                }
+                radius: ScalerService.s(Settings.appearance.radius1)
+                border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
+                color: theme.primary.background
 
                 ColumnLayout {
-                    id: content
                     anchors {
                         fill: parent
-                        margins: ScalerService.s(16)
+                        leftMargin: ScalerService.s(15)
+                        rightMargin: ScalerService.s(15)
+                        bottomMargin: ScalerService.s(15)
                     }
-                    spacing: ScalerService.s(14)
 
-                    // ---- Header ----
+                    spacing: ScalerService.s(12)
+
                     RowLayout {
-                        Layout.fillWidth: true
-                        spacing: ScalerService.s(12)
+                        
+                        // Icon Giọt Nước
+                        WaterDropGaugeOsd {}
 
-                        WaterDropGauge {
-                            fillValue: KittyOpacityService.displayOpacity
-                        }
-
-                        ColumnLayout {
-                            spacing: 0
-                            CustomText {
-                                name: (lang?.kittyOpacity?.title || "Độ trong suốt Kitty")
-                                isBold: true
-                                size: "small"
-                            }
-                            CustomText {
-                                name: Math.round(KittyOpacityService.displayOpacity) + "%"
-                                color: theme.primary.dim_foreground
-                                size: "xs"
-                            }
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        // nút đóng, cùng hiệu ứng hover như các nút khác trong shell
-                        Rectangle {
-                            id: closeBtn
-                            Layout.preferredWidth: ScalerService.s(28)
-                            Layout.preferredHeight: ScalerService.s(28)
-                            radius: width / 2
-                            color: closeArea.containsMouse ? theme.normal.red : theme.button.background
-                            Behavior on color { ColorAnimation { duration: 250 } }
-
-                            IconText {
-                                anchors.centerIn: parent
-                                name: "close"
-                                size: "xs"
-                            }
-                            MouseArea {
-                                id: closeArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    SoundService.playSound("pick");
-                                    KittyOpacityService.closePopup();
-                                }
-                            }
-                        }
-                    }
-
-                    // ---- Slider ----
-                    OpacitySlider {
-                        Layout.fillWidth: true
-                        from: KittyOpacityService.minOpacity * 100
-                        to: KittyOpacityService.maxOpacity * 100
-                        value: KittyOpacityService.displayOpacity
-                        onMoved: KittyOpacityService.setOpacity(value)
-                    }
-
-                    // ---- Danh sách phiên kitty ----
-                    RowLayout {
-                        Layout.fillWidth: true
                         CustomText {
-                            name: (lang?.kittyOpacity?.instances || "Phiên kitty")
-                            size: "xs"
-                            color: theme.primary.dim_foreground
+                            name: Math.round(currentKittyOpacy * 100) + "%"
+                            color: currentKittyOpacy > 1.0 ? theme.normal.red : theme.primary.foreground
+                            size: "large"
+                            isBold: true
+                            Behavior on color {
+                                ColorAnimation { duration: 150 }
+                            }
                         }
-                        Item { Layout.fillWidth: true }
-                        // nút quét lại
+
                         Rectangle {
-                            width: ScalerService.s(22)
-                            height: ScalerService.s(22)
-                            radius: width / 2
                             color: "transparent"
-                            IconText {
-                                anchors.centerIn: parent
-                                name: "refresh"
-                                size: "xs"
-                                textColor: theme.button.text
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: KittyOpacityService.refreshInstances()
-                                onEntered: parent.opacity = 0.7
-                                onExited: parent.opacity = 1.0
-                            }
-                        }
-                    }
-
-                    CustomText {
-                        visible: !KittyOpacityService.hasInstances
-                        Layout.fillWidth: true
-                        wrapMode: Text.WordWrap
-                        size: "xs"
-                        color: theme.primary.dim_foreground
-                        name: (lang?.kittyOpacity?.empty
-                            || "Không tìm thấy phiên kitty nào. Mở kitty với: kitty -o allow_remote_control=yes --listen-on unix:/tmp/kitty_id_$RANDOM")
-                    }
-
-                    Flow {
-                        Layout.fillWidth: true
-                        spacing: ScalerService.s(6)
-                        visible: KittyOpacityService.hasInstances
-
-                        // chip "Tất cả"
-                        CustomRectangle {
-                            height: ScalerService.s(26)
-                            width: allLabel.implicitWidth + ScalerService.s(18)
-                            radius: height / 2
-                            color: KittyOpacityService.selectedSockets.length === 0
-                                ? theme.button.text
-                                : theme.button.background
-                            border.width: ScalerService.s(1)
-                            border.color: theme.button.border
-
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
                             CustomText {
-                                id: allLabel
-                                anchors.centerIn: parent
-                                name: (lang?.kittyOpacity?.all || "Tất cả")
-                                size: "xs"
-                                textColor: KittyOpacityService.selectedSockets.length === 0
-                                    ? theme.primary.background
-                                    : theme.primary.foreground
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: KittyOpacityService.selectAll()
-                                onEntered: parent.scale = 1.04
-                                onExited: parent.scale = 1.0
+                                name: " " + (lang?.KittyOpacy?.title || "KittyBlur")
+                                anchors.margins: ScalerService.s(12)
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                font.family: "JetBrains Mono"
+                                font.pixelSize: 15
                             }
                         }
+                    }
 
-                        // chip cho từng instance
-                        Repeater {
-                            model: KittyOpacityService.instances
-                            delegate: CustomRectangle {
-                                required property var modelData
-                                readonly property bool selected: KittyOpacityService.selectedSockets.includes(modelData.socket)
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        spacing: ScalerService.s(4)
 
-                                height: ScalerService.s(26)
-                                width: chipLabel.implicitWidth + ScalerService.s(18)
-                                radius: height / 2
-                                color: selected ? theme.button.text : theme.button.background
-                                border.width: ScalerService.s(1)
-                                border.color: theme.button.border
-
-                                CustomText {
-                                    id: chipLabel
-                                    anchors.centerIn: parent
-                                    name: modelData.label
-                                    size: "xs"
-                                    textColor: selected ? theme.primary.background : theme.primary.foreground
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: ScalerService.s(20)
+                            radius: ScalerService.s(20)
+                            color: theme.primary.dim_background
+                            Rectangle {
+                                anchors {
+                                    left: parent.left
+                                    top: parent.top
+                                    bottom: parent.bottom
                                 }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: KittyOpacityService.toggleSelected(modelData.socket)
-                                    onEntered: parent.scale = 1.04
-                                    onExited: parent.scale = 1.0
+                                width: parent.width * currentKittyOpacy
+                                radius: parent.radius
+                                color: root.barColor()
+                                Behavior on width {
+                                    NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                                }
+                                Behavior on color {
+                                    ColorAnimation { duration: 100 }
                                 }
                             }
                         }

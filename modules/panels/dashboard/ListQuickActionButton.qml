@@ -182,7 +182,7 @@ ColumnLayout {
 
     // Dark overlay layer to highlight the popup
     Overlay.modal: Rectangle {
-      color: "#a0000000"
+      color: 'transparent'
       Behavior on opacity {
         NumberAnimation { duration: 200 }
       }

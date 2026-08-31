@@ -8,7 +8,24 @@ import qs.services
 Item {
     id: root
 
-    signal confirmRequested(string action, string actionLabel)
+    Loader {
+        source: "../modules/widgets/WidgetLeft.qml"
+        active: true
+        onLoaded: {
+            item.visible = Qt.binding(function () {
+                true;
+            });
+        }
+    }
+    Loader {
+        source: "../modules/widgets/WidgetRight.qml"
+        active: true
+        onLoaded: {
+            item.visible = Qt.binding(function () {
+                true;
+            });
+        }
+    }
 
     Loader {
         source: "../modules/panels/package/PackagePanel.qml"
@@ -181,11 +198,10 @@ Item {
         onLoaded: {
             item.visible = VisibleService.launcher;
             item.confirmRequested.connect(function (action, actionLabel) {
-                root.confirmRequested(action, actionLabel);
+                confirmDialog.show(action, actionLabel);
             });
         }
     }
-
     IpcHandler {
         id: ipc
         target: "rect"
