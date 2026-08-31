@@ -18,11 +18,13 @@ Item {
   signal soundSelected(string fileUrl, string fileName)
   signal closed
 
-  property string selectedFileUrl: ""
-  property string selectedFileName: I18nService.tr("default_sound")
+  readonly property string defaultSoundLabel: lang?.calendar?.default_sound || "Âm thanh mặc định"
 
-  implicitWidth: ScalerService.s(300)
-  implicitHeight: ScalerService.s(380)
+  property string selectedFileUrl: ""
+  property string selectedFileName: root.defaultSoundLabel
+
+  implicitWidth: 264
+  implicitHeight: 260
 
   readonly property url soundsDirUrl: Qt.resolvedUrl("./sounds/")
   readonly property string soundsDirPath: soundsDirUrl.toString().replace(/^file:\/\//, "")
@@ -104,7 +106,7 @@ Item {
       spacing: ScalerService.s(6)
 
       CustomText {
-        name: I18nService.tr("alarm_sound_title")
+        name: lang?.calendar?.alarm_sound_title || "Âm thanh báo"
         isBold: true
         size: "normal"
         Layout.fillWidth: true
@@ -121,7 +123,7 @@ Item {
     }
 
     CustomText {
-      name: I18nService.tr("alarm_sound_desc")
+      name: lang?.calendar?.alarm_sound_desc || "Copy file .mp3, .wav, .ogg vào thư mục 'sounds' để thêm nhạc"
       size: "small"
       opacity: 0.6
       wrapMode: Text.WordWrap
@@ -157,14 +159,16 @@ Item {
               name: "notifications"
             }
             CustomText {
-              name: I18nService.tr("default_sound")
+              name: root.defaultSoundLabel
               Layout.fillWidth: true
             }
           }
 
           MouseArea {
             anchors.fill: parent
-            onClicked: root.choose("", I18nService.tr("default_sound"))
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.choose("", root.defaultSoundLabel)
           }
         }
 
@@ -214,7 +218,7 @@ Item {
           enabled: false
         }
         CustomText {
-          name: I18nService.tr("alarm_sound_empty")
+          name: lang?.calendar?.alarm_sound_empty || "Không có tệp âm thanh nào"
           size: "small"
           textColor: theme.primary.dim_foreground
           horizontalAlignment: Text.AlignHCenter

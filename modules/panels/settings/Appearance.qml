@@ -7,6 +7,7 @@ import qs.components
 import "./appearance" as Com
 import "./" as Bar
 
+
 Item {
     id: root
 
@@ -85,33 +86,12 @@ Item {
             }
 
             // Tab 6: Dashboard
-            ColumnLayout {
-                width: parent.width
-                spacing: ScalerService.s(20)
+            Loader {
+                anchors.fill: parent
 
-                Text {
-                    text: lang?.appearance?.layout || "Layout"
-                    color: theme.primary.foreground
-                    font {
-                        family: "ComicShannsMono Nerd Font"
-                        pixelSize: ScalerService.s(24)
-                        bold: true
-                    }
-                }
+                active: root.currentTab === 6
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: ScalerService.s(1)
-                    color: theme.primary.foreground
-                    opacity: 0.3
-                }
-
-                // Layout settings content
-                Text {
-                    text: "Layout settings content"
-                    color: theme.primary.foreground
-                    font.pixelSize: ScalerService.s(14)
-                }
+                source: "./appearance/dashboard/Dashboard.qml"
             }
 
             Loader {

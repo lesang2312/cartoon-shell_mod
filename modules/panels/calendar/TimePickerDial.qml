@@ -19,8 +19,9 @@ Item {
   // Góc hiện tại (độ) của kim, 0 = 12 giờ / phút 00, tăng theo chiều kim đồng hồ
   readonly property real handDeg: mode === "hour" ? (hour12() % 12) * 30 : minutes * 6
 
-  implicitWidth: ScalerService.s(280)
-  implicitHeight: ScalerService.s(360)
+  implicitWidth: 260
+  implicitHeight: 260
+  
 
   function setInitialTime(timeStr) {
     const m = /^([0-1][0-9]|2[0-3]):([0-5][0-9])$/.exec(timeStr || "");
@@ -88,6 +89,8 @@ Item {
 
           MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
             onClicked: root.mode = "hour"
           }
         }

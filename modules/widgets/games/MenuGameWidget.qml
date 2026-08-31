@@ -77,7 +77,7 @@ Item {
                 name: "Pacman"
                 Layout.fillWidth: true
                 fontFamily: "BigBlueTerm437 Nerd Font"
-                implicitWidth: 100; implicitHeight: 40
+                implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
                 radius: 15
                 onClicked: root.view = "pacman"
@@ -86,7 +86,7 @@ Item {
                 name: "Caro"
                 Layout.fillWidth: true
                 fontFamily: "BigBlueTerm437 Nerd Font"
-                implicitWidth: 100; implicitHeight: 40
+                implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
                 radius: 15
                 onClicked: root.view = "caro"
@@ -95,7 +95,7 @@ Item {
                 name: "Ninja Jump"
                 Layout.fillWidth: true
                 fontFamily: "BigBlueTerm437 Nerd Font"
-                implicitWidth: 100; implicitHeight: 40
+                implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
                 radius: 15
                 onClicked: root.view = "ninja"  //Sua tu caro thanh ninja

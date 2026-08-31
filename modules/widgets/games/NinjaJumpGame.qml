@@ -20,8 +20,8 @@ Item {
     readonly property real ninjaSize: Math.max(16, playArea.height * 0.16)
     readonly property real ninjaX: playArea.width * 0.18
     readonly property real gravity: playArea.height * 7.0        // px / s^2
-    readonly property real jumpVelocity: -playArea.height * 2.4  // px / s
-    readonly property real doubleJumpVelocity: -playArea.height * 2.0
+    readonly property real jumpVelocity: -playArea.height * 3.0  // px / s
+    readonly property real doubleJumpVelocity: -playArea.height * 2.1
     readonly property real groundY: playArea.height * groundRatio
 
     // ---------- Simulation state ----------

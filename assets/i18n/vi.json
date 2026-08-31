@@ -87,6 +87,16 @@
   },
   "calendar": {
     "title": "Lịch",
+    "notice_label": "Sắp đến giờ",
+    "alarm_label": "Báo thức",
+    "alarm_sound_title": "Âm thanh báo",
+    "alarm_sound_desc": "Copy file .mp3, .wav, .ogg vào thư mục 'sounds' để thêm nhạc",
+    "alarm_sound_empty": "Không có tệp âm thanh nào",
+    "default_sound": "Âm thanh mặc định",
+    "choose_hours": "Chọn giờ",
+    "alarm_sound": "Âm thanh",
+    "no_reminders": "Chưa có lời nhắc nào",
+    "add_reminder_placeholder": "Thêm lời nhắc...",
     "weekdays": {
       "sunday": "CN",
       "monday": "T2",
@@ -95,7 +105,16 @@
       "thursday": "T5",
       "friday": "T6",
       "saturday": "T7"
-    }
+    },
+    "full_weekdays": [
+      "Chủ Nhật",
+      "Thứ Hai",
+      "Thứ Ba",
+      "Thứ Tư",
+      "Thứ Năm",
+      "Thứ Sáu",
+      "Thứ Bảy"
+    ]
   },
   "wallpapers": {
     "title": "Quản lý hình ảnh",
@@ -229,6 +248,27 @@
     "locationPlaceholder": "Tìm kiếm thành phố...",
     "searchButton": "🔍",
     "searchingButton": "⏳"
+  },
+  "CategorySearch": {
+    "Search Applications": "Tìm kiếm ứng dụng",
+    "All": "Tất cả",
+    "Accessories": "Công cụ",
+    "Programming": "Lập trình",
+    "Graphics": "Đồ họa",
+    "Office": "Văn phòng",
+    "Sound & Video": "Âm thanh và Video",
+    "System": "Hệ thống",
+    "Preferences": "Tùy chọn",
+    "Other": "Khác"
+  },
+  "Clock": {
+    "hours": "giờ",
+    "minutes": "phút"
+  },
+  "Song": {
+    "No song playing": "Không có âm thanh nào được phát",
+    "Unknow Artist": "Không rõ tác giả",
+    "No Art": "Không có nhạc"
   }
 }
 

@@ -17,10 +17,9 @@ Rectangle {
 
   // Giờ hẹn và âm thanh báo được chọn cho lời nhắc sắp thêm
   property string reminderTime: "00:00"
-  // false = người dùng chưa chọn giờ (tránh lỡ tay tạo lời nhắc lúc 00:00 mà không biết).
   property bool reminderTimeSet: false
   property string reminderSoundUrl: ""
-  property string reminderSoundName: "Mặc định"
+  property string reminderSoundName: lang?.calendar?.default_sound || "Mặc định"
 
   SequentialAnimation on animationProgress {
     running: true
@@ -227,7 +226,7 @@ Rectangle {
                   calendar.reminderTime = "00:00";
                   calendar.reminderTimeSet = false;
                   calendar.reminderSoundUrl = "";
-                  calendar.reminderSoundName = "Mặc định";
+                  calendar.reminderSoundName = lang?.calendar?.default_sound || "Mặc định";
                   reminderPopup.open();
                 }
               }
@@ -238,17 +237,22 @@ Rectangle {
     }
   }
 
-  // --- Popup xem / thêm / xoá lời nhắc cho ngày được chọn ---
+  // --- Popup đặt lời nhắc ---
   Popup {
     id: reminderPopup
     modal: true
     focus: true
-    x: (calendar.width - width) / 2
-    y: (calendar.height - height) / 2
-    width: ScalerService.s(320)
-    height: ScalerService.s(380)
+    parent: calendar
+
+    // Đã fix lỗi kh căn chính xác
+    x: (parent.width - width)/2
+    y: (parent.height - height)/2
+    width: 240
+    height: 260
+
+    padding: ScalerService.s(5)
+    margins: 5
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-    padding: ScalerService.s(18)
 
     property date targetDate: new Date()
 
@@ -265,7 +269,7 @@ Rectangle {
         }
         NumberAnimation {
           property: "scale"
-          from: 0.92
+          from: 0.95
           to: 1
           duration: 320
           easing.type: Easing.OutExpo
@@ -285,7 +289,7 @@ Rectangle {
         NumberAnimation {
           property: "scale"
           from: 1
-          to: 0.94
+          to: 0.95
           duration: 150
           easing.type: Easing.InCubic
         }
@@ -313,22 +317,25 @@ Rectangle {
       id: popupBg
       color: theme.primary.background
       border.color: theme.button.border
-      border.width: ScalerService.s(1)
-      radius: ScalerService.s(18)
+      border.width: ScalerService.s(3)
+      radius: ScalerService.s(15)
 
       layer.enabled: true
       layer.effect: DropShadow {
         horizontalOffset: 0
-        verticalOffset: ScalerService.s(8)
-        radius: ScalerService.s(20)
-        samples: 32
+        verticalOffset: ScalerService.s(4)
+        radius: ScalerService.s(12)
+        samples: 24
         color: "#70000000"
         transparentBorder: true
       }
     }
 
+    //-----------------Phần bên trong----------------
     contentItem: ColumnLayout {
-      spacing: ScalerService.s(14)
+      anchors.fill: parent
+      spacing: ScalerService.s(10)
+      anchors.margins: 8
 
       // Header: thanh accent + ngày + thứ + nút đóng
       RowLayout {
@@ -369,6 +376,7 @@ Rectangle {
           color: theme.button.text
         }
 
+        //----------------Hiện ngày tháng-----------------
         ColumnLayout {
           Layout.fillWidth: true
           spacing: ScalerService.s(1)
@@ -391,10 +399,10 @@ Rectangle {
         }
       }
 
-      // Danh sách lời nhắc
+      // Danh sách lời nhắc (Tự động co giãn theo chiều cao còn lại)
       Item {
         Layout.fillWidth: true
-        Layout.preferredHeight: ScalerService.s(180)
+        Layout.fillHeight: true
 
         ListView {
           id: reminderList
@@ -531,21 +539,36 @@ Rectangle {
           spacing: ScalerService.s(6)
 
           ButtonIconText {
+            id: iconCalendar
             name: "event_available"
             Layout.alignment: Qt.AlignHCenter
             opacity: 0.35
             enabled: false
+            Behavior on scale { 
+                NumberAnimation { duration: 250 } 
+            }
+            Behavior on rotation { 
+                NumberAnimation { duration: 250 } 
+            }
+
           }
           CustomText {
-            name: "Chưa có lời nhắc nào"
+            name: lang?.calendar?.no_reminders || "Chưa có lời nhắc nào"
             size: "small"
             textColor: theme.primary.dim_foreground
             horizontalAlignment: Text.AlignHCenter
           }
+          MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onEntered : {iconCalendar.scale = 1.2; iconCalendar.rotation += 10}
+            onExited: {iconCalendar.scale = 1.0; iconCalendar.rotation -= 10}
+          }
         }
       }
 
-      // Hai "chip" chọn giờ báo & âm thanh báo cho lời nhắc
+      // Hai "chip" chọn giờ báo & âm thanh báo
       RowLayout {
         id: optionsRow
         Layout.fillWidth: true
@@ -633,8 +656,10 @@ Rectangle {
             ButtonIconText {
               name: "schedule"
             }
+
             CustomText {
-              name: calendar.reminderTimeSet ? calendar.reminderTime : "Chọn giờ"
+              id: chooseHours
+              name: calendar.reminderTimeSet ? calendar.reminderTime : (lang?.calendar?.choose_hours || "Chọn giờ")
               size: "small"
               opacity: calendar.reminderTimeSet ? 1 : 0.6
               Layout.fillWidth: true
@@ -643,6 +668,8 @@ Rectangle {
 
           MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
             onClicked: {
               timePickerDial.setInitialTime(calendar.reminderTime);
               timePickerPopup.open();
@@ -676,6 +703,8 @@ Rectangle {
 
           MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
             onClicked: soundPickerPopup.open()
           }
         }
@@ -685,7 +714,7 @@ Rectangle {
       Rectangle {
         id: inputRow
         Layout.fillWidth: true
-        Layout.preferredHeight: ScalerService.s(46)
+        Layout.preferredHeight: ScalerService.s(42)
         radius: height / 2
         color: theme.button.background
         opacity: 0
@@ -726,17 +755,17 @@ Rectangle {
 
           TextField {
             id: textField
-            placeholderText: "Thêm lời nhắc..."
+            placeholderText: lang?.calendar?.add_reminder_placeholder || "Thêm lời nhắc..."
             Layout.fillWidth: true
             background: Item {}
             color: theme.button.text
-            onAccepted: submitReminder()
+            onAccepted: reminderPopup.submitReminder()
           }
 
           Rectangle {
             id: addBtnBg
-            Layout.preferredWidth: ScalerService.s(36)
-            Layout.preferredHeight: ScalerService.s(36)
+            Layout.preferredWidth: ScalerService.s(34)
+            Layout.preferredHeight: ScalerService.s(34)
             radius: width / 2
             color: theme.button.text
 
@@ -779,7 +808,6 @@ Rectangle {
     function submitReminder() {
       if (textField.text.trim().length === 0)
       return;
-      // Bắt buộc chọn giờ trước khi thêm, tránh tạo nhầm lời nhắc lúc 00:00.
       if (!calendar.reminderTimeSet) {
         timeChip.pulseAttention();
         return;
@@ -790,7 +818,7 @@ Rectangle {
       calendar.reminderTime = "00:00";
       calendar.reminderTimeSet = false;
       calendar.reminderSoundUrl = "";
-      calendar.reminderSoundName = "Mặc định";
+      calendar.reminderSoundName = lang?.calendar?.default_sound || "Mặc định";
       addPulse.restart();
     }
   }
@@ -800,8 +828,8 @@ Rectangle {
     id: timePickerPopup
     modal: true
     focus: true
-    x: (calendar.width - width) / 2
-    y: (calendar.height - height) / 2
+    parent: calendar
+    margins: 0
     padding: ScalerService.s(18)
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
@@ -838,14 +866,14 @@ Rectangle {
       color: theme.primary.background
       border.color: theme.button.border
       border.width: ScalerService.s(1)
-      radius: ScalerService.s(18)
+      radius: ScalerService.s(10)
 
       layer.enabled: true
       layer.effect: DropShadow {
         horizontalOffset: 0
-        verticalOffset: ScalerService.s(8)
-        radius: ScalerService.s(20)
-        samples: 32
+        verticalOffset: ScalerService.s(4)
+        radius: ScalerService.s(12)
+        samples: 24
         color: "#70000000"
         transparentBorder: true
       }
@@ -868,8 +896,8 @@ Rectangle {
     id: soundPickerPopup
     modal: true
     focus: true
-    x: (calendar.width - width) / 2
-    y: (calendar.height - height) / 2
+    parent: calendar
+    margins: 5
     padding: ScalerService.s(18)
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
@@ -906,14 +934,14 @@ Rectangle {
       color: theme.primary.background
       border.color: theme.button.border
       border.width: ScalerService.s(1)
-      radius: ScalerService.s(18)
+      radius: ScalerService.s(10)
 
       layer.enabled: true
       layer.effect: DropShadow {
         horizontalOffset: 0
-        verticalOffset: ScalerService.s(8)
-        radius: ScalerService.s(20)
-        samples: 32
+        verticalOffset: ScalerService.s(4)
+        radius: ScalerService.s(12)
+        samples: 24
         color: "#70000000"
         transparentBorder: true
       }
@@ -936,7 +964,7 @@ Rectangle {
   }
 
   function weekdayFullLabel(d) {
-    const names = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+    const names = lang?.calendar?.full_weekdays || ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
     return names[d.getDay()];
   }
 
@@ -989,9 +1017,6 @@ Rectangle {
     currentDate = new Date(currentYear, currentMonth - 1, 1);
     currentMonth = currentDate.getMonth();
     currentYear = currentDate.getFullYear();
-    // Không gán tay daysRepeater.model nữa: binding khai báo ở "model:" của Repeater
-    // (getDaysInMonth(currentMonth, currentYear)) đã tự động chạy lại khi 2 property này
-    // đổi. Gán tay ở đây từng phá vỡ binding đó vĩnh viễn, chỉ "chữa cháy" tạm mà thôi.
   }
 
   function nextMonth() {
