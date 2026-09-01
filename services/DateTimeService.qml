@@ -16,6 +16,8 @@ Singleton {
     property string currentOfDays: ""
     property string currentHour: ""
     property string currentMinus: ""
+    property string currentHours: "00"
+    property string currentMinutes: "00"
 
     SystemClock {
         id: clock
@@ -45,6 +47,9 @@ Singleton {
         root.currentTime = Qt.formatTime(now, "HH:mm");
         root.currentHour = Qt.formatTime(now, "HH");
         root.currentMinus = Qt.formatTime(now, "mm");
+        //Lay gio va phut rieng
+        root.currentHours = Qt.formatTime(now, "HH");
+        root.currentMinutes = Qt.formatTime(now, "mm");
     }
 
     Component.onCompleted: {

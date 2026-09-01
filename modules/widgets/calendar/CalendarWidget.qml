@@ -58,10 +58,11 @@ Item {
         radius: ScalerService.s(Settings.appearance.radius1)
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 
-        ColumnLayout {
+        Item {      //Sửa từ Columnlayout sang item để tránh lỗi tính toán cpu gây nặng máy
             anchors.fill: parent
-            anchors.margins: ScalerService.s(20)
-            spacing: ScalerService.s(20)
+            //Layout.fillHeight: true; Layout.fillWidth: true
+            anchors.margins: ScalerService.s(18)
+            //spacing: ScalerService.s(18)
             Loader {
                 anchors.fill: parent
 

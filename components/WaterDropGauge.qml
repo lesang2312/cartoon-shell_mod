@@ -8,8 +8,8 @@ Item {
 
     property real fillValue: 90          // 0 - 100
     property color waveColor: "#4FC3F7"  // màu nước
-    property color emptyColor: theme.button.background
-    property color outlineColor: theme.button.dim_foreground
+    property color emptyColor: '#707c93'
+    property color outlineColor: '#1d4d83'
     property real phase: 0
 
     implicitWidth: ScalerService.s(29)

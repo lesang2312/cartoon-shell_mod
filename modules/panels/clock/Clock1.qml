@@ -15,6 +15,8 @@ PanelWindow {
     property string currentTime: "00:00"
     property string currentDateText: ""
 
+
+
     anchors {
         top: true
         bottom: true
@@ -52,6 +54,8 @@ PanelWindow {
 
         // Định dạng thời gian dạng: "21:30"
         root.currentTime = Qt.formatTime(now, "HH:mm");
+
+
     }
 
     // --- BỐ CỤC CĂN GIỮA NẰM DỌC ---

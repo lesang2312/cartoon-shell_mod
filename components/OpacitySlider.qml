@@ -37,8 +37,8 @@ Slider {
         implicitWidth: root.pressed ? ScalerService.s(22) : ScalerService.s(19)
         implicitHeight: root.pressed ? ScalerService.s(22) : ScalerService.s(19)
         radius: implicitWidth / 2
-        color: theme.primary.background
-        border.color: theme.button.dim_foreground
+        color: '#1a3461'
+        border.color: '#21214c'
         border.width: ScalerService.s(1)
 
         Rectangle {

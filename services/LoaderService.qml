@@ -9,6 +9,16 @@ Item {
     id: root
 
     Loader {
+        source: "../modules/widgets/WidgetTop.qml"
+        active: true
+        onLoaded: {
+            item.visible = Qt.binding(function () {
+                true;
+            });
+        }
+    }
+
+    Loader {
         source: "../modules/widgets/WidgetLeft.qml"
         active: true
         onLoaded: {

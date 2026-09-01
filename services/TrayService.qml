@@ -10,7 +10,7 @@ Singleton {
 
     // Sử dụng trực tiếp SystemTray.items thay vì Repeater
     readonly property var items: SystemTray.items
-    readonly property bool hasTray: SystemTray.items.values.length> 0
+    readonly property bool hasTray: SystemTray.items.values.length > 0
     readonly property int trayCount: items.count
 
     // Hàm tiện ích để lấy item theo index

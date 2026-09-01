@@ -18,7 +18,7 @@ PanelWindow {
     property bool visibleGameWidget: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel", "wifi", "bluetooth", "mixer")
     property bool visibleSystemWidget: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel", "wifi")
     function allHidden(...items) {
-        return items.every(item => !VisibleService.getPanelVisible(item));
+        return items.every(item => !VisibleService.getPanelVisible(item) || false);         //Thêm toán tử false để tránh lỗi render liên tục gây ngốn cpu
     }
 
     ColumnLayout {

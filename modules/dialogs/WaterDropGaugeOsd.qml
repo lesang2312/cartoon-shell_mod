@@ -7,8 +7,8 @@ Item {
 
     property real fillValue: root.newCurrentKittyOpacy // Bind trực tiếp với Opacity
     property color waveColor: "#4FC3F7"
-    property color emptyColor: theme.button.background
-    property color outlineColor: theme.button.dim_foreground
+    property color emptyColor: '#707c93'
+    property color outlineColor: '#1d4d83'
     property real phase: 0
 
     implicitWidth: ScalerService.s(30)

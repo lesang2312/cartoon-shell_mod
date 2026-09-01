@@ -17,11 +17,11 @@ PanelWindow {
     property bool visibleClockWidget: root.allHidden("launcher", "music", "cpu", "ram", "dashboard", "weather", "keybind", "packagePanel")
     property bool visibleMusicWidget: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel")
     function allHidden(...items) {
-        return items.every(item => !VisibleService.getPanelVisible(item));
+        return items.every(item => !VisibleService.getPanelVisible(item) || false);
     }
 
     ColumnLayout {
-        anchors.fill: parent
+        //anchors.fill: parent
         Loader {
             source: "../widgets/calendar/CalendarWidget.qml"
             active: root.visibleCalendarWidget
