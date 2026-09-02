@@ -24,7 +24,7 @@
 #### Full setup with dotfiles
 ```bash
 cd ~
-git clone https://github.com/lesang2312/dotfiles-hyprland
+git clone https://github.com/lesang2312/dotfiles-hyprland_mod
 cd dotfiles-hyprland
 chmod +x setup.sh
 ./setup.sh
