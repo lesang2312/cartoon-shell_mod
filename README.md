@@ -25,7 +25,7 @@
 ```bash
 cd ~
 git clone https://github.com/lesang2312/dotfiles-hyprland_mod
-cd dotfiles-hyprland
+cd dotfiles-hyprland_mod
 chmod +x setup.sh
 ./setup.sh
 gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
