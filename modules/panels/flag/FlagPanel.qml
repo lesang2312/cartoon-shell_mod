@@ -6,6 +6,7 @@ import qs.services
 import qs.commons
 import qs.components
 import "." as Com
+import "../../../components/glass"
 
 PanelWindow {
   id: root
@@ -108,9 +109,10 @@ PanelWindow {
         maxOpacity: 0.04
       }
     }
-    color: theme.primary.background
+    color: glassBg.active ? "transparent" : theme.primary.background
     border.color: theme.button.border
     radius: ScalerService.s(Settings.appearance.radius1)
+    GlassPanel { id: glassBg }
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 
     ColumnLayout {

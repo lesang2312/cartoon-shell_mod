@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -5,125 +7,74 @@ import Quickshell.Io
 Item {
     id: root
 
-    // ===== Public API =====
-    property int memPercent: 0              // Percentage
+    // Keep this property for compatibility with existing panels. Both modes now use
+    // the same reliable /proc/meminfo parser; the displayed values stay consistent.
+    property bool useSimpleCalculation: true
+    property int memPercent: 0
     property int memUsed: 0
-    property int memTotal: 0             // MB
-    property int memFree: 0              // MB
-    property int buffers: 0              // MB
-    property int cached: 0               // MB
-    property int shmem: 0                // MB
-    property int swapTotal: 0            // MB
-    property int swapFree: 0             // MB
-    property int swapUsed: 0             // Percentage (calculated)
+    property int memTotal: 0
+    property int memFree: 0
+    property int buffers: 0
+    property int cached: 0
+    property int shmem: 0
+    property int swapTotal: 0
+    property int swapFree: 0
+    property int swapUsed: 0
     property int swapPercent: 0
-
-    // ===== Control property =====
-    property bool useSimpleCalculation: true  // true: dùng ramProcess, false: dùng meminfoProcess
-
-    // ===== Internal =====
-    Process {
-        id: ramProcess
-        running: useSimpleCalculation
-
-        command: ["bash", "-c", "awk '/MemTotal/{t=$2}/MemFree/{f=$2}/Buffers/{b=$2}/^Cached:/{c=$2} END{print int(((t-f-b-c)/t)*100)}' /proc/meminfo"]
-
-        stdout: StdioCollector {
-            onTextChanged: {
-                const value = parseInt(text.trim());
-                if (!isNaN(value)) {
-                    root.memPercent = value;   // %
-                }
-            }
-        }
-    }
 
     Process {
         id: meminfoProcess
-        running: !useSimpleCalculation
-
-        command: ["bash", "-c", "grep -E 'MemTotal|MemFree|Buffers|Cached|Shmem|SwapTotal|SwapFree' /proc/meminfo"]
+        command: ["cat", "/proc/meminfo"]
+        running: false
 
         stdout: StdioCollector {
-            onTextChanged: {
-                const lines = text.trim().split("\n");
-                for (const line of lines) {
-                    const parts = line.replace("kB", "").split(":");
-                    const key = parts[0].trim();
-                    const value = parseInt(parts[1].trim());
-
-                    switch (key) {
-                    case "MemTotal":
-                        memTotal = value;
-                        root.memTotal = Math.floor(value / 1024);
-                        break;
-                    case "MemFree":
-                        memFree = value;
-                        root.memFree = Math.floor(value / 1024);
-                        break;
-                    case "Buffers":
-                        buffers = value;
-                        root.buffers = Math.floor(value / 1024);
-                        break;
-                    case "Cached":
-                        cached = value;
-                        root.cached = Math.floor(value / 1024);
-                        break;
-                    case "Shmem":
-                        root.shmem = Math.floor(value / 1024);
-                        break;
-                    case "SwapTotal":
-                        swapTotal = value;
-                        root.swapTotal = Math.floor(value / 1024);
-                        break;
-                    case "SwapFree":
-                        swapFree = value;
-                        root.swapFree = Math.floor(value / 1024);
-                        break;
-                    }
+            onStreamFinished: {
+                const values = ({});
+                const lines = text.split("\n");
+                for (let i = 0; i < lines.length; i++) {
+                    const match = lines[i].match(/^([A-Za-z_()]+):\s+(\d+)/);
+                    if (match)
+                        values[match[1]] = Number(match[2]);
                 }
 
-                // Tính toán swapUsed dựa trên các giá trị đã có
-                if (swapTotal > 0 && swapFree > 0) {
-                    root.swapUsed = swapTotal - swapFree;
-                    root.swapPercent = Math.round((swapUsed / swapTotal) * 100);
-                }
+                const total = Number(values.MemTotal || 0);
+                const available = Number(values.MemAvailable !== undefined
+                    ? values.MemAvailable
+                    : ((values.MemFree || 0) + (values.Buffers || 0) + (values.Cached || 0)
+                       + (values.SReclaimable || 0) - (values.Shmem || 0)));
+                if (total <= 0)
+                    return;
 
-                // Tính toán menPercent dựa trên các giá trị đã có
-                // Công thức tương tự như trong ramProcess: (MemTotal - MemFree - Buffers - Cached) / MemTotal * 100
-                if (memTotal > 0 && memFree >= 0 && buffers >= 0 && cached >= 0) {
-                    root.memUsed = memTotal - memFree - buffers - cached;
-                    root.memPercent = Math.round((root.memUsed / memTotal) * 100);
-                }
+                const safeAvailable = Math.max(0, Math.min(total, available));
+                const used = Math.max(0, total - safeAvailable);
+                root.memTotal = Math.round(total / 1024);
+                root.memUsed = Math.round(used / 1024);
+                root.memFree = Math.round(Number(values.MemFree || 0) / 1024);
+                root.buffers = Math.round(Number(values.Buffers || 0) / 1024);
+                root.cached = Math.round(Number(values.Cached || 0) / 1024);
+                root.shmem = Math.round(Number(values.Shmem || 0) / 1024);
+                root.memPercent = Math.max(0, Math.min(100, Math.round(100 * used / total)));
+
+                const swapTotalKb = Number(values.SwapTotal || 0);
+                const swapFreeKb = Number(values.SwapFree || 0);
+                root.swapTotal = Math.round(swapTotalKb / 1024);
+                root.swapFree = Math.round(swapFreeKb / 1024);
+                root.swapUsed = Math.max(0, root.swapTotal - root.swapFree);
+                root.swapPercent = swapTotalKb > 0
+                    ? Math.max(0, Math.min(100, Math.round(100 * (swapTotalKb - swapFreeKb) / swapTotalKb)))
+                    : 0;
             }
         }
     }
 
     Timer {
-        interval: 1000
+        interval: 2000
         repeat: true
-        running: true
+        running: root.visible && (!root.parent || (root.parent.visible && root.parent.width > 0 && root.parent.height > 0))
         triggeredOnStart: true
-
         onTriggered: {
-            if (useSimpleCalculation && !ramProcess.running) {
-                ramProcess.running = true;
-                meminfoProcess.running = false;
-            } else if (!useSimpleCalculation && !meminfoProcess.running) {
+            if (!meminfoProcess.running)
                 meminfoProcess.running = true;
-                ramProcess.running = false;
-            }
-        }
-    }
-
-    // Cập nhật khi property useSimpleCalculation thay đổi
-    onUseSimpleCalculationChanged: {
-        if (useSimpleCalculation) {
-            ramProcess.running = true;
-            meminfoProcess.running = false;
-        } else {
-            meminfoProcess.running = true;
-            ramProcess.running = false;
         }
     }
 }

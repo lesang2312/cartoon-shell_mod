@@ -8,6 +8,7 @@ import qs.services
 import "." as Com
 import qs.commons
 import qs.components
+import "../../../components/glass"
 
 PanelWindow {
     id: root
@@ -92,9 +93,10 @@ PanelWindow {
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0 ? parent.width : 0
         implicitHeight: root.animationProgress > 0 ? parent.height : 0
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
         border.color: theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
+        GlassPanel { id: glassBg }
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         Behavior on implicitHeight {
             NumberAnimation {

@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Services.Notifications
 import qs.services
 import qs.commons
+import qs.components
 
 PanelWindow {
   id: root
@@ -65,12 +66,18 @@ PanelWindow {
 
       delegate: Rectangle {
         id: notificationDelegate
+        GlassPanel {
+          id: glassBg
+          tint: 0.04
+          frostAmount: 0.14
+          rim: 0.78
+        }
         width: notificationList.width
         height: isExpanded ? contentColumn.implicitHeight + ScalerService.s(24) : notificationHeight
-        border.color: theme.button.border
+        border.color: glassBg.active ? Qt.rgba(1, 1, 1, 0.30) : theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
-        border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
-        color: theme.primary.background
+        border.width: glassBg.active ? ScalerService.s(1) : (Settings.appearance.enableBorder ? ScalerService.s(3) : 0)
+        color: glassBg.active ? "transparent" : theme.primary.background
 
         property bool isExpanded: false
         property bool hasLongContent: false

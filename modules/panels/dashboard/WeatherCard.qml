@@ -22,6 +22,7 @@ Item {
     }
 
     Rectangle {
+        GlassPanel { id: glassBg1 }
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0.35 ? parent.width : 0
         implicitHeight: root.animationProgress > 0.35 ? parent.height : 0
@@ -54,7 +55,7 @@ Item {
         radius: ScalerService.s(Settings.appearance.radius1)
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         border.color: theme.button.border
-        color: theme.primary.background
+        color: glassBg1.active ? "transparent" : theme.primary.background
 
         ColumnLayout {
             anchors.fill: parent

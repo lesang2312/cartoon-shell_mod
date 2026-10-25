@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.services
 import qs.commons
+import qs.components
 
 PanelWindow {
   id: root
@@ -64,7 +65,7 @@ PanelWindow {
       sleepProcess.command = [
       "sh",
       "-c",
-      "systemctl suspend && qs ipc --path ~/.config/quickshell/cartoon-shell/ call lock lock"
+      "systemctl suspend && qs ipc --path '" + Quickshell.shellDir + "' call lock lock"
       ];
       sleepProcess.startDetached();
       break;
@@ -73,7 +74,7 @@ PanelWindow {
       "qs",
       "ipc",
       "--path",
-      Directories.home + "/.config/quickshell/cartoon-shell/",
+      Quickshell.shellDir,
       "call",
       "lock",
       "lock"
@@ -97,11 +98,17 @@ PanelWindow {
   }
 
   Rectangle {
+    GlassPanel {
+      id: glassBg
+      tint: 0.035
+      frostAmount: 0.12
+      rim: 0.78
+    }
     anchors.fill: parent
     radius: ScalerService.s(15)
-    color: theme.primary.background
-    border.color: theme.normal.black
-    border.width: ScalerService.s(3)
+    color: glassBg.active ? "transparent" : theme.primary.background
+    border.color: glassBg.active ? Qt.rgba(1, 1, 1, 0.34) : theme.normal.black
+    border.width: glassBg.active ? ScalerService.s(1) : ScalerService.s(3)
 
     Column {
       anchors.fill: parent

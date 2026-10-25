@@ -320,10 +320,15 @@ Rectangle {
             }
         }
 
-        CustomText {
+        Item {
             visible: container.apps.length === 0
-            name: "Không có kết quả"
-            anchors.centerIn: parent
+            Layout.fillWidth: true
+            Layout.preferredHeight: ScalerService.s(48)
+
+            CustomText {
+                name: "Không có kết quả"
+                anchors.centerIn: parent
+            }
         }
     }
 

@@ -54,10 +54,11 @@ Item {
                 maxOpacity: 0.04
             }
         }
-        color: theme.primary.background
-        border.color: theme.button.border
+        color: Qt.rgba(Qt.color(theme.primary.background).r, Qt.color(theme.primary.background).g, Qt.color(theme.primary.background).b, glassBg.active ? 0.48 : 0.88)
+        GlassPanel { id: glassBg; tint: 0.28; frostAmount: 0.16; rim: 0.82 }
+        border.color: Qt.rgba(0.86, 0.91, 1.0, 0.88)
         radius: ScalerService.s(Settings.appearance.radius1)
-        border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
+        border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
 
         ColumnLayout {
             anchors.fill: parent

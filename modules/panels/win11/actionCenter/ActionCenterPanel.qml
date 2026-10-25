@@ -105,10 +105,11 @@ PanelWindow {
     color: "transparent"
 
     CustomRectangle {
+        GlassPanel { id: glassBg }
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0 ? parent.width : 0
         implicitHeight: root.animationProgress > 0 ? parent.height : 0
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
         radius: ScalerService.s(Settings.appearance.radius1)
         clip: true
 

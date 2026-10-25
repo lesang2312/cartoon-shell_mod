@@ -12,6 +12,8 @@ Item {
   property real maxOpacity: 0.08
   property real minDuration: 40000
   property real maxDuration: 80000
+  // Animation can be disabled for newly added decorative cards to keep idle CPU low.
+  property bool animated: true
 
   anchors.fill: parent
   clip: true
@@ -42,7 +44,7 @@ Item {
       ParallelAnimation {
         id: moveAnimation
         loops: Animation.Infinite
-        running: true
+        running: root.animated && root.visible
 
         NumberAnimation {
           target: circle
@@ -64,7 +66,7 @@ Item {
       // Animation scale
       SequentialAnimation {
         loops: Animation.Infinite
-        running: true
+        running: root.animated && root.visible
 
         NumberAnimation {
           target: circle
@@ -86,7 +88,7 @@ Item {
       // Thay đổi hướng di chuyển định kỳ
       Timer {
         interval: circle.moveDuration
-        running: true
+        running: root.animated && root.visible
         repeat: true
 
         onTriggered: {

@@ -120,6 +120,36 @@
                     "key": "SUPER + Z",
                     "locked": false,
                     "type": "exec_cmd"
+                },
+                {
+                    "action": "Spawn QS",
+                    "args": [
+                        "kitty --hold -e bash -c 'qs -p ~/.config/quickshell/cartoon-shell & disown'"
+                    ],
+                    "id": "custom_1789313696821",
+                    "key": "ALT + S",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Wlay display",
+                    "args": [
+                        "kitty --hold -e bash -c 'wlay -c'"
+                    ],
+                    "id": "custom_1789313736989",
+                    "key": "CTRL + SHIFT + W",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Script",
+                    "args": [
+                        "kitty --hold -e bash -c 'fish -c \"source ~/venvs/auto-login/bin/activate.fish && python ~/scripts/auto-login-study/auto_login_study.py\"'"
+                    ],
+                    "id": "custom_1789314994159",
+                    "key": "CTRL + SHIFT + A",
+                    "locked": false,
+                    "type": "exec_cmd"
                 }
             ],
             "title": "🪟 Basic Window Management"
@@ -398,6 +428,36 @@
                     "key": "SUPER + Y",
                     "locked": false,
                     "type": "exec_cmd"
+                },
+                {
+                    "action": "Waydroid",
+                    "args": [
+                        "kitty --hold -e bash -c 'waydroid session start'"
+                    ],
+                    "id": "custom_1791719067880",
+                    "key": "CTRL + ALT + W",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Crdroid",
+                    "args": [
+                        "kitty --hold -e bash -c 'waydroid show-full-ui'"
+                    ],
+                    "id": "custom_1791719120841",
+                    "key": "CTRL + ALT + C",
+                    "locked": false,
+                    "type": "exec_cmd"
+                },
+                {
+                    "action": "Stop Waydroid",
+                    "args": [
+                        "kitty --hold -e bash -c 'waydroid session stop'"
+                    ],
+                    "id": "custom_1791723100608",
+                    "key": "CTRL + ALT + X",
+                    "locked": false,
+                    "type": "exec_cmd"
                 }
             ],
             "title": "📊 Dashboard & Panels"
@@ -526,7 +586,7 @@
                 {
                     "action": "Area Screenshot (copy to clipboard)",
                     "args": [
-                        "FILE=/home/linux-sieu-cap-pro-cua-le/Screenshorts/screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\""
+                        "FILE=/home/linux-cua-le/screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\""
                     ],
                     "id": "screenshot_area",
                     "key": "ALT + A",
@@ -536,7 +596,7 @@
                 {
                     "action": "Toggle Area Screen Recording",
                     "args": [
-                        "pidof wf-recorder && pkill -x wf-recorder || wf-recorder -r 60 -x yuv444p -p preset=ultrafast -p crf=5 -g \"$(slurp)\" -f /home/linux-sieu-cap-pro-cua-le/Recordings/recording_$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+                        "pidof wf-recorder && pkill -x wf-recorder || wf-recorder -r 60 -x yuv444p -p preset=ultrafast -p crf=5 -g \"$(slurp)\" -f /home/linux-cua-le/Recordings/recording_$(date +'%Y-%m-%d_%H-%M-%S').mp4"
                     ],
                     "id": "record_area",
                     "key": "ALT + SHIFT + A",

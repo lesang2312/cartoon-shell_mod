@@ -8,32 +8,29 @@ import qs.services
 Item {
     id: root
 
+    // A single transparent full-screen canvas now owns every desktop widget.
+    // This avoids the old fixed left/right stacks and enables saved drag positions.
     Loader {
-        source: "../modules/widgets/WidgetTop.qml"
+        source: "../modules/widgets/WidgetCanvas.qml"
         active: true
         onLoaded: {
-            item.visible = Qt.binding(function () {
-                true;
-            });
+            item.visible = true;
         }
     }
 
+
+    // Shared themed file picker. It is loaded at shell level because FileDialog.qml
+    // is a PanelWindow and must not be embedded inside a widget Item.
     Loader {
-        source: "../modules/widgets/WidgetLeft.qml"
+        source: "../modules/dialogs/FileDialog.qml"
         active: true
         onLoaded: {
-            item.visible = Qt.binding(function () {
-                true;
-            });
+            item.visible = false;
+            PhotoPickerService.registerPicker(item);
         }
-    }
-    Loader {
-        source: "../modules/widgets/WidgetRight.qml"
-        active: true
-        onLoaded: {
-            item.visible = Qt.binding(function () {
-                true;
-            });
+        onStatusChanged: {
+            if (status === Loader.Error)
+                console.warn("[PhotoPickerService] Could not load the file picker");
         }
     }
 

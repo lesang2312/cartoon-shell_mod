@@ -9,6 +9,7 @@ import "../../widget/" as Com
 Rectangle {
   id: root
 
+  GlassPanel { id: glassBg }
   // Properties thuần cho layout / UI State
   property real animationProgress: 0
   property bool isVertical: Settings.bar.position === "left" || Settings.bar.position === "right"
@@ -16,7 +17,7 @@ Rectangle {
   border.color: theme.button.border
   border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
   radius: ScalerService.s(Settings.appearance.radius2)
-  color: theme.primary.background
+  color: glassBg.active ? "transparent" : theme.primary.background
   anchors.centerIn: parent
 
   implicitWidth: root.animationProgress > 0.1 ? parent.width : 0

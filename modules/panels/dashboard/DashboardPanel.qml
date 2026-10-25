@@ -13,6 +13,9 @@ PanelWindow {
     implicitHeight: ScalerService.s(600)
 
     property real animationProgress: 0
+    Component.onCompleted: DiskService.acquire()
+    Component.onDestruction: DiskService.release()
+
     PackageService {
         id: packageService
         simplePackage: true

@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import "." as Com
 import qs.services
 import qs.commons
+import qs.components
 
 Item {
   id: rootSettings
@@ -32,8 +33,19 @@ Item {
     Rectangle {
       Layout.fillWidth: true
       Layout.fillHeight: true
-      color: Qt.alpha(theme.primary.dim_background,0.6)
+      color: contentGlass.active ? "transparent" : Qt.alpha(theme.primary.dim_background,0.6)
       radius: ScalerService.s(Settings.appearance.radius2)
+      // Kính lồng (nested) trên nền kính của launcher khi bật Liquid Glass
+      GlassFill {
+        id: contentGlass
+        anchors.fill: parent
+        z: -1
+        radius: parent.radius
+        tintColor: theme.primary.dim_background
+        tintAmount: 0.12
+        frost: 0.16
+        tintStrength: 0.38
+      }
       border {
         color: theme.button.border
         width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
@@ -70,20 +82,36 @@ Item {
           }
         }
 
-        // Network Settings
-        Com.Network {}
-
-        // Audio Settings
-        Com.Audio {}
-
-        // Performance Settings
-        Com.Performance {}
-
-        // Shortcuts Settings
-        Com.Shortcuts {}
-
-        // System Settings
-        Com.System {}
+        Loader {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          active: settingsStack.currentIndex === 2
+          sourceComponent: Com.Network {}
+        }
+        Loader {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          active: settingsStack.currentIndex === 3
+          sourceComponent: Com.Audio {}
+        }
+        Loader {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          active: settingsStack.currentIndex === 4
+          sourceComponent: Com.Performance {}
+        }
+        Loader {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          active: settingsStack.currentIndex === 5
+          sourceComponent: Com.Shortcuts {}
+        }
+        Loader {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          active: settingsStack.currentIndex === 6
+          sourceComponent: Com.System {}
+        }
       }
     }
   }

@@ -7,6 +7,7 @@ import "." as Components
 import qs.services
 import qs.commons
 import qs.components
+import "../../../components/glass"
 
 PanelWindow {
     id: root
@@ -73,9 +74,10 @@ PanelWindow {
         layer.enabled: true
         layer.smooth: true
 
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
         border.color: theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
+        GlassPanel { id: glassBg }
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 
         Behavior on implicitHeight {

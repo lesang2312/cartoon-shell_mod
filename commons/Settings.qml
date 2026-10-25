@@ -89,35 +89,35 @@ Singleton {
         property string username: "mailong2401"
         property var appGrid: [
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/animal.png",
+                "icon": Quickshell.shellDir + "/icons/animal.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/anime.png",
+                "icon": Quickshell.shellDir + "/icons/anime.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/camera.png",
+                "icon": Quickshell.shellDir + "/icons/camera.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cartoon.png",
+                "icon": Quickshell.shellDir + "/icons/cartoon.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/vietnam.png",
+                "icon": Quickshell.shellDir + "/icons/vietnam.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cartoon.png",
+                "icon": Quickshell.shellDir + "/icons/cartoon.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/cinema.png",
+                "icon": Quickshell.shellDir + "/icons/cinema.png",
                 "name": "firefox"
             },
             {
-                "icon": "/home/linux-cua-le/.config/quickshell/cartoon-shell/icons/panda.png",
+                "icon": Quickshell.shellDir + "/icons/panda.png",
                 "name": "firefox"
             },
             {
@@ -185,6 +185,8 @@ Singleton {
         property int radius2: 16
         property int radius3: 8
         property bool enableBorder: false
+        // Hiệu ứng kính lỏng (Liquid Glass) cho các panel
+        property bool liquidGlass: true
         // Thêm các properties cho dynamic theme
         property bool dynamic: false
         property string light: "light"

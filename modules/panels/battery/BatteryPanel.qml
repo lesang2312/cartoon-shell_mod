@@ -50,13 +50,17 @@ Item {
   // Initialize and listen to UPower changes
   Timer {
     id: initTimer
-    interval: 100
+    interval: 250
     running: true
     repeat: true
+    property int tries: 0
     onTriggered: {
       if (UPower.displayDevice && UPower.displayDevice.ready) {
         stop();
         refreshBatteryData();
+      } else if (++tries >= 20) {
+        // Máy không có pin: ngừng quét (trước đây quét mỗi 100ms mãi mãi).
+        stop();
       }
     }
   }

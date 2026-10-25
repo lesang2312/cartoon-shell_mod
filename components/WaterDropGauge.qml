@@ -19,13 +19,24 @@ Item {
         NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
     }
 
+    // Sóng chỉ chạy khi giá trị đang đổi (và đang hiển thị), sau đó dừng hẳn.
+    // Trước đây Canvas (vẽ bằng CPU) bị vẽ lại mỗi 45ms liên tục -> ngốn CPU cả khi đứng yên.
+    property bool waveActive: false
     Timer {
-        interval: 45
-        running: true
+        interval: 66
+        running: root.waveActive && root.visible && root.opacity > 0
         repeat: true
         onTriggered: {
-            root.phase += 0.09;
+            root.phase += 0.12;
             if (root.phase > Math.PI * 2) root.phase -= Math.PI * 2;
+            canvas.requestPaint();
+        }
+    }
+    Timer {
+        id: waveSettle
+        interval: 1600
+        onTriggered: {
+            root.waveActive = false;
             canvas.requestPaint();
         }
     }
@@ -83,6 +94,10 @@ Item {
         Component.onCompleted: requestPaint()
     }
 
-    onFillValueChanged: canvas.requestPaint()
+    onFillValueChanged: {
+        waveActive = true;
+        waveSettle.restart();
+        canvas.requestPaint();
+    }
     onWaveColorChanged: canvas.requestPaint()
 }

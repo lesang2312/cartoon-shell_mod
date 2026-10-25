@@ -141,6 +141,7 @@ ColumnLayout {
       Layout.preferredHeight: ScalerService.s(110)
 
       Rectangle {
+          GlassPanel { id: glassBg1 }
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0.55 ? parent.width : 0
         implicitHeight: root.animationProgress > 0.55 ? parent.height : 0
@@ -202,7 +203,7 @@ ColumnLayout {
 
     background: Rectangle {
       implicitWidth: ScalerService.s(360)
-      color: theme.primary.background
+      color: glassBg1.active ? "transparent" : theme.primary.background
       radius: ScalerService.s(20)
       border.color: theme.button.border
       border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : ScalerService.s(2)

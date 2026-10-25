@@ -10,25 +10,8 @@ Item {
     Process {
         id: cpuProcess
 
-        command: [
-            "bash",
-            "-c",
-            `
-            LC_ALL=C ps -eo pid,comm,pcpu,rss --no-headers --sort=-pcpu |
-            head -n 10 |
-            awk '
-            {
-                gsub(/"/, "\\\\\\"", $2)
-
-                cpu = $3 + 0
-                rss_mb = $4 / 1024
-
-                printf "{\\"pid\\":%d,\\"name\\":\\"%s\\",\\"cpu\\":%.1f,\\"mem\\":%.1f}\\n",
-                    $1, $2, cpu, rss_mb
-            }' |
-            jq -s .
-            `
-        ]
+        // Mẫu 1 giây từ /proc (xem scripts/cpu_top.sh) thay cho `ps pcpu` (trung bình trọn đời, tự liệt kê chính nó)
+        command: ["bash", Quickshell.shellDir + "/scripts/cpu_top.sh"]
 
         running: false
 

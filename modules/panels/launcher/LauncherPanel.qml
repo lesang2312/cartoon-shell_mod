@@ -10,6 +10,7 @@ import qs.components
 // Import các thành phần phụ trong cùng thư mục
 import "../../../components/" as Components
 import "./" as LauncherComponents
+import "../../../components/glass"
 
 PanelWindow {
     id: root
@@ -116,7 +117,8 @@ PanelWindow {
             }
         }
         radius: ScalerService.s(Settings.appearance.radius1)
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
+        GlassPanel { id: glassBg }
         border.color: theme.button.border
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 

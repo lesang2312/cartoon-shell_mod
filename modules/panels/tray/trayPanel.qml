@@ -7,6 +7,7 @@ import qs.commons
 import Quickshell.Services.SystemTray
 import qs.components
 import qs.services
+import "../../../components/glass"
 
 PanelWindow {
   id: root
@@ -105,9 +106,10 @@ PanelWindow {
       }
     }
     
-    color: theme.primary.background
+    color: glassBg.active ? "transparent" : theme.primary.background
     border.color: theme.button.border
     radius: ScalerService.s(Settings.appearance.radius1)
+    GlassPanel { id: glassBg }
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
     
     // Grid System Tray - Windows 11 Style

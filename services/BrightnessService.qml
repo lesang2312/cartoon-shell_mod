@@ -14,7 +14,7 @@ Singleton {
     function changeBright(delta) {
         brightnessProcess.command = ["sh", "-c", `
           brightnessctl -e4 -n2 set ${delta > 0 ? "5%+" : "5%-"}
-          qs ipc --path ~/.config/quickshell/cartoon-shell \
+          qs ipc --path "${Quickshell.shellDir}" \
               call brightness set \
               "$(awk "BEGIN {print $(brightnessctl g)/$(brightnessctl m)}")"
           `];
@@ -24,7 +24,7 @@ Singleton {
     function setBright(value) {
         brightnessProcess.command = ["sh", "-c", `
         brightnessctl -e4 -n2 set ${Math.round(value * 100)}%
-        qs ipc --path ~/.config/quickshell/cartoon-shell \
+        qs ipc --path "${Quickshell.shellDir}" \
             call brightness set \
             "$(awk "BEGIN {print $(brightnessctl g)/$(brightnessctl m)}")"
         `];

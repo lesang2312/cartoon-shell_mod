@@ -22,7 +22,7 @@ Singleton {
     property bool isInitialized: false
 
     // Thư mục cache thumbnail cố định
-    readonly property string wallpaperThumbsDir: "/home/long/.cache/quickshell/wallpapers_thumbs"
+    readonly property string wallpaperThumbsDir: `${Directories.cache}/quickshell/wallpapers_thumbs`
 
     signal wallpaperChanged(string screenName, string path)
     signal wallpaperDirectoryChanged(string screenName, string directory)
@@ -169,6 +169,92 @@ Singleton {
         const pathStr = path.toString();
         const extension = pathStr.split('.').pop().toLowerCase();
         return videoExtensions.includes(extension);
+    }
+
+    // Ảnh nền cho kính: lấy khung hình giữa video (khung đầu thường đen) nên tách riêng với thumbnail thường.
+    function getGlassThumbnailPath(videoPath) {
+        if (!videoPath)
+            return "";
+        var filename = videoPath.split('/').pop();
+        var base = filename.substring(0, filename.lastIndexOf('.')) || filename;
+        // Gắn mã băm của ĐƯỜNG DẪN ĐẦY ĐỦ: hai video khác thư mục nhưng trùng tên file
+        // trước đây dùng chung một ảnh nền kính cũ (kính hiện sai hình nền, viền màu lạ).
+        var str = String(videoPath);
+        var h = 5381;
+        for (var i = 0; i < str.length; i++)
+            h = ((h * 33) ^ str.charCodeAt(i)) >>> 0;
+        return root.wallpaperThumbsDir + "/" + base + "_" + h.toString(16) + "_glass.jpg";
+    }
+
+    property var _glassJobs: ({})
+    function ensureGlassThumbnail(videoPath, callback) {
+        if (!videoPath)
+            return;
+        var job = _glassJobs[videoPath];
+        if (job === "failed")
+            return;
+        if (job && job !== "done") {
+            job.push(callback);
+            return;
+        }
+        if (job === "done") {
+            if (callback) callback(getGlassThumbnailPath(videoPath));
+            return;
+        }
+        _glassJobs[videoPath] = [callback];
+        var out = getGlassThumbnailPath(videoPath);
+        // Thử lấy ở giây 3 (nếu video ngắn hơn thì ffmpeg không ra ảnh -> lùi về khung đầu).
+        var cmd = `mkdir -p "${root.wallpaperThumbsDir}" && (ffmpeg -y -ss 3 -i "${videoPath}" -frames:v 1 -vf "scale=1280:-1" -q:v 3 "${out}" 2>/dev/null; [ -s "${out}" ] || ffmpeg -y -i "${videoPath}" -frames:v 1 -vf "scale=1280:-1" -q:v 3 "${out}" 2>/dev/null; [ -s "${out}" ])`;
+        var proc = Qt.createQmlObject(`
+            import QtQuick
+            import Quickshell.Io
+            Process {
+                property string videoPath: ""
+                property string outPath: ""
+                onExited: function(code) {
+                    var waiting = parent._glassJobs[videoPath] || [];
+                    if (code === 0) {
+                        parent._glassJobs[videoPath] = "done";
+                        for (var i = 0; i < waiting.length; i++) if (waiting[i]) waiting[i](outPath);
+                    } else {
+                        parent._glassJobs[videoPath] = "failed";
+                        console.warn("[LiquidGlass] ffmpeg khong tao duoc anh nen cho", videoPath);
+                    }
+                    destroy();
+                }
+            }
+        `, root, "GlassThumb");
+        proc.videoPath = videoPath;
+        proc.outPath = out;
+        proc.command = ["bash", "-c", cmd];
+        proc.running = true;
+    }
+
+    // Đảm bảo thumbnail của video tồn tại (mỗi video chỉ tạo 1 lần dù nhiều panel cùng hỏi).
+    property var _thumbJobs: ({})
+    function ensureVideoThumbnail(videoPath, callback) {
+        if (!videoPath)
+            return;
+        var job = _thumbJobs[videoPath];
+        if (job === "done") {
+            if (callback) callback(getCacheThumbnailPath(videoPath));
+            return;
+        }
+        if (job === "failed")
+            return;
+        if (job) {
+            job.push(callback);
+            return;
+        }
+        _thumbJobs[videoPath] = [callback];
+        generateVideoThumbnail(videoPath, function (thumb) {
+            var waiting = _thumbJobs[videoPath] || [];
+            _thumbJobs[videoPath] = thumb ? "done" : "failed";
+            if (!thumb)
+                console.warn("[LiquidGlass] ffmpeg khong tao duoc thumbnail cho", videoPath, "- kiem tra da cai ffmpeg chua");
+            for (var i = 0; i < waiting.length; i++)
+                if (thumb && waiting[i]) waiting[i](thumb);
+        });
     }
 
     // Tạo thumbnail trong thư mục cache với chất lượng thấp

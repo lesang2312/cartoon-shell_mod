@@ -15,14 +15,26 @@ Singleton {
     readonly property string matugenFilePath: Directories.assetsPath + "/themes/matugen.json"
 
     // Thư mục cache thumbnail cố định
-    readonly property string wallpaperThumbsDir: "/home/long/.cache/quickshell/wallpapers_thumbs"
+    readonly property string wallpaperThumbsDir: `${Directories.cache}/quickshell/wallpapers_thumbs`
 
     property list<string> themeFiles: []
     property bool loading: false
     property alias palette: adapter
 
     // Theme property - sẽ chứa theme theo format mới
-    property var theme: getFallbackTheme()
+    property var rawTheme: getFallbackTheme()
+
+    // Khi bật Liquid Glass, chữ chuyển sang trắng như quickshell (ThemeBackend.liquidGlass -> text #ffffff)
+    // để đọc rõ trên nền kính trong. Theme gốc (rawTheme) giữ nguyên, không ghi ngược vào file.
+    function glassTextTheme(raw, on) {
+        if (!on || !raw || !raw.primary)
+            return raw;
+        const t = JSON.parse(JSON.stringify(raw));
+        t.primary.foreground = "#ffffff";
+        t.primary.dim_foreground = "#e6ecf2";
+        return t;
+    }
+    property var theme: glassTextTheme(rawTheme, GlassService.enabled)
 
     readonly property bool isInitialized: true
     property Timer reloadTimer: Timer {
@@ -146,7 +158,7 @@ Singleton {
             Settings.appearance.theme = newTheme;
             Settings.appearance.dynamic = (newTheme === "matugen");
         }
-        return root.theme;
+        return root.rawTheme;
     }
 
     function getFallbackTheme() {
@@ -293,7 +305,7 @@ Singleton {
 
         if (data.type && data.primary && data.normal) {
             root._currentTheme = data;
-            root.theme = data;
+            root.rawTheme = data;
 
             var materialData = mapThemeToMaterial(data);
             let changed = false;
@@ -321,7 +333,7 @@ Singleton {
             }
 
             root._currentTheme = null;
-            root.theme = getThemeFromPalette();
+            root.rawTheme = getThemeFromPalette();
         }
 
         root.loading = false;
@@ -466,7 +478,7 @@ Singleton {
     }
 
     function createMatugenJsonFile() {
-        const themeData = root.theme;
+        const themeData = root.rawTheme;
         const themeJson = JSON.stringify(themeData, null, 2);
 
         var tempFile = "/tmp/matugen_temp_" + Date.now() + ".json";

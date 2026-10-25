@@ -31,10 +31,11 @@ Item {
     Layout.fillHeight: true
 
     Rectangle {
+        GlassPanel { id: glassBg1 }
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0.05 ? parent.width : 0
         implicitHeight: root.animationProgress > 0.05 ? parent.height : 0
-        color: theme.primary.background
+        color: glassBg1.active ? "transparent" : theme.primary.background
         radius: ScalerService.s(Settings.appearance.radius1)
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         border.color: theme.button.border
@@ -124,7 +125,7 @@ Item {
 
                     Image {
                         anchors.fill: parent
-                        source: Settings.dashboard.urlAvatar ? Settings.dashboard.urlAvatar : "/home/long/Downloads/111423869.png"
+                        source: Settings.dashboard.urlAvatar ? Settings.dashboard.urlAvatar : Directories.home + "/Downloads/111423869.png"
                         fillMode: Image.PreserveAspectCrop
                         smooth: true
                     }

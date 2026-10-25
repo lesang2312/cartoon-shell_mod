@@ -8,6 +8,7 @@ import Quickshell.Io
 import qs.services
 import qs.commons
 import qs.components
+import "../../../components/glass"
 
 PanelWindow {
     id: root
@@ -99,9 +100,10 @@ PanelWindow {
         id: backgroundRect
         anchors.fill: parent
 
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
         border.color: dragTimer.dragEnabled ? theme.normal.blue : theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
+        GlassPanel { id: glassBg }
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         clip: true
 

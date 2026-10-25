@@ -9,6 +9,7 @@ import qs.components
 
 Rectangle {
   id: root
+  GlassPanel { id: glassBg }
   anchors.centerIn: parent
   property real animationProgress: 0
   implicitWidth: root.animationProgress > 0 ? parent.width : 0
@@ -27,7 +28,7 @@ Rectangle {
       easing.type: Easing.OutCubic
     }
   }
-  color: theme.primary.background
+  color: glassBg.active ? "transparent" : theme.primary.background
   radius: ScalerService.s(Settings.appearance.radius2)
   border.color: theme.button.border
   border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0

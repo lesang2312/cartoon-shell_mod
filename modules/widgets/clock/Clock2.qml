@@ -7,7 +7,7 @@ import qs.components
 
 Item {
     id: root
-    implicitWidth: ScalerService.s(370)
+    implicitWidth: ScalerService.s(400)
     implicitHeight: columnLayout.implicitHeight
 
     Rectangle {
@@ -17,17 +17,17 @@ Item {
         ColumnLayout {
             id: columnLayout
             anchors.centerIn: parent
-            spacing: - ScalerService.s(80)  //De am de khoang cah gio va phut gan nhau hon
+            spacing: - ScalerService.s(25)  //De am de khoang cah gio va phut gan nhau hon
 
             //Ve gio
             CustomText {
                 id: textCurrentHours
                 name: DateTimeService.currentHour
                 Layout.alignment: Qt.AlignHCenter
-                font.pixelSize: ScalerService.s(140)
-                color: '#83e2ec' //theme.primary.dim_foreground
+                font.pixelSize: ScalerService.s(150)
+                color: '#68b6e3' //theme.primary.dim_foreground
                 isBold: true
-                fontFamily: "JetBrainsMonoNL NFM SemiBold"
+                fontFamily: "BigBlueTerm437 Nerd Font"
             }
 
             //Ve phut
@@ -35,10 +35,10 @@ Item {
                 id: textCurrentMin
                 name: DateTimeService.currentMinutes
                 Layout.alignment: Qt.AlignHCenter
-                font.pixelSize: ScalerService.s(140)
-                color: "#00f0ff" //theme.primary.dim_foreground
+                font.pixelSize: ScalerService.s(150)
+                color: '#30c933' //theme.primary.dim_foreground
                 isBold: true
-                fontFamily: "JetBrainsMonoNL NFM SemiBold"
+                fontFamily: "BigBlueTerm437 Nerd Font"
             }
         }
     }

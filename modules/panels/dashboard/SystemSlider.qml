@@ -22,6 +22,7 @@ RowLayout {
         Layout.preferredWidth: ScalerService.s(50)
         Layout.preferredHeight: ScalerService.s(50)
         Rectangle {
+            GlassPanel { id: glassBg1 }
             anchors.centerIn: parent
             implicitWidth: root.animationProgress > root.revealThreshold - 0.1 ? parent.width : 0
             implicitHeight: root.animationProgress > root.revealThreshold - 0.1 ? parent.height : 0
@@ -38,7 +39,7 @@ RowLayout {
                 }
             }
 
-            color: theme.primary.background
+            color: glassBg1.active ? "transparent" : theme.primary.background
             radius: ScalerService.s(Settings.appearance.radius1)
             border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
             border.color: theme.button.border
@@ -69,6 +70,7 @@ RowLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: ScalerService.s(50)
         Rectangle {
+            GlassPanel { id: glassBg2 }
             anchors.centerIn: parent
             implicitWidth: root.animationProgress > root.revealThreshold - 0.05 ? parent.width : 0
             implicitHeight: root.animationProgress > root.revealThreshold - 0.05 ? parent.height : 0
@@ -84,16 +86,17 @@ RowLayout {
                     easing.type: Easing.OutCubic
                 }
             }
-            color: theme.primary.background
+            color: glassBg2.active ? "transparent" : theme.primary.background
             radius: ScalerService.s(Settings.appearance.radius1)
             border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
             border.color: theme.button.border
 
             Rectangle {
+                GlassPanel { id: glassBg3 }
                 anchors.fill: parent
                 anchors.margins: ScalerService.s(8)
                 radius: ScalerService.s(17)
-                color: theme.primary.background
+                color: glassBg3.active ? "transparent" : theme.primary.background
 
                 Rectangle {
                     height: parent.height

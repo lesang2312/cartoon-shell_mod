@@ -29,6 +29,7 @@ Item {
     property real animationProgress: 0
 
     Rectangle {
+        GlassPanel { id: glassBg1 }
         anchors.centerIn: parent
         implicitWidth: root.animationProgress > 0.6 ? parent.width : 0
         implicitHeight: root.animationProgress > 0.6 ? parent.height : 0
@@ -44,7 +45,7 @@ Item {
                 easing.type: Easing.OutCubic
             }
         }
-        color: theme.primary.background
+        color: glassBg1.active ? "transparent" : theme.primary.background
         radius: ScalerService.s(Settings.appearance.radius1)
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         border.color: theme.button.border

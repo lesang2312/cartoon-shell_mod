@@ -17,12 +17,14 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     property bool visibleGameWidget: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel", "wifi", "bluetooth", "mixer")
     property bool visibleSystemWidget: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel", "wifi")
+    property bool visibleCuteWidgets: root.allHidden("cpu", "ram", "dashboard", "weather", "keybind", "packagePanel", "wifi", "bluetooth", "mixer")
     function allHidden(...items) {
         return items.every(item => !VisibleService.getPanelVisible(item) || false);         //Thêm toán tử false để tránh lỗi render liên tục gây ngốn cpu
     }
 
     ColumnLayout {
         anchors.fill: parent
+        spacing: ScalerService.s(12)
         Loader {
             source: "../widgets/games/MenuGameWidget.qml"
             active: root.visibleGameWidget
@@ -38,6 +40,15 @@ PanelWindow {
             onLoaded: {
                 item.visible = Qt.binding(function () {
                     root.visibleSystemWidget;
+                });
+            }
+        }
+        Loader {
+            source: "../widgets/cute/CuteWidgets.qml"
+            active: root.visibleCuteWidgets
+            onLoaded: {
+                item.visible = Qt.binding(function () {
+                    root.visibleCuteWidgets;
                 });
             }
         }

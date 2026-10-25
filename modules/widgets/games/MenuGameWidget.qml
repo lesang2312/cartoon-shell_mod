@@ -53,10 +53,11 @@ Item {
                 maxOpacity: 0.04
             }
         }
-        color: theme.primary.background
-        border.color: theme.button.border
+        color: glassBg.active ? "transparent" : Qt.rgba(Qt.color(theme.primary.background).r, Qt.color(theme.primary.background).g, Qt.color(theme.primary.background).b, 0.62)
+        GlassPanel { id: glassBg }
+        border.color: Qt.rgba(Qt.color(theme.button.border).r, Qt.color(theme.button.border).g, Qt.color(theme.button.border).b, 0.78)
         radius: ScalerService.s(Settings.appearance.radius1)
-        border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
+        border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
 
         // ---- Menu ----
         ColumnLayout {
@@ -79,6 +80,7 @@ Item {
                 fontFamily: "BigBlueTerm437 Nerd Font"
                 implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
+                backgroundOpacity: 0.66
                 radius: 15
                 onClicked: root.view = "pacman"
             }
@@ -88,6 +90,7 @@ Item {
                 fontFamily: "BigBlueTerm437 Nerd Font"
                 implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
+                backgroundOpacity: 0.66
                 radius: 15
                 onClicked: root.view = "caro"
             }
@@ -97,6 +100,7 @@ Item {
                 fontFamily: "BigBlueTerm437 Nerd Font"
                 implicitWidth: ScalerService.s(100); implicitHeight: ScalerService.s(40)
                 border.color: '#ffe3e3'; border.width: 2
+                backgroundOpacity: 0.66
                 radius: 15
                 onClicked: root.view = "ninja"  //Sua tu caro thanh ninja
             }

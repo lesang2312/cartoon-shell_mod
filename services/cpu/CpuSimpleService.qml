@@ -6,58 +6,66 @@ import Quickshell
 import Quickshell.Io
 
 Singleton {
-  id: root
+    id: root
 
-  property real cpuPercent: 0
+    property int cpuPercent: 0
+    property var cpuHistory: []
+    property int maxHistoryLength: 50
+    property double previousTotal: -1
+    property double previousIdle: -1
 
-  property var cpuHistory: []
+    // Read /proc/stat directly; avoid an awk/vmstat child process for every sample.
+    Process {
+        id: cpuProcess
+        command: ["cat", "/proc/stat"]
+        running: false
 
-  property int maxHistoryLength: 50
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const firstLine = text.split("\n", 1)[0].trim();
+                const fields = firstLine.split(/\s+/);
+                if (fields.length < 5 || fields[0] !== "cpu")
+                    return;
 
-  Process {
-    id: cpuProcess
+                // Linux counters: user nice system idle iowait irq softirq steal.
+                // Exclude guest/guest_nice because they are already included in user/nice.
+                const counters = fields.slice(1, 9).map(Number);
+                if (counters.length < 8 || counters.some(v => !Number.isFinite(v)))
+                    return;
 
-    command: [
-    "sh",
-    "-c",
-    "vmstat 1 2 | awk 'NR==4 {print 100-$15}'"
-    ]
+                const total = counters.reduce((sum, v) => sum + v, 0);
+                const idle = counters[3] + counters[4];
 
-    running: false
+                if (root.previousTotal >= 0 && root.previousIdle >= 0) {
+                    const totalDelta = total - root.previousTotal;
+                    const idleDelta = idle - root.previousIdle;
+                    if (totalDelta > 0) {
+                        const value = Math.max(0, Math.min(100,
+                            100 * (totalDelta - idleDelta) / totalDelta));
+                        root.cpuPercent = Math.round(value);
 
-    stdout: StdioCollector {
-      onTextChanged: {
-        const value = parseFloat(text.trim());
+                        const history = root.cpuHistory.slice();
+                        history.push({ usage: value });
+                        if (history.length > root.maxHistoryLength)
+                            history.shift();
+                        root.cpuHistory = history;
+                    }
+                }
 
-        if (isNaN(value))
-        return;
-
-        root.cpuPercent = value;
-
-        const history = root.cpuHistory.slice();
-
-        history.push({
-            usage: value
-        });
-
-        if (history.length > root.maxHistoryLength)
-        history.shift();
-
-        root.cpuHistory = history;
-      }
+                root.previousTotal = total;
+                root.previousIdle = idle;
+            }
+        }
     }
-  }
 
-  Timer {
-    interval: 1000
-    repeat: true
-    running: true
-    triggeredOnStart: true
-
-    onTriggered: {
-      if (!cpuProcess.running)
-      cpuProcess.running = true;
+    Timer {
+        interval: 2000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: {
+            if (!cpuProcess.running)
+                cpuProcess.running = true;
+        }
     }
-  }
-
 }

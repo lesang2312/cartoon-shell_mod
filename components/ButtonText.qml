@@ -11,6 +11,7 @@ Rectangle {
     property bool isBold: false
     property bool hovered: false
     property color textColor: theme.button.text
+    property real backgroundOpacity: 1.0
     property string fontFamily: Settings.appearance.font
 
     radius: ScalerService.s(8)
@@ -18,7 +19,10 @@ Rectangle {
     border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
     border.color: root.hovered ? theme.button.border_select : theme.button.border
 
-    color: root.hovered ? theme.button.background_select : theme.button.background
+    color: {
+        const base = Qt.color(root.hovered ? theme.button.background_select : theme.button.background);
+        return Qt.rgba(base.r, base.g, base.b, base.a * Math.max(0, Math.min(1, root.backgroundOpacity)));
+    }
 
     // Fixed size based on the size property (no hover effect)
     implicitWidth: iconText.width + ScalerService.s(5)

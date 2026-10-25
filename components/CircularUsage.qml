@@ -1,88 +1,98 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
 import qs.commons
-import qs.components
+import qs.services
 
 Item {
     id: root
 
     property string title: ""
-    property real value: 23
-    property color progressColor: theme.normal.red
-    property color trackColor: theme.button.border
-    property color textColor: theme.primary.foreground
-    property real strokeWidth: 6
+    property real value: 0
+    property color progressColor: "#80B4FF"
+    property color trackColor: "#59647B"
+    property color textColor: "#F5F7FF"
+    property real strokeWidth: 7
 
-    implicitWidth: 160
-    implicitHeight: 200
+    implicitWidth: ScalerService.s(122)
+    implicitHeight: ScalerService.s(140)
 
-    property real animatedValue: value
+    readonly property real clampedValue: Math.max(0, Math.min(100, Number(value) || 0))
+    property real animatedValue: clampedValue
     Behavior on animatedValue {
-        NumberAnimation {
-            duration: 400
-            easing.type: Easing.OutCubic
-        }
+        NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
     }
-
-    onAnimatedValueChanged: canvas.requestPaint()
+    onClampedValueChanged: animatedValue = clampedValue
+    onAnimatedValueChanged: ring.requestPaint()
+    onWidthChanged: ring.requestPaint()
+    onHeightChanged: ring.requestPaint()
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 12
+        spacing: ScalerService.s(4)
+
+        Text {
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+            text: root.title
+            color: root.textColor
+            font.pixelSize: ScalerService.s(11)
+            font.bold: true
+            elide: Text.ElideRight
+        }
 
         Item {
+            id: ringArea
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.minimumHeight: ScalerService.s(78)
 
             Canvas {
-                id: canvas
-                anchors.fill: parent
+                id: ring
+                width: Math.min(parent.width, parent.height, ScalerService.s(104))
+                height: width
+                anchors.centerIn: parent
                 antialiasing: true
+                renderTarget: Canvas.Image
 
                 onPaint: {
-                    var ctx = getContext("2d");
+                    const ctx = getContext("2d");
                     ctx.reset();
-
-                    var centerX = width / 2;
-                    var centerY = height / 2;
-                    var radius = (Math.min(width, height) - root.strokeWidth) / 2 - 10;
+                    const cx = width / 2;
+                    const cy = height / 2;
+                    const line = Math.max(3, root.strokeWidth);
+                    const radius = Math.max(8, Math.min(width, height) / 2 - line - 2);
+                    ctx.lineWidth = line;
+                    ctx.lineCap = "round";
                     ctx.beginPath();
-                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-                    ctx.lineWidth = root.strokeWidth;
+                    ctx.arc(cx, cy, radius, 0, Math.PI * 2, false);
                     ctx.strokeStyle = root.trackColor;
                     ctx.stroke();
-                    var startAngle = -Math.PI / 2;
-                    var sweepAngle = (root.animatedValue / 100) * (2 * Math.PI);
-                    var endAngle = startAngle + sweepAngle;
-
                     if (root.animatedValue > 0) {
                         ctx.beginPath();
-                        ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
-                        ctx.lineWidth = root.strokeWidth;
+                        ctx.arc(cx, cy, radius, -Math.PI / 2,
+                                -Math.PI / 2 + root.animatedValue / 100 * Math.PI * 2, false);
                         ctx.strokeStyle = root.progressColor;
-                        ctx.lineCap = "round";
                         ctx.stroke();
                     }
                 }
             }
 
-            ColumnLayout {
+            Column {
                 anchors.centerIn: parent
-                CustomText {
-                    Layout.alignment: Qt.AlignHCenter
-                    name: root.title
-                    font.pixelSize: 20
-                    color: root.progressColor
-                    isBold: true
-                    fontFamily: "Adwaita Mono"
+                spacing: 0
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: Math.round(root.animatedValue) + "%"
+                    color: "#FFFFFF"
+                    font.pixelSize: ScalerService.s(18)
+                    font.bold: true
+                    font.family: "Sans Serif"
                 }
-                CustomText {
-                    Layout.alignment: Qt.AlignHCenter
-                    name: `${Math.round(root.animatedValue)}%`
-                    size: "small"
-                    color: theme.primary.dim_foreground
-                    isBold: true
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: root.title === "Memory" ? "RAM" : root.title
+                    color: "#D5DDF0"
+                    font.pixelSize: ScalerService.s(8)
                 }
             }
         }

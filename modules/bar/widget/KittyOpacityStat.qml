@@ -162,11 +162,20 @@ Item {
             }
         }
 
+
         Rectangle {
             id: card
+            GlassPanel {
+                id: glassBg
+                // Riêng popup Kitty: kính Clear, nhìn xuyên rõ wallpaper hơn panel thường.
+                tint: 0.028
+                frostAmount: 0.08
+                rim: 0.82
+                bezelSize: Math.max(5, Math.min(14, Math.min(parent.width, parent.height) * 0.05))
+            }
             anchors.fill: parent
             radius: ScalerService.s(Settings.appearance.radius1)
-            color: theme.primary.background
+            color: glassBg.active ? "transparent" : theme.primary.background
             clip: true
             opacity: 0
             scale: 0.85
@@ -174,7 +183,7 @@ Item {
 
             // Viền Cyan hi-tech tinh tế
             border.width: ScalerService.s(1)
-            border.color: Qt.rgba(0x4F / 255, 0xC3 / 255, 0xF7 / 255, 0.3)
+            border.color: Qt.rgba(0x92 / 255, 0xDE / 255, 0xFF / 255, 0.28)
 
             ColumnLayout {
                 id: cardContent

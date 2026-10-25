@@ -3,6 +3,7 @@ import qs.components
 import QtQuick.Layouts
 import Quickshell
 import qs.services
+import "../../../components/glass"
 
 PanelWindow {
   id: root
@@ -204,7 +205,8 @@ PanelWindow {
     radius: ScalerService.s(Settings.appearance.radius1)
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
     border.color: theme.primary.foreground
-    color: theme.primary.background
+    color: glassBg.active ? "transparent" : theme.primary.background
+    GlassPanel { id: glassBg }
 
     CustomText {
       anchors.centerIn: parent

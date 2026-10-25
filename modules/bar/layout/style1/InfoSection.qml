@@ -9,7 +9,8 @@ import "../../widget/" as Com
 
 Rectangle {
     id: root
-    color: theme.primary.background
+    GlassPanel { id: glassBg }
+    color: glassBg.active ? "transparent" : theme.primary.background
     radius: ScalerService.s(Settings.appearance.radius2)
     border.color: theme.button.border
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0

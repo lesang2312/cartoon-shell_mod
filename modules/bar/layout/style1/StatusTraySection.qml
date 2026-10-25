@@ -11,10 +11,11 @@ import "../../widget/" as Com
 
 Rectangle {
     id: root
+    GlassPanel { id: glassBg }
     border.color: theme.button.border
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
     radius: ScalerService.s(Settings.appearance.radius2)
-    color: theme.primary.background
+    color: glassBg.active ? "transparent" : theme.primary.background
     anchors.centerIn: parent
     property real animationProgress: 0
 

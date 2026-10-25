@@ -12,9 +12,16 @@ Rectangle {
   property string waveColor: theme.button.text
   property real phase1: 0
 
+  property bool waveActive: false
+  onFillValueChanged: { waveActive = true; waveSettle.restart() }
   Timer {
-    interval: 64
-    running: true
+    id: waveSettle
+    interval: 1600
+    onTriggered: waterFillContainer.waveActive = false
+  }
+  Timer {
+    interval: 80
+    running: waterFillContainer.waveActive && waterFillContainer.visible
     repeat: true
     onTriggered: {
       phase1 += 0.05

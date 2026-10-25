@@ -5,6 +5,7 @@ import Qt.labs.folderlistmodel
 import Quickshell
 import qs.components
 import qs.services
+import qs.commons
 import "./open_file" as Com
 
 PanelWindow {
@@ -18,7 +19,7 @@ PanelWindow {
   property var theme: ThemeService.theme
   property url selectedFile: ""
   property int gridSize: ScalerService.s(100)  // Kích thước mỗi item
-  property string currentPath: "file:///home/long/"
+  property string currentPath: "file://" + Directories.home + "/"
   signal fileOpened(url fileUrl)
 
   focusable: true
@@ -70,12 +71,18 @@ PanelWindow {
   }
 
   Rectangle {
+    GlassPanel {
+      id: glassBg
+      tint: 0.035
+      frostAmount: 0.12
+      rim: 0.78
+    }
     anchors.fill: parent
 
-    color: theme.primary.background
+    color: glassBg.active ? "transparent" : theme.primary.background
     radius: ScalerService.s(16)
-    border.width: ScalerService.s(3)
-    border.color: theme.primary.foreground
+    border.width: glassBg.active ? ScalerService.s(1) : ScalerService.s(3)
+    border.color: glassBg.active ? Qt.rgba(1, 1, 1, 0.34) : theme.primary.foreground
     // Navigation buttons
     ColumnLayout {
       anchors.fill: parent

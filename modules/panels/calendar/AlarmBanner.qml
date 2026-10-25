@@ -16,11 +16,17 @@ Item {
 
   Rectangle {
     id: card
+    GlassPanel {
+      id: glassBg
+      tint: 0.035
+      frostAmount: 0.12
+      rim: 0.78
+    }
     width: ScalerService.s(280)
     height: ScalerService.s(56)
     radius: ScalerService.s(16)
-    color: theme.primary.background
-    border.color: theme.button.border
+    color: glassBg.active ? "transparent" : theme.primary.background
+    border.color: glassBg.active ? Qt.rgba(1, 1, 1, 0.32) : theme.button.border
     border.width: ScalerService.s(1)
 
     opacity: 0

@@ -70,7 +70,8 @@ RowLayout {
     Item {
         anchors.fill: parent
         CustomRectangle {
-            color: theme.primary.background
+            GlassPanel { id: glassBg }
+            color: glassBg.active ? "transparent" : theme.primary.background
             anchors.centerIn: parent
             implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
             implicitHeight: root.animationProgress > 0.1 ? parent.height : 0

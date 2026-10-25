@@ -85,6 +85,10 @@ Item {
             width: parent.width
             Layout.fillWidth: true
           }
+          // Nút bật/tắt Liquid Glass
+          Com.LiquidGlassToggle {
+            Layout.fillWidth: true
+          }
           Com.ListTheme {
 
           }

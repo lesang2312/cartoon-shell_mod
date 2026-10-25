@@ -56,11 +56,12 @@ Scope {
       mask: Region {}
 
       Rectangle {
+        GlassPanel { id: glassBg }
         anchors.fill: parent
         border.color: theme.button.border
         radius: ScalerService.s(Settings.appearance.radius1)
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
-        color: theme.primary.background
+        color: glassBg.active ? "transparent" : theme.primary.background
 
         ColumnLayout {
           anchors {

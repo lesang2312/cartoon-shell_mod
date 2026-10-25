@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Fusion
 import "." as Com
 import qs.services
+import qs.components
 import qs.commons
 
 Item {
@@ -14,6 +15,7 @@ Item {
   property real animationProgress: 0
 
   Rectangle {
+      GlassPanel { id: glassBg1 }
     anchors.centerIn: parent
     implicitWidth: root.animationProgress > 0.65 ? parent.width : 0
     implicitHeight: root.animationProgress > 0.65 ? parent.height : 0
@@ -31,7 +33,7 @@ Item {
     }
     radius: ScalerService.s(Settings.appearance.radius1)
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
-    color: theme.primary.background
+    color: glassBg1.active ? "transparent" : theme.primary.background
     border.color: theme.button.border
 
     ColumnLayout {

@@ -1,6 +1,4 @@
 import QtQuick
-import QtQuick.Controls
-import Quickshell.Wayland
 import QtQuick.Layouts
 import Quickshell
 import qs.commons
@@ -11,122 +9,118 @@ import qs.services.cpu
 
 Item {
     id: root
-    //anchors.fill: parent
-    implicitWidth: ScalerService.s(480)
-    implicitHeight: ScalerService.s(260)
-    property real animationProgress: 0
-    SequentialAnimation on animationProgress {
-        running: true
+    implicitWidth: ScalerService.s(450)
+    implicitHeight: ScalerService.s(220)
 
-        NumberAnimation {
-            from: 0
-            to: 1
-            duration: 500
-            easing.type: Easing.Linear
-        }
+    Component.onCompleted: DiskService.acquire()
+    Component.onDestruction: DiskService.release()
+
+    function mixedPanelColor(alpha) {
+        const c = Qt.color(theme.primary.background);
+        return Qt.rgba(c.r, c.g, c.b, alpha);
     }
+
     Rectangle {
-        anchors.centerIn: parent
-        implicitWidth: root.animationProgress > 0 ? parent.width : 0
-        implicitHeight: root.animationProgress > 0 ? parent.height : 0
-        Behavior on implicitHeight {
-            NumberAnimation {
-                id: heightAnim
-                duration: 500
-                easing.type: Easing.OutCubic
-            }
-        }
-        Behavior on implicitWidth {
-            NumberAnimation {
-                id: widthAnim
-                duration: 500
-                easing.type: Easing.OutCubic
-            }
-        }
-        Loader {
-            anchors.fill: parent
-
-            active: !heightAnim.running && !widthAnim.running
-
-            sourceComponent: FloatingCircles {
-                circleColor: theme.button.text
-                anchors.fill: parent
-                circleCount: 2
-                minOpacity: 0.02
-                maxOpacity: 0.04
-            }
-        }
-        color: theme.primary.background
-        border.color: theme.button.border
-        radius: ScalerService.s(Settings.appearance.radius1)
-        border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
+        anchors.fill: parent
+        radius: ScalerService.s(20)
+        // A stronger tinted surface keeps text legible while still showing the wallpaper.
+        color: root.mixedPanelColor(glass.active ? 0.73 : 0.94)
+        border.color: Qt.rgba(0.86, 0.91, 1.0, 0.88)
+        border.width: ScalerService.s(1.5)
         clip: true
+
+        GlassPanel {
+            id: glass
+            tint: 0.30
+            frostAmount: 0.16
+            rim: 0.82
+        }
+
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: ScalerService.s(10)
-            spacing: ScalerService.s(5)
+            anchors.margins: ScalerService.s(13)
+            spacing: ScalerService.s(8)
 
-            CustomText {
-                name: "System usage"
-                size: "xl"
-                isBold: true
-                fontFamily: "Lilex Nerd Font"
-                textColor: theme.button.text
-                elide: Text.ElideRight
-                Layout.alignment: Qt.AlignHCenter
+            RowLayout {
                 Layout.fillWidth: true
-                Layout.maximumWidth: parent.width
-                horizontalAlignment: Text.AlignHCenter
+                spacing: ScalerService.s(8)
+                Rectangle {
+                    Layout.preferredWidth: ScalerService.s(28)
+                    Layout.preferredHeight: ScalerService.s(28)
+                    radius: ScalerService.s(9)
+                    color: Qt.rgba(0.36, 0.58, 1.0, 0.22)
+                    border.color: Qt.rgba(0.62, 0.75, 1.0, 0.72)
+                    Text {
+                        anchors.centerIn: parent
+                        text: "◉"
+                        color: "#DCE7FF"
+                        font.pixelSize: ScalerService.s(16)
+                        font.bold: true
+                    }
+                }
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 0
+                    Text {
+                        text: "Activity Monitor"
+                        color: "#F5F7FF"
+                        font.pixelSize: ScalerService.s(16)
+                        font.bold: true
+                    }
+                    Text {
+                        text: "CPU và RAM đã dùng · cập nhật mỗi 2 giây"
+                        color: "#CCD5EB"
+                        font.pixelSize: ScalerService.s(10)
+                    }
+                }
+                Rectangle {
+                    Layout.preferredWidth: ScalerService.s(9)
+                    Layout.preferredHeight: ScalerService.s(9)
+                    radius: width / 2
+                    color: "#72DCA2"
+                }
             }
-            
+
             RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: ScalerService.s(8)
                 CircularUsage {
-                    title: "Cpu"
+                    title: "CPU"
                     value: CpuSimpleService.cpuPercent
-                    progressColor: theme.normal.red
-                    Layout.preferredWidth: ScalerService.s(150)
-                    Layout.preferredHeight: ScalerService.s(180)
+                    progressColor: "#FF647C"
+                    trackColor: "#59647B"
+                    textColor: "#F5F7FF"
+                    strokeWidth: ScalerService.s(7)
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     Layout.minimumWidth: 0
                     Layout.minimumHeight: 0
-                    clip: true
                 }
                 CircularUsage {
-                    title: "Ram"
+                    title: "RAM"
                     value: RamSimpleService.ramPercent
-                    progressColor: theme.normal.green
-                    Layout.preferredWidth: ScalerService.s(150)
-                    Layout.preferredHeight: ScalerService.s(180)
+                    progressColor: "#A4E18A"
+                    trackColor: "#59647B"
+                    textColor: "#F5F7FF"
+                    strokeWidth: ScalerService.s(7)
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     Layout.minimumWidth: 0
                     Layout.minimumHeight: 0
-                    clip: true
                 }
                 CircularUsage {
                     title: "Disk"
                     value: DiskService.diskPercents
-                    progressColor: theme.normal.blue
-                    Layout.preferredWidth: ScalerService.s(150)
-                    Layout.preferredHeight: ScalerService.s(180)
+                    progressColor: "#80B4FF"
+                    trackColor: "#59647B"
+                    textColor: "#F5F7FF"
+                    strokeWidth: ScalerService.s(7)
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     Layout.minimumWidth: 0
                     Layout.minimumHeight: 0
-                    clip: true
                 }
-            }
-            Item {
-                Layout.fillHeight: true
-            }
-        }
-
-        Loader {
-            anchors.fill: parent
-
-            active: !heightAnim.running && !widthAnim.running
-
-            sourceComponent: StarField {
-                starCount: 10
-                shootingStarCount: 2
             }
         }
     }
