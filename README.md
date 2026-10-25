@@ -59,6 +59,28 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+### 🪟 Choosing the compositor (Hyprland / niri / both)
+
+In the menu, tick **Hyprland**, **niri**, or both (Hyprland is ticked by default). The installer then installs only the packages **and copies only the config folders** of what you picked:
+
+| Selection | Packages | Config copied to `~/.config` |
+|-----------|----------|------------------------------|
+| Hyprland | `hyprland`, `xdg-desktop-portal-hyprland` | `hypr/` + shared configs |
+| niri | `niri`, `xwayland-satellite`, `xdg-desktop-portal-gnome/gtk`, `gnome-keyring` | `niri/` + shared configs |
+| Both | all of the above | `hypr/`, `niri/` + shared configs |
+
+Shared configs are `fish/`, `kitty/`, `matugen/`, `gtk-3.0/`, `gtk-4.0/`, `starship.toml`, `xdg-desktop-portal/`. Existing files are backed up first.
+
+```bash
+# Unattended: niri only
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash -s -- --yes --only niri,dotfiles,wallpapers,aur,icons,userdirs,audio,bluetooth,input,fonts
+
+# Unattended: both
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash -s -- --yes --skip fonts-extra --only hyprland,niri
+```
+
+> Already have your own setup? Add `--skip dotfiles` to leave `~/.config` untouched. Use `--list` to see all component ids.
+
 ### 🎨 Icon theme: Papirus-Dark
 
 Both methods install `papirus-icon-theme` and set **Papirus-Dark** as the default icon theme automatically (component `icons`; skip it with `--skip icons`). To apply it manually:
