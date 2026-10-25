@@ -25,27 +25,27 @@
 ### Method 1 — One-line install with `curl` (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash
 ```
 
-The installer opens an interactive menu (↑/↓ move · Space toggle · `a` all · `n` none · Enter start · `q` quit). Useful options:
+The installer lives in this repository (`install/`). It downloads the dotfiles (`.config`), wallpapers (`Pictures/Wallpapers`) and the Cartoon Shell config ([cartoon-shell_mod](https://github.com/lesang2312/cartoon-shell_mod)) for you, and opens an interactive menu (↑/↓ move · Space toggle · `a` all · `n` none · Enter start · `q` quit). Useful options:
 
 ```bash
 # Unattended install, skip the heavy extra fonts
-curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash -s -- --yes --skip fonts-extra
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash -s -- --yes --skip fonts-extra
 
 # Preview only, nothing is changed
-curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash -s -- --dry-run
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash -s -- --dry-run
 
-# Also install the dotfiles (copied into ~/.config)
-curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | DOTFILES_REPO_URL=https://github.com/lesang2312/dotfiles-hyprland bash
+# Install only Cartoon Shell (+ required core packages)
+curl -fsSL https://raw.githubusercontent.com/lesang2312/dotfiles-hyprland_mod/main/install/get.sh | bash -s -- --only shell
 ```
 
 | Option | Description |
 |--------|-------------|
 | `-y, --yes` | Run unattended with default choices |
 | `--dry-run` | Print the commands without changing the system |
-| `--only a,b` / `--skip a,b` | Install only / skip the given components (`--list` to see them) |
+| `--only a,b` / `--skip a,b` | Install only / skip the given components, e.g. `--skip dotfiles,wallpapers` (`--list` to see them) |
 | `--restore [name]` | Restore a previous backup |
 | `--uninstall` | Remove copied files (installed packages are kept) |
 
@@ -53,8 +53,8 @@ curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/insta
 
 ```bash
 cd ~
-git clone https://github.com/lesang2312/dotfiles-hyprland
-cd dotfiles-hyprland
+git clone https://github.com/lesang2312/dotfiles-hyprland_mod
+cd dotfiles-hyprland_mod
 chmod +x setup.sh
 ./setup.sh
 ```
@@ -68,7 +68,7 @@ sudo pacman -S --needed papirus-icon-theme
 gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 ```
 
-The curl installer sets up all packages, fonts, the Vietnamese input method and the Papirus-Dark icon theme. The full dotfiles live in [dotfiles-hyprland](https://github.com/lesang2312/dotfiles-hyprland).
+The installer itself is hosted in the dotfiles repository, which also contains the full Hyprland config: [dotfiles-hyprland_mod](https://github.com/lesang2312/dotfiles-hyprland_mod).
 
 ## 🎛️ Custom Kitty Opacity Slider & New Updates
 
