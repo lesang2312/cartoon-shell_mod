@@ -1,35 +1,74 @@
+# Cartoon Shell
+
 ## 🎯 Introduction
 
-**Cartoon Shell** is a modern Wayland panel built entirely with **QuickShell** (QML) specifically for **Hyprland window manager**. The panel provides a smooth user experience with highly customizable interface, multi-language support, and multi-resolution display compatibility.
+**Cartoon Shell** is a modern Wayland panel built entirely with **QuickShell** (QML) specifically for the **Hyprland** window manager. The panel provides a smooth user experience with a highly customizable interface, multi-language support, and multi-resolution display compatibility.
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/7b68022d-6507-4404-b2a8-b68e6275a9ce" controls width="600" height="337.5"></video>
 </div>
 
-</p>
 > [!NOTE]
 > This is an updated and feature-extended version of the original "cartoon-shell" project created and owned by **Mai Duong Long** (mailong2401).
 
 ## 💻 System Requirements
 
-### Operating System
-- **Linux** (developed on Arch Linux)
-- **Wayland** compositor (X11 not supported)
-- **Hyprland(Lua)** window manager (required)
+- **Distro**: Arch Linux (or Arch-based: Manjaro, EndeavourOS, CachyOS, etc.)
+- **Wayland** compositor (X11 is not supported)
+- **Hyprland (Lua)** window manager (required)
+- **Internet connection** and at least 4 GB free disk space
 
 ## 🔧 Installation
 
-### Install dependencies (Arch Linux)
+> Supported: Arch Linux and Arch-based distros (Manjaro, EndeavourOS, CachyOS, …). Run as a **normal user** — the installer calls `sudo` by itself when needed.
 
-#### Full setup with dotfiles
+### Method 1 — One-line install with `curl` (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash
+```
+
+The installer opens an interactive menu (↑/↓ move · Space toggle · `a` all · `n` none · Enter start · `q` quit). Useful options:
+
+```bash
+# Unattended install, skip the heavy extra fonts
+curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash -s -- --yes --skip fonts-extra
+
+# Preview only, nothing is changed
+curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | bash -s -- --dry-run
+
+# Also install the dotfiles (copied into ~/.config)
+curl -fsSL https://raw.githubusercontent.com/lesang2312/cartoon-shell/main/install/get.sh | DOTFILES_REPO_URL=https://github.com/lesang2312/dotfiles-hyprland bash
+```
+
+| Option | Description |
+|--------|-------------|
+| `-y, --yes` | Run unattended with default choices |
+| `--dry-run` | Print the commands without changing the system |
+| `--only a,b` / `--skip a,b` | Install only / skip the given components (`--list` to see them) |
+| `--restore [name]` | Restore a previous backup |
+| `--uninstall` | Remove copied files (installed packages are kept) |
+
+### Method 2 — Clone the dotfiles and run `setup.sh`
+
 ```bash
 cd ~
-git clone https://github.com/lesang2312/dotfiles-hyprland_mod
-cd dotfiles-hyprland_mod
+git clone https://github.com/lesang2312/dotfiles-hyprland
+cd dotfiles-hyprland
 chmod +x setup.sh
 ./setup.sh
+```
+
+### 🎨 Icon theme: Papirus-Dark
+
+Both methods install `papirus-icon-theme` and set **Papirus-Dark** as the default icon theme automatically (component `icons`; skip it with `--skip icons`). To apply it manually:
+
+```bash
+sudo pacman -S --needed papirus-icon-theme
 gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 ```
+
+The curl installer sets up all packages, fonts, the Vietnamese input method and the Papirus-Dark icon theme. The full dotfiles live in [dotfiles-hyprland](https://github.com/lesang2312/dotfiles-hyprland).
 
 ## 🎛️ Custom Kitty Opacity Slider & New Updates
 
@@ -93,11 +132,11 @@ Here is how the 3x3 App Grid looks inside the dashboard panel with custom pixel-
     "appGrid": [
         {
             "name": "Brave",
-            "icon": "/home/linux-sieu-cap-pro-cua-le/.config/quickshell/cartoon-shell/icons/animal.png"
+            "icon": "/home/YOUR_USERNAME/.config/quickshell/cartoon-shell/icons/animal.png"
         },
         {
             "name": "Cốc Cốc",
-            "icon": "/home/linux-sieu-cap-pro-cua-le/.config/quickshell/cartoon-shell/icons/anime.png"
+            "icon": "/home/YOUR_USERNAME/.config/quickshell/cartoon-shell/icons/anime.png"
         },
         {
             "name": "Terminal",
@@ -105,7 +144,7 @@ Here is how the 3x3 App Grid looks inside the dashboard panel with custom pixel-
         }
     ],
     "fullname": "Your fullname",
-    "username": "Your username",
+    "username": "Your username"
 }
 ```
 *Note: For built-in system applications, you can just input the native icon theme name (like `"kitty"`) instead of using an absolute file path.*
