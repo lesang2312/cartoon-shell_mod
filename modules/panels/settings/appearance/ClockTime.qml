@@ -48,6 +48,14 @@ Item {
         Layout.fillWidth: true
       }
 
+      Com.ClockStyleSelector {
+        Layout.fillWidth: true
+      }
+
+      Com.ClockInfoToggle {
+        Layout.fillWidth: true
+      }
+
       Com.ClockPositionSelector {
         Layout.fillWidth: true
       }

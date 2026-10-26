@@ -168,6 +168,10 @@ Singleton {
         property string timeFormat: "24h"
         property bool enableWidget: true
         property string positionWidget: "top"
+        // "current" | "iphone" | "pixel"
+        property string style: "current"
+        // Dải thông tin kiểu Android (pin, thời tiết, wifi) dưới đồng hồ
+        property bool showInfo: true
     }
 
     component Weather: JsonObject {
