@@ -5,7 +5,7 @@
 **Cartoon Shell** is a modern Wayland panel built entirely with **QuickShell** (QML) specifically for the **Hyprland** window manager. The panel provides a smooth user experience with a highly customizable interface, multi-language support, and multi-resolution display compatibility.
 
 <div align="center">
-  <video src="https://github.com/user-attachments/assets/7b68022d-6507-4404-b2a8-b68e6275a9ce" controls width="600" height="337.5"></video>
+  <video src="https://github.com/user-attachments/assets/4665c042-16b1-472e-8d8b-684877dcfd01" controls width="600" height="337.5"></video>
 </div>
 
 > [!NOTE]
