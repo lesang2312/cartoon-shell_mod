@@ -10,7 +10,7 @@ Item {
     property real defaultXRatio: 0.02
     property real defaultYRatio: 0.05
     property url sourceUrl
-    property bool widgetVisible: true
+    property bool widgetVisible: false
     property bool widgetMinimized: WidgetLayoutService.isWidgetMinimized(widgetId)
     property string iconGlyph: "▦"
     readonly property real sceneWidth: parent ? parent.width : 1920

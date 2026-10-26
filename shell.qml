@@ -64,6 +64,7 @@ ShellRoot {
             Component.onCompleted: {
                 ThemeService.init();
                 WallpaperService.init();
+                SddmService.init();
                 ProgramCheckerService.init();
                 LanguageService.init();
             }

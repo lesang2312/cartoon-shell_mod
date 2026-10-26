@@ -209,6 +209,8 @@ Singleton {
         property bool enableMultiMonitorDirectories: false
         property bool recursiveSearch: false
         property bool setWallpaperOnAllMonitors: true
+        // Đồng bộ hình nền hiện tại sang màn hình đăng nhập SDDM (theme cartoon)
+        property bool syncSddm: true
         property string defaultWallpaper: ""
         property string fillMode: "crop"
         property color fillColor: "#000000"

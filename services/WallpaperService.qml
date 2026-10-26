@@ -61,6 +61,42 @@ Singleton {
         }
     }
 
+    // Tự động đặt hình nền ở đầu danh sách trong lần khởi động đầu tiên
+    // (khi chưa có hình nền nào được lưu cho màn hình đó).
+    property var _autoWallpaperDone: ({})
+
+    Connections {
+        target: root
+
+        function onWallpaperListChanged(screenName, count) {
+            root.autoSetFirstWallpaper(screenName);
+        }
+    }
+
+    function autoSetFirstWallpaper(screenName) {
+        if (!isInitialized || _autoWallpaperDone[screenName])
+            return;
+
+        // Đã có hình nền (đã lưu hoặc mặc định) -> không can thiệp
+        if (getWallpaper(screenName))
+            return;
+
+        var list = getWallpapersList(screenName);
+        if (!list || list.length === 0)
+            return;
+
+        // Sắp xếp giống giao diện chọn hình nền (theo tên, không phân biệt hoa thường)
+        var sorted = list.slice().sort(function (a, b) {
+            var x = a.split('/').pop().toLowerCase();
+            var y = b.split('/').pop().toLowerCase();
+            return x < y ? -1 : (x > y ? 1 : 0);
+        });
+
+        _autoWallpaperDone[screenName] = true;
+        console.log("[WallpaperService] First boot: auto-set wallpaper", sorted[0], "on", screenName);
+        _setWallpaper(screenName, sorted[0]);
+    }
+
     function init() {
         // Tạo thư mục cache nếu chưa tồn tại
         var mkdirCmd = `mkdir -p "${root.wallpaperThumbsDir}"`;
@@ -84,6 +120,13 @@ Singleton {
 
         isInitialized = true;
         Qt.callLater(refreshWallpapersList);
+
+        // Đồng bộ hình nền hiện tại sang màn hình đăng nhập mỗi lần shell khởi động
+        // (bắt được cả hình nền đã đặt từ trước khi có tính năng này).
+        Qt.callLater(function () {
+            if (Quickshell.screens.length > 0)
+                root.syncSddmWallpaper(root.getWallpaper(Quickshell.screens[0].name));
+        });
     }
 
     function getFillModeUniform() {
@@ -307,6 +350,31 @@ Singleton {
         }
     }
 
+    // ---- Đồng bộ hình nền sang màn hình đăng nhập SDDM ----
+    // Theme "cartoon" đọc file "wallpaper" trong thư mục theme; installer đã cấp quyền ghi cho user
+    // nên không cần sudo. Nếu thư mục không tồn tại / không ghi được thì bỏ qua âm thầm.
+    readonly property string sddmThemeDir: "/usr/share/sddm/themes/cartoon"
+
+    function syncSddmWallpaper(path) {
+        if (!path || !Settings.wallpaper.syncSddm)
+            return;
+        if (isVideoFile(path)) {
+            // Video: dùng khung hình giữa video (1280px) làm ảnh nền đăng nhập
+            ensureGlassThumbnail(path, function (thumb) {
+                if (thumb)
+                    root._copyToSddm(thumb);
+            });
+        } else {
+            root._copyToSddm(path);
+        }
+    }
+
+    function _copyToSddm(src) {
+        var dir = root.sddmThemeDir;
+        var cmd = `[ -d "${dir}" ] && [ -w "${dir}" ] && { cmp -s -- "$1" "${dir}/wallpaper" || { cp -f -- "$1" "${dir}/wallpaper.tmp" && chmod 644 "${dir}/wallpaper.tmp" && mv -f "${dir}/wallpaper.tmp" "${dir}/wallpaper"; }; }`;
+        Quickshell.execDetached(["bash", "-c", cmd, "_", FileUtils.trimFileProtocol(src)]);
+    }
+
     function changeWallpaper(path, screenName) {
         if (screenName !== undefined) {
             _setWallpaper(screenName, path);
@@ -350,6 +418,10 @@ Singleton {
 
         Settings.wallpaper.monitors = newMonitors.slice();
         root.wallpaperChanged(screenName, path);
+
+        // Chỉ màn hình đầu tiên quyết định hình nền màn hình đăng nhập
+        if (Quickshell.screens.length === 0 || screenName === Quickshell.screens[0].name)
+            syncSddmWallpaper(path);
 
         // Xử lý Matugen - tạo thumbnail cho video
         if (Settings.appearance && Settings.appearance.theme === "matugen") {

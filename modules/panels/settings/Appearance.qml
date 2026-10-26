@@ -54,12 +54,50 @@ Item {
 
                 sourceComponent: Com.Panel {}
             }
-            Loader {
-                anchors.fill: parent
+            //Loader {
+               // anchors.fill: parent
 
-                active: root.currentTab === 2
+                //active: root.currentTab === 2
 
-                sourceComponent: Com.ClockTime {}
+               // sourceComponent: Com.ClockTime {}
+          //  }
+
+            //Tap 2
+            ScrollView {
+                clip: true
+                ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
+                ColumnLayout {
+                    width: parent.width
+                    spacing: ScalerService.s(20)
+                    anchors.margins: ScalerService.s(20)
+
+                    Text {
+                        text: lang?.general?.date_time || "Clock"
+                        color: theme.primary.foreground
+                        font {
+                            family: "ComicShannsMono Nerd Font"
+                            pixelSize: ScalerService.s(24)
+                            bold: true
+                        }
+                        Layout.alignment: Qt.AlignLeft
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: ScalerService.s(1)
+                        color: theme.primary.foreground
+                        opacity: 0.3
+                    }
+
+                    // Nội dung Date & Time ở đây
+                    Text {
+                        text: "Clock settings content"
+                        color: theme.primary.foreground
+                        Layout.alignment: Qt.AlignLeft
+                        font.pixelSize: ScalerService.s(14)
+                    }
+                }
             }
             Loader {
                 anchors.fill: parent

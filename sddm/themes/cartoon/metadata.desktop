@@ -1,0 +1,11 @@
+[SddmGreeterTheme]
+Name=Cartoon Shell
+Description=Man hinh dang nhap va chao mung kinh mo toi gian cho Cartoon Shell
+Author=cartoon-shell
+Copyright=(c) 2026
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+QtVersion=6
