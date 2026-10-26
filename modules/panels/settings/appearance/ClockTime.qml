@@ -38,6 +38,7 @@ Item {
 
       // Nội dung Clock ở đây
       Text {
+        visible: false
         text: "Clock settings content"
         color: theme.primary.foreground
         Layout.alignment: Qt.AlignLeft

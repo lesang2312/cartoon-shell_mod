@@ -166,7 +166,8 @@ Singleton {
 
     component Clock: JsonObject {
         property string timeFormat: "24h"
-        property bool enableWidget: true
+        // Ẩn mặc định ở lần khởi động đầu tiên (người dùng bật lại trong Settings -> Clock Time)
+        property bool enableWidget: false
         property string positionWidget: "top"
         // "current" | "iphone" | "pixel"
         property string style: "current"

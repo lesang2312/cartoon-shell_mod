@@ -1,7 +1,8 @@
 pragma Singleton
 import QtQuick
-import Qt.labs.settings
+import Qt.labs.settings as Labs
 import Quickshell
+import qs.commons
 
 Singleton {
     id: root
@@ -26,7 +27,7 @@ Singleton {
         }
     }
 
-    property Settings store: Settings {
+    property Labs.Settings store: Labs.Settings {
         category: "cartoon_shell_widget_layout"
         property string positionsJson: "{}"
         property string visibilityJson: "{}"
@@ -34,7 +35,13 @@ Singleton {
         property string scalesJson: "{}"
         // One-time migration: ensure newly added widgets are visible and not stuck at old/offscreen positions.
         property bool notesPhotoWidgetRepairApplied: false
+        // First boot: every desktop widget starts hidden; the user turns on what they want.
+        property bool firstRunHiddenApplied: false
+        // Một lần: ẩn đồng hồ desktop (Pixel clock + đồng hồ panel cũ), dù trước đó đang bật.
+        property bool clockHiddenApplied: false
     }
+
+    readonly property var allWidgetIds: ["main-clock", "calendar", "clock-summary", "music-player", "sticky-note", "calculator", "battery", "cute-habits", "system-usage", "photo-frame"]
 
     Component.onCompleted: {
         try {
@@ -62,15 +69,32 @@ Singleton {
             root.widgetScales = {};
         }
 
+        // First boot (no saved visibility choices yet): hide all widgets once.
+        if (!store.firstRunHiddenApplied) {
+            if (Object.keys(root.widgetVisibility || {}).length === 0) {
+                const hidden = {};
+                for (let i = 0; i < root.allWidgetIds.length; i++)
+                    hidden[root.allWidgetIds[i]] = false;
+                root.widgetVisibility = hidden;
+                store.visibilityJson = JSON.stringify(hidden);
+                // The repair below would force sticky-note / photo-frame visible again.
+                store.notesPhotoWidgetRepairApplied = true;
+            }
+            store.firstRunHiddenApplied = true;
+        }
+
+        if (!store.clockHiddenApplied) {
+            const v = Object.assign({}, root.widgetVisibility || {});
+            v["main-clock"] = false;
+            root.widgetVisibility = v;
+            store.visibilityJson = JSON.stringify(v);
+            Settings.clock.enableWidget = false;
+            store.clockHiddenApplied = true;
+        }
+
         // Older runs may have saved these new widgets as hidden or placed with a zero-sized Loader.
         // Restore a known-visible first-run state once; afterwards the user's show/hide choices persist.
         if (!store.notesPhotoWidgetRepairApplied) {
-            const migratedVisibility = Object.assign({}, root.widgetVisibility || {});
-            migratedVisibility["sticky-note"] = true;
-            migratedVisibility["photo-frame"] = true;
-            root.widgetVisibility = migratedVisibility;
-            store.visibilityJson = JSON.stringify(migratedVisibility);
-
             const migratedPositions = Object.assign({}, root.positions || {});
             delete migratedPositions["sticky-note"];
             delete migratedPositions["photo-frame"];
@@ -124,7 +148,8 @@ Singleton {
 
     function isWidgetVisible(widgetId) {
         const visibility = root.widgetVisibility || {};
-        return visibility[widgetId] !== false;
+        // Mặc định ẨN: widget chỉ hiện khi người dùng chủ động bật (cài mới = không có widget nào).
+        return visibility[widgetId] === true;
     }
 
     function setWidgetVisible(widgetId, isVisible) {

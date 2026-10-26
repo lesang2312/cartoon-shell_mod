@@ -48,7 +48,10 @@ Singleton {
 
     property bool dashboard: false
 
-    property bool hasPanel: tray || packagePanel || wifi || flag || mixer || music || launcher || dashboard || battery || ram || cpu || calendar || weather || bluetooth
+    // Win11 Quick Settings (wifi / âm lượng / sáng / pin)
+    property bool quickSettings: false
+
+    property bool hasPanel: quickSettings || tray || packagePanel || wifi || flag || mixer || music || launcher || dashboard || battery || ram || cpu || calendar || weather || bluetooth
 
     property bool clock: Settings.clock.enableWidget // Giữ nguyên từ config
 
@@ -96,6 +99,9 @@ Singleton {
         case "dashboard":
             dashboard = true;
             break;
+        case "quickSettings":
+            quickSettings = true;
+            break;
         case "clock":
             clock = true;
         case "tray":
@@ -109,6 +115,14 @@ Singleton {
     // Hàm toggle panel
     function togglePanel(panelName) {
         switch (panelName) {
+        case "quickSettings":
+            {
+                const open = !quickSettings;
+                console.log("[VisibleService] quickSettings ->", open);
+                closeAllPanels();
+                quickSettings = open;
+                break;
+            }
         case "shortcutMenu":
             {
                 shortcutMenu = !shortcutMenu;
@@ -528,6 +542,7 @@ Singleton {
         mixer = false;
         battery = false;
         dashboard = false;
+        quickSettings = false;
         setting = false;
         fullsetting = false;
         packagePanel = false;
@@ -566,6 +581,8 @@ Singleton {
             return battery;
         case "dashboard":
             return dashboard;
+        case "quickSettings":
+            return quickSettings;
         case "clock":
             return clock;
         case "filedialog":

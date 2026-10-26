@@ -143,10 +143,12 @@ Item {
     }
 
     Loader {
-        active: false
-        source: "../modules/panels/win11/actionCenter/ActionCenterPanel.qml"
+        active: VisibleService.quickSettings
+        source: "../modules/panels/win11/quickSettings/QuickSettingsPanel.qml"
         onLoaded: {
-            item.visible = false;
+            item.visible = Qt.binding(function () {
+                return VisibleService.quickSettings;
+            });
         }
     }
 

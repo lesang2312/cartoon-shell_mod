@@ -3,17 +3,20 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.UPower
 import Quickshell.Services.Pipewire
-import QtQuick.Effects
 import qs.commons
 import qs.services
 import qs.components
 import "../../widget/" as Com
 
+// Thanh kiểu Windows 11: Weather bên trái | cụm giữa (Start, Search, Workspaces, Music, Widgets)
+// | bên phải: tray, ngôn ngữ, cụm Quick Settings (wifi/âm lượng/pin), ngày giờ (Calendar)
 RowLayout {
     id: root
     property real animationProgress: 0
 
     readonly property var sink: Pipewire.defaultAudioSink
+    readonly property var weatherCur: (WeatherService.dataModel && WeatherService.dataModel.current && WeatherService.dataModel.current.condition) ? WeatherService.dataModel.current : null
+
     function getIcon(volPercent) {
         if (volPercent < 10)
             return "volume_mute";
@@ -22,40 +25,21 @@ RowLayout {
         return "volume_up";
     }
     function getBatteryIcon(level, status) {
-        if (status === "Charging") {
+        if (status === "Charging")
             return "battery_android_frame_bolt";
-        }
-
-        if (level <= 0) {
+        if (level <= 0)
             return "battery_android_frame_1";
-        } else if (level <= 1 / 7) {
+        if (level <= 1 / 7)
             return "battery_android_frame_2";
-        } else if (level <= 2 / 7) {
+        if (level <= 2 / 7)
             return "battery_android_frame_3";
-        } else if (level <= 3 / 7) {
+        if (level <= 3 / 7)
             return "battery_android_frame_4";
-        } else if (level <= 4 / 7) {
+        if (level <= 4 / 7)
             return "battery_android_frame_5";
-        } else if (level <= 5 / 7) {
+        if (level <= 5 / 7)
             return "battery_android_frame_6";
-        } else {
-            return "battery_android_frame_full";
-        }
-    }
-    function getBrightnessIcon() {
-        if (currentBrightness <= 0)
-            return "brightness_1";
-        if (currentBrightness <= 1 / 7)
-            return "brightness_2";
-        if (currentBrightness <= 2 / 7)
-            return "brightness_3";
-        if (currentBrightness <= 3 / 7)
-            return "brightness_4";
-        if (currentBrightness <= 4 / 7)
-            return "brightness_5";
-        if (currentBrightness <= 5 / 7)
-            return "brightness_6";
-        return "brightness_7";
+        return "battery_android_frame_full";
     }
 
     SequentialAnimation on animationProgress {
@@ -67,138 +51,218 @@ RowLayout {
             easing.type: Easing.Linear
         }
     }
+
     Item {
-        anchors.fill: parent
-        CustomRectangle {
-            GlassPanel { id: glassBg }
-            color: glassBg.active ? "transparent" : theme.primary.background
-            anchors.centerIn: parent
-            implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
-            implicitHeight: root.animationProgress > 0.1 ? parent.height : 0
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
+        Rectangle {
+            id: barBg
+            // Luôn lấp đầy thanh (không animate từ 0) và luôn có nền đặc/mờ bên dưới lớp kính,
+            // để thanh không bao giờ "biến mất" khi kính chưa render được.
+            anchors.fill: parent
+            opacity: root.animationProgress
+            color: glassBg.active ? Qt.alpha(theme.primary.background, 0.35) : theme.primary.background
+
+            GlassPanel {
+                id: glassBg
+            }
+
+            // Viền trên mảnh giống taskbar Win11
+            Rectangle {
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                height: ScalerService.s(1)
+                color: Qt.rgba(1, 1, 1, 0.12)
+            }
+
+            // ---- Trái: thời tiết (Win11 Widgets) ----
+            Com.TaskButton {
+                id: weatherBtn
+                anchors.left: parent.left
+                anchors.leftMargin: ScalerService.s(8)
+                anchors.verticalCenter: parent.verticalCenter
+                panelName: "weather"
+                visible: root.weatherCur !== null
+                implicitHeight: ScalerService.s(42)
+
+                IconImage {
+                    path: root.weatherCur ? WeatherService.getWeatherIcon(root.weatherCur.condition.code, root.weatherCur.is_day) : ""
+                    size: "normal"
+                }
+                ColumnLayout {
+                    spacing: 0
+                    CustomText {
+                        name: root.weatherCur ? `${root.weatherCur.temp_c}°C` : ""
+                        size: "xs"
+                        isBold: true
+                    }
+                    CustomText {
+                        name: root.weatherCur ? root.weatherCur.condition.text.slice(0, 14) : ""
+                        size: "2xs"
+                        textColor: theme.primary.dim_foreground
+                    }
+                }
+            }
+
+            // ---- Giữa: Start, Search, Workspaces, Music, Dashboard ----
             RowLayout {
-                spacing: ScalerService.s(12)
-                anchors.leftMargin: ScalerService.s(12)
-                anchors.rightMargin: ScalerService.s(12)
-                anchors.topMargin: ScalerService.s(5)
-                anchors.bottomMargin: ScalerService.s(5)
-                anchors.fill: parent
-                RowLayout {
-                    spacing: ScalerService.s(20)
+                id: centerGroup
+                anchors.centerIn: parent
+                spacing: ScalerService.s(6)
+
+                Com.TaskButton {
+                    panelName: "launcher"
                     IconImage {
                         path: "launcher/win11.svg"
-                        size: "large"
+                        size: "normal"
                     }
+                }
 
-                    CustomRectangle {
-                        Layout.preferredWidth: ScalerService.s(200)
-                        Layout.preferredHeight: ScalerService.s(30)
-                        radius: ScalerService.s(Settings.appearance.radius1)
-                        color: theme.button.background
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: ScalerService.s(12)
-                            anchors.rightMargin: ScalerService.s(12)
-                            anchors.topMargin: ScalerService.s(5)
-                            anchors.bottomMargin: ScalerService.s(5)
-                            spacing: ScalerService.s(12)
-                            IconText {
-                                fontFamily: "Symbols Nerd Font"
-                                name: ""
-                                textColor: theme.primary.dim_foreground
-                                size: "small"
-                                Layout.alignment: Qt.AlignVCenter
-                            }
-                            CustomText {
-                                name: "Search"
-                                size: "small"
-                            }
-                            Item {
-                                Layout.fillWidth: true
-                            }
+                // Ô tìm kiếm: bấm mở launcher (có ô search)
+                Com.TaskButton {
+                    panelName: "launcher"
+                    implicitWidth: ScalerService.s(190)
+                    baseColor: Qt.rgba(1, 1, 1, 0.08)
+                    hoverColor: Qt.rgba(1, 1, 1, 0.16)
+                    border.width: ScalerService.s(1)
+                    border.color: Qt.rgba(1, 1, 1, 0.14)
+                    radius: height / 2
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: ScalerService.s(8)
+                        IconText {
+                            name: "search"
+                            size: "small"
+                            textColor: theme.primary.dim_foreground
+                        }
+                        CustomText {
+                            name: lang.launcher?.search || "Search"
+                            size: "xs"
+                            textColor: theme.primary.dim_foreground
+                        }
+                        Item {
+                            Layout.fillWidth: true
                         }
                     }
                 }
-                Item {
-                    Layout.fillWidth: true
-                }
-                CustomRectangle {
-                    Layout.preferredWidth: ScalerService.s(280)
+
+                // Workspaces (như Task View)
+                Rectangle {
+                    Layout.preferredHeight: ScalerService.s(34)
+                    Layout.preferredWidth: wsRow.implicitWidth + ScalerService.s(24)
                     radius: ScalerService.s(Settings.appearance.radius2)
-                    color: theme.primary.dim_background
-                    Layout.fillHeight: true
+                    color: Qt.rgba(1, 1, 1, 0.06)
                     Com.WorkspaceSectionHorizontal {
+                        id: wsRow
                         anchors.centerIn: parent
                     }
                 }
-                Item {
-                    Layout.fillWidth: true
+
+                Com.TaskButton {
+                    panelName: "music"
+                    IconText {
+                        name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "graphic_eq" : "music_note"
+                        size: "small"
+                        textColor: theme.button.text
+                    }
                 }
-                RowLayout {
-                    Layout.fillHeight: true
-                    spacing: ScalerService.s(8)
+
+                Com.TaskButton {
+                    panelName: "dashboard"
+                    IconText {
+                        name: "widgets"
+                        size: "small"
+                        textColor: theme.primary.foreground
+                    }
+                }
+            }
+
+            // ---- Phải ----
+            RowLayout {
+                anchors.right: parent.right
+                anchors.rightMargin: ScalerService.s(8)
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: ScalerService.s(2)
+
+                // Khay hệ thống (hidden icons)
+                Com.TaskButton {
+                    panelName: "tray"
+                    visible: TrayService.hasTray
+                    IconText {
+                        name: "keyboard_arrow_up"
+                        size: "small"
+                    }
+                }
+
+                // Ngôn ngữ / cờ
+                Com.TaskButton {
+                    panelName: "flag"
+                    CustomText {
+                        name: (Settings.appearance.countryFlag || "vn").toUpperCase()
+                        size: "xs"
+                        isBold: true
+                    }
+                }
+
+                // Cụm Quick Settings: wifi + âm lượng + pin
+                Com.TaskButton {
+                    panelName: "quickSettings"
                     IconText {
                         name: NetworkService.wifi_icon_text_1
                         size: "small"
-                        Layout.alignment: Qt.AlignHCenter
-                        textColor: theme.primary.foreground
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-
-                            onClicked: {
-                                SoundService.playSound("pick");
-                                VisibleService.togglePanel("wifi");
-                            }
-                        }
                     }
                     IconText {
-                        Layout.alignment: Qt.AlignHCenter
                         name: {
-                            if (!sink || sink.audio.muted)
+                            if (!root.sink || root.sink.audio.muted)
                                 return "volume_off";
-                            return getIcon(Math.round(sink.audio.volume * 100));
+                            return root.getIcon(Math.round(root.sink.audio.volume * 100));
                         }
-                        textColor: theme.primary.foreground
                         size: "small"
                     }
-                    Item {
-                        implicitWidth: UPower.displayDevice.isLaptopBattery ? ScalerService.s(80) : ScalerService.s(35)
-                        Layout.fillHeight: true
-                        RowLayout {
-                            anchors.fill: parent
-                            IconText {
-                                size: "small"
-                                name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
-                                textColor: theme.primary.foreground
-                            }
-                            CustomText {
-                                visible: UPower.displayDevice.isLaptopBattery
-                                size: "small"
-                                name: Math.round(UPower.displayDevice.percentage * 100) + "%"
-                            }
+                    IconText {
+                        size: "small"
+                        name: UPower.displayDevice.isLaptopBattery ? root.getBatteryIcon(UPower.displayDevice.percentage, UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
+                    }
+                    CustomText {
+                        visible: UPower.displayDevice.isLaptopBattery
+                        size: "xs"
+                        name: Math.round(UPower.displayDevice.percentage * 100) + "%"
+                    }
+                }
+
+                // Ngày giờ -> Calendar
+                Com.TaskButton {
+                    panelName: "calendar"
+                    implicitHeight: ScalerService.s(42)
+                    ColumnLayout {
+                        spacing: 0
+                        CustomText {
+                            name: DateTimeService.currentTime
+                            Layout.alignment: Qt.AlignRight
+                            size: "xs"
                         }
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.RightButton
-                            propagateComposedEvents: true
-                            cursorShape: Qt.PointingHandCursor
+                        CustomText {
+                            name: DateTimeService.currentDate1
+                            Layout.alignment: Qt.AlignRight
+                            size: "xs"
                         }
                     }
                 }
 
-                ColumnLayout {
+                // "Show desktop" sliver ở mép phải như Win11
+                Rectangle {
+                    Layout.preferredWidth: ScalerService.s(5)
                     Layout.fillHeight: true
-                    Layout.preferredWidth: ScalerService.s(100)
-                    CustomText {
-                        name: DateTimeService.currentTime
-                        Layout.alignment: Qt.AlignHCenter
-                        size: "xs"
+                    color: sliverArea.containsMouse ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
+                    HoverHandler {
+                        id: sliverArea
                     }
-                    CustomText {
-                        name: DateTimeService.currentDate1
-                        Layout.alignment: Qt.AlignHCenter
-                        size: "xs"
+                    TapHandler {
+                        onTapped: VisibleService.closeAllPanels()
                     }
                 }
             }

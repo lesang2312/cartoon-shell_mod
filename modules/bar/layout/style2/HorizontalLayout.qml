@@ -97,297 +97,439 @@ RowLayout {
             border.color: theme.button.border
             border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
             anchors.centerIn: parent
-            implicitWidth: root.animationProgress > 0.1 ? parent.width * 0.8 : 0
+            implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
             implicitHeight: root.animationProgress > 0.1 ? parent.height : 0
 
             RowLayout {
-                spacing: ScalerService.s(12)
+                spacing: 0
                 anchors.margins: ScalerService.s(5)
                 anchors.fill: parent
                 Item {
-                    Layout.preferredWidth: ScalerService.s(8)
-                }
-                ButtonIconText {
-                    fontFamily: "Symbols Nerd Font"
-                    name: "󰣇"
-                    textColor: theme.button.text
-                    size: "small"
-                    Layout.alignment: Qt.AlignVCenter
-                    onClicked: {
-                        VisibleService.togglePanel("launcher");
-                    }
-                }
-                Item {
-                    Layout.fillWidth: true
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(70)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        id: contentRam
-                        anchors.centerIn: parent
-                        IconText {
-                            name: " "
-                            fontFamily: "Symbols Nerd Font"
-                            textColor: theme.normal.green
-                            size: "xs"
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-                        CustomText {
-                            size: "small"
-                            name: RamSimpleService.ramPercent + "%"
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-                    }
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(70)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        id: contentCpu
-                        anchors.centerIn: parent
-                        IconText {
-                            name: ""
-                            fontFamily: "Symbols Nerd Font"
-                            textColor: theme.normal.red
-                            size: "xs"
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-                        CustomText {
-                            size: "small"
-                            name: CpuSimpleService.cpuPercent + "%"
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-                    }
+                    Layout.preferredWidth: ScalerService.s(22)
                 }
                 RowLayout {
-                    id: controlsRow
-
-                    spacing: ScalerService.s(2)
-
-                    ButtonIconText {
-                        name: "skip_previous"
-                        size: "normal"
-
-                        textColor: theme.normal.blue
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: Players?.mprisPlayer.previous()
-                    }
-                    ButtonIconText {
-                        name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
-                        size: "normal"
-
-                        Layout.alignment: Qt.AlignVCenter
-                        textColor: theme.normal.green
-                        onClicked: Players?.mprisPlayer.togglePlaying()
-                    }
-                    ButtonIconText {
-                        name: "skip_next"
-                        size: "normal"
-                        textColor: theme.normal.blue
-
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: Players?.mprisPlayer.next()
-                    }
-                }
-
-                CustomRectangle {
-                    Layout.preferredWidth: ScalerService.s(280)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    color: theme.primary.dim_background
+                    spacing: ScalerService.s(16)
                     Layout.fillHeight: true
-                    Com.WorkspaceSectionHorizontal {
-                        anchors.centerIn: parent
-                    }
-                }
-                Item {
-                    Layout.preferredWidth: ScalerService.s(12)
-                }
-                CustomText {
-                    size: "xs"
-                    name: `${DateTimeService.currentHour}:${DateTimeService.currentMinus} · ${DateTimeService.currentDate}`
                     Layout.alignment: Qt.AlignVCenter
-                }
-                Item {
-                    Layout.preferredWidth: ScalerService.s(12)
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(70)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        id: contentBri
-                        anchors.centerIn: parent
-                        IconText {
-                            name: root.getBrightnessIcon()
-                            textColor: theme.button.text
-                            size: "small"
-                        }
-                        CustomText {
-                            name: Math.floor(BrightnessService.currentBrightness * 100) + "%"
-                            isBold: true
-                            size: "small"
-                        }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.RightButton
-                        propagateComposedEvents: true
-                        cursorShape: Qt.PointingHandCursor
-
-                        onWheel: wheel => {
-                            let step = 0.05;
-
-                            SoundService.playSound("pop");
-                            if (wheel.angleDelta.y > 0)
-                                BrightnessService.changeBright(step);
-                            else if (wheel.angleDelta.y < 0)
-                                BrightnessService.changeBright(-step);
-                        }
-
-                        onPressed: mouse => {
-                            if (mouse.button === Qt.RightButton) {
-                                toggleMute();
-                                mouse.accepted = true;
-                            } else {
-                                mouse.accepted = false;
-                            }
-                        }
-                    }
-                }
-
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(70)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        id: contentVlo
-                        anchors.centerIn: parent
-                        IconText {
-                            size: "small"
-                            name: {
-                                if (!sink || sink.audio.muted)
-                                    return "volume_off";
-                                return getIcon(Math.round(sink.audio.volume * 100));
-                            }
-                            textColor: theme.button.text
-                        }
-                        CustomText {
-                            name: sink ? Math.round(sink.audio.volume * 100) + "%" : "0%"
-                            isBold: true
-                            size: "small"
-                        }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.RightButton
-                        propagateComposedEvents: true
-                        cursorShape: Qt.PointingHandCursor
-
-                        onWheel: wheel => {
-                            let step = 0.05;
-
-                            SoundService.playSound("pop");
-                            if (wheel.angleDelta.y > 0)
-                                changeVolume(step);
-                            else if (wheel.angleDelta.y < 0)
-                                changeVolume(-step);
-                        }
-
-                        onPressed: mouse => {
-                            if (mouse.button === Qt.RightButton) {
-                                toggleMute();
-                                mouse.accepted = true;
-                            } else {
-                                mouse.accepted = false;
-                            }
-                        }
-                    }
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: UPower.displayDevice.isLaptopBattery ? ScalerService.s(70) : ScalerService.s(35)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        anchors.centerIn: parent
-                        IconText {
-                            size: "small"
-                            name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
-                            textColor: UPower.displayDevice.isLaptopBattery ? theme.button.text : theme.normal.red
-                        }
-                        CustomText {
-                            visible: UPower.displayDevice.isLaptopBattery
-                            name: Math.round(UPower.displayDevice.percentage * 100) + "%"
-                            isBold: true
-                            size: "small"
-                        }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.RightButton
-                        propagateComposedEvents: true
-                        cursorShape: Qt.PointingHandCursor
-                    }
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(35)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        anchors.centerIn: parent
-                        IconText {
-                            name: "bluetooth"
-                            size: "small"
-                            textColor: theme.normal.blue
-                        }
-                    }
-                }
-                CustomRectangle {
-                    color: theme.primary.dim_background
-                    implicitWidth: ScalerService.s(35)
-                    radius: ScalerService.s(Settings.appearance.radius2)
-                    Layout.fillHeight: true
-                    RowLayout {
-                        anchors.centerIn: parent
-                        IconText {
-                            name: NetworkService.wifi_icon_text_2
-                            size: "small"
-                            textColor: theme.normal.green
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-
+                    ButtonIconText {
+                        fontFamily: "Symbols Nerd Font"
+                        name: "󰣇"
+                        textColor: theme.button.text
+                        size: "small"
+                        Layout.alignment: Qt.AlignVCenter
                         onClicked: {
-                            SoundService.playSound("pick");
-                            VisibleService.togglePanel("wifi");
+                            VisibleService.togglePanel("launcher");
                         }
                     }
                 }
-
                 Item {
                     Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
                 }
-                ButtonIconText {
-                    fontFamily: "Symbols Nerd Font"
-                    name: "󰐥"
-                    size: "small"
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
                     Layout.alignment: Qt.AlignVCenter
-                    textColor: theme.normal.red
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(84)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            id: contentRam
+                            anchors.centerIn: parent
+                            IconText {
+                                name: " "
+                                fontFamily: "Symbols Nerd Font"
+                                textColor: theme.normal.green
+                                size: "xs"
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+                            CustomText {
+                                size: "small"
+                                name: RamSimpleService.ramPercent + "%"
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "ram"
+                        }
+                    }
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(84)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            id: contentCpu
+                            anchors.centerIn: parent
+                            IconText {
+                                name: ""
+                                fontFamily: "Symbols Nerd Font"
+                                textColor: theme.normal.red
+                                size: "xs"
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+                            CustomText {
+                                size: "small"
+                                name: CpuSimpleService.cpuPercent + "%"
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "cpu"
+                        }
+                    }
                 }
                 Item {
-                    Layout.preferredWidth: ScalerService.s(8)
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
+                }
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignVCenter
+                    Item {
+                        Layout.preferredWidth: ScalerService.s(140)
+                        Layout.fillHeight: true
+                        ColumnLayout {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
+                            spacing: 0
+                            CustomText {
+                                Layout.fillWidth: true
+                                name: Players.mprisPlayer?.trackTitle ?? "Not Playing"
+                                size: "xs"
+                                elide: Text.ElideRight
+                                maximumLineCount: 1
+                            }
+                            CustomText {
+                                Layout.fillWidth: true
+                                name: Players.mprisPlayer ? (Players.mprisPlayer.trackArtist || "Unknown Artist") : "Unknown Artist"
+                                textColor: theme.primary.dim_foreground
+                                size: "2xs"
+                                elide: Text.ElideRight
+                                maximumLineCount: 1
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "music"
+                        }
+                    }
+                    RowLayout {
+                        id: controlsRow
+
+                        spacing: ScalerService.s(2)
+
+                        ButtonIconText {
+                            name: "skip_previous"
+                            size: "normal"
+
+                            textColor: theme.normal.blue
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: Players?.mprisPlayer.previous()
+                        }
+                        ButtonIconText {
+                            name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
+                            size: "normal"
+
+                            Layout.alignment: Qt.AlignVCenter
+                            textColor: theme.normal.green
+                            onClicked: Players?.mprisPlayer.togglePlaying()
+                        }
+                        ButtonIconText {
+                            name: "skip_next"
+                            size: "normal"
+                            textColor: theme.normal.blue
+
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: Players?.mprisPlayer.next()
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
+                }
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignVCenter
+                    CustomRectangle {
+                        Layout.preferredWidth: ScalerService.s(280)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        color: theme.primary.dim_background
+                        Layout.fillHeight: true
+                        Com.WorkspaceSectionHorizontal {
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
+                }
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignVCenter
+                    Item {
+                        Layout.preferredWidth: dateText.implicitWidth
+                        Layout.fillHeight: true
+                        CustomText {
+                            id: dateText
+                            anchors.centerIn: parent
+                            size: "xs"
+                            name: `${DateTimeService.currentHour}:${DateTimeService.currentMinus} · ${DateTimeService.currentDate}`
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "calendar"
+                        }
+                    }
+                    // Thời tiết -> panel weather (ẩn khi chưa có dữ liệu)
+                    CustomRectangle {
+                        readonly property var cur: (WeatherService.dataModel && WeatherService.dataModel.current && WeatherService.dataModel.current.condition) ? WeatherService.dataModel.current : null
+                        visible: cur !== null
+                        color: theme.primary.dim_background
+                        implicitWidth: weatherRow.implicitWidth + ScalerService.s(20)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            id: weatherRow
+                            anchors.centerIn: parent
+                            spacing: ScalerService.s(4)
+                            IconImage {
+                                path: parent.parent.cur ? WeatherService.getWeatherIcon(parent.parent.cur.condition.code, parent.parent.cur.is_day) : ""
+                                size: "xs"
+                            }
+                            CustomText {
+                                name: parent.parent.cur ? `${parent.parent.cur.temp_c}°C` : ""
+                                isBold: true
+                                size: "small"
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "weather"
+                        }
+                    }
+                    // Cờ / ngôn ngữ -> panel flag
+                    ButtonIconImage {
+                        path: `flags/${Settings.appearance.countryFlag}.png`
+                        size: "normal"
+                        Layout.alignment: Qt.AlignVCenter
+                        onClicked: VisibleService.togglePanel("flag")
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
+                }
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignVCenter
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(84)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            id: contentBri
+                            anchors.centerIn: parent
+                            IconText {
+                                name: root.getBrightnessIcon()
+                                textColor: theme.button.text
+                                size: "small"
+                            }
+                            CustomText {
+                                name: Math.floor(BrightnessService.currentBrightness * 100) + "%"
+                                isBold: true
+                                size: "small"
+                            }
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.RightButton
+                            propagateComposedEvents: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onWheel: wheel => {
+                                let step = 0.05;
+
+                                SoundService.playSound("pop");
+                                if (wheel.angleDelta.y > 0)
+                                    BrightnessService.changeBright(step);
+                                else if (wheel.angleDelta.y < 0)
+                                    BrightnessService.changeBright(-step);
+                            }
+
+                            onPressed: mouse => mouse.accepted = false
+                        }
+                    }
+
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(84)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            id: contentVlo
+                            anchors.centerIn: parent
+                            IconText {
+                                size: "small"
+                                name: {
+                                    if (!sink || sink.audio.muted)
+                                        return "volume_off";
+                                    return getIcon(Math.round(sink.audio.volume * 100));
+                                }
+                                textColor: theme.button.text
+                            }
+                            CustomText {
+                                name: sink ? Math.round(sink.audio.volume * 100) + "%" : "0%"
+                                isBold: true
+                                size: "small"
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "mixer"
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.RightButton
+                            propagateComposedEvents: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onWheel: wheel => {
+                                let step = 0.05;
+
+                                SoundService.playSound("pop");
+                                if (wheel.angleDelta.y > 0)
+                                    changeVolume(step);
+                                else if (wheel.angleDelta.y < 0)
+                                    changeVolume(-step);
+                            }
+
+                            onPressed: mouse => {
+                                if (mouse.button === Qt.RightButton) {
+                                    toggleMute();
+                                    mouse.accepted = true;
+                                } else {
+                                    mouse.accepted = false;
+                                }
+                            }
+                        }
+                    }
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: UPower.displayDevice.isLaptopBattery ? ScalerService.s(84) : ScalerService.s(42)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            anchors.centerIn: parent
+                            IconText {
+                                size: "small"
+                                name: UPower.displayDevice.isLaptopBattery ? getBatteryIcon(UPowerDeviceState.toString(UPower.displayDevice.state)) : "battery_android_question"
+                                textColor: UPower.displayDevice.isLaptopBattery ? theme.button.text : theme.normal.red
+                            }
+                            CustomText {
+                                visible: UPower.displayDevice.isLaptopBattery
+                                name: Math.round(UPower.displayDevice.percentage * 100) + "%"
+                                isBold: true
+                                size: "small"
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "battery"
+                            visible: UPower.displayDevice.isLaptopBattery
+                        }
+                    }
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(42)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            anchors.centerIn: parent
+                            IconText {
+                                name: "bluetooth"
+                                size: "small"
+                                textColor: theme.normal.blue
+                            }
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "bluetooth"
+                        }
+                    }
+                    // Tray -> panel tray (chỉ hiện khi có icon tray)
+                    CustomRectangle {
+                        visible: TrayService.hasTray
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(42)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        IconText {
+                            anchors.centerIn: parent
+                            name: "keyboard_arrow_up"
+                            size: "small"
+                        }
+                        Com.StatContainer {
+                            anchors.fill: parent
+                            panelName: "tray"
+                        }
+                    }
+                    CustomRectangle {
+                        color: theme.primary.dim_background
+                        implicitWidth: ScalerService.s(42)
+                        radius: ScalerService.s(Settings.appearance.radius2)
+                        Layout.fillHeight: true
+                        RowLayout {
+                            anchors.centerIn: parent
+                            IconText {
+                                name: NetworkService.wifi_icon_text_2
+                                size: "small"
+                                textColor: theme.normal.green
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onClicked: {
+                                SoundService.playSound("pick");
+                                VisibleService.togglePanel("wifi");
+                            }
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: ScalerService.s(28)
+                }
+                RowLayout {
+                    spacing: ScalerService.s(16)
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignVCenter
+                    ButtonIconText {
+                        fontFamily: "Symbols Nerd Font"
+                        name: "󰐥"
+                        size: "small"
+                        Layout.alignment: Qt.AlignVCenter
+                        textColor: theme.normal.red
+                        onClicked: VisibleService.togglePanel("dashboard")
+                    }
+                }
+                Item {
+                    Layout.preferredWidth: ScalerService.s(22)
                 }
             }
         }

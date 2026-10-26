@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.services
 import qs.components
+import "."
 
 // Kiểu Pixel: HH:MM dot-matrix (giờ xanh dương, phút xanh lá), dấu ":" nhấp nháy, ngày ở dưới
 Item {

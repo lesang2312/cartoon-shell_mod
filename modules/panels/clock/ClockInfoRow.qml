@@ -10,9 +10,9 @@ Item {
   id: root
 
   readonly property int percent: Math.round(UPower.displayDevice.percentage * 100)
-  readonly property bool hasBattery: UPower.displayDevice.isLaptopBattery || UPower.displayDevice.isPresent
+  readonly property bool hasBattery: UPower.displayDevice.isLaptopBattery
   readonly property bool charging: UPowerDeviceState.toString(UPower.displayDevice.state) === "Charging"
-  readonly property var weather: WeatherService.dataModel?.current ?? null
+  readonly property var weather: (WeatherService.dataModel && WeatherService.dataModel.current && WeatherService.dataModel.current.condition) ? WeatherService.dataModel.current : null
 
   implicitWidth: row.implicitWidth
   implicitHeight: row.implicitHeight
@@ -38,49 +38,61 @@ Item {
     anchors.centerIn: parent
     spacing: ScalerService.s(12)
 
-    // Pin
+    // Pin (máy bàn không có pin -> hiện biểu tượng cắm điện)
     Pill {
-      visible: root.hasBattery
       BatteryIcon {
+        visible: root.hasBattery
         percent: root.percent
         textColor: "#ffffff"
         iconWidth: ScalerService.s(34)
         iconHeight: ScalerService.s(16)
         Layout.rightMargin: ScalerService.s(4)
       }
+      IconText {
+        visible: !root.hasBattery
+        name: "power"
+        textColor: "#ffffff"
+        size: "xs"
+      }
       CustomText {
-        name: `${root.percent}%${root.charging ? " ⚡" : ""}`
+        name: root.hasBattery ? `${root.percent}%${root.charging ? " ⚡" : ""}` : "AC"
         textColor: "#ffffff"
         isBold: true
         size: "xs"
       }
     }
 
-    // Thời tiết
+    // Thời tiết (chưa có dữ liệu -> "--")
     Pill {
-      visible: root.weather !== null
       IconImage {
+        visible: root.weather !== null
         path: root.weather ? WeatherService.getWeatherIcon(root.weather.condition.code, root.weather.is_day) : ""
         size: "xs"
       }
+      IconText {
+        visible: root.weather === null
+        name: "cloud"
+        textColor: "#ffffff"
+        size: "xs"
+      }
       CustomText {
-        name: root.weather ? `${Math.round(root.weather.temp_c)}°C` : ""
+        name: root.weather ? `${Math.round(root.weather.temp_c)}°C` : "--°C"
         textColor: "#ffffff"
         isBold: true
         size: "xs"
       }
     }
 
-    // Wifi
+    // Wifi (chưa kết nối -> "Offline")
     Pill {
-      visible: NetworkService.connectedWifi !== "" && NetworkService.connectedWifi !== "Checking..."
+      readonly property bool online: NetworkService.connectedWifi !== "" && NetworkService.connectedWifi !== "Checking..."
       IconText {
-        name: "wifi"
+        name: parent.online ? "wifi" : "wifi_off"
         textColor: "#ffffff"
         size: "xs"
       }
       CustomText {
-        name: NetworkService.connectedWifi
+        name: parent.online ? NetworkService.connectedWifi : "Offline"
         textColor: "#ffffff"
         size: "xs"
         elide: Text.ElideRight

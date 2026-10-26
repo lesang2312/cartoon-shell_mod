@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
+import Quickshell.Io
 import qs.commons
 import qs.utils
 import qs.services
@@ -70,6 +71,45 @@ Singleton {
 
         function onWallpaperListChanged(screenName, count) {
             root.autoSetFirstWallpaper(screenName);
+        }
+    }
+
+    // Lần boot đầu: nếu danh sách chưa quét kịp / thư mục mặc định chưa có ảnh thì thử lại,
+    // rồi tìm ảnh ở các thư mục dự phòng để chắc chắn luôn có nền.
+    Process {
+        id: fallbackWallpaperProc
+        command: ["bash", "-c", "for d in \"$1\" \"$2\" \"$3\" /usr/share/backgrounds /usr/share/wallpapers; do [ -d \"$d\" ] || continue; f=$(find \"$d\" -maxdepth 3 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \\) 2>/dev/null | sort | head -n1); [ -n \"$f\" ] && { echo \"$f\"; exit 0; }; done; exit 1", "_", root.defaultDirectory, Quickshell.shellDir + "/assets/wallpapers", Quickshell.shellDir + "/wallpapers"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const path = this.text.trim();
+                if (path === "" || Quickshell.screens.length === 0)
+                    return;
+                if (root.getWallpaper(Quickshell.screens[0].name))
+                    return;
+                console.log("[WallpaperService] First boot fallback wallpaper:", path);
+                for (let i = 0; i < Quickshell.screens.length; i++)
+                    root._setWallpaper(Quickshell.screens[i].name, path);
+            }
+        }
+    }
+
+    Timer {
+        id: firstBootWallpaperRetry
+        interval: 2500
+        repeat: true
+        running: root.isInitialized
+        property int tries: 0
+        onTriggered: {
+            tries++;
+            if (Quickshell.screens.length === 0)
+                return;
+            if (root.getWallpaper(Quickshell.screens[0].name) || tries > 8) {
+                stop();
+                return;
+            }
+            root.refreshWallpapersList();
+            if (tries >= 2 && !fallbackWallpaperProc.running)
+                fallbackWallpaperProc.running = true;
         }
     }
 
