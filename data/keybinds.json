@@ -586,7 +586,7 @@
                 {
                     "action": "Area Screenshot (copy to clipboard)",
                     "args": [
-                        "FILE=/home/linux-cua-le/screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\""
+                        "FILE=~/Pictures/Screenshots/scr_$(date +'%Y-%m-%d_%H-%M-%S').png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\""
                     ],
                     "id": "screenshot_area",
                     "key": "ALT + A",
