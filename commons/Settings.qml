@@ -89,40 +89,67 @@ Singleton {
         property string username: "mailong2401"
         property var appGrid: [
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/animal.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/anime.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/camera.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/cartoon.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/vietnam.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/cartoon.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/cinema.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
+                "type": "app",
+                "target": "firefox",
+                "name": "Firefox",
                 "icon": Quickshell.shellDir + "/icons/panda.png",
-                "name": "firefox"
+                "autoIcon": "firefox"
             },
             {
-                "icon": "kitty",
-                "name": "firefox"
+                "type": "app",
+                "target": "kitty",
+                "name": "Kitty",
+                "icon": "",
+                "autoIcon": "kitty"
             }
         ]
     }

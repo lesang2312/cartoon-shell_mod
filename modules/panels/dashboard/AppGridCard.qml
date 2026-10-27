@@ -13,6 +13,7 @@ Item {
     Layout.preferredHeight: ScalerService.s(220)
 
     property real animationProgress: 0
+    signal editRequested(int index)
     Rectangle {
         GlassPanel { id: glassBg1 }
         anchors.centerIn: parent
@@ -44,13 +45,21 @@ Item {
             rowSpacing: ScalerService.s(15)
 
             Repeater {
-                model: Settings.dashboard.appGrid
+                // Luôn đủ 9 ô (ô thiếu = ô trống, bấm để gán)
+                model: {
+                    const a = Settings.dashboard.appGrid || [];
+                    const out = [];
+                    for (let i = 0; i < 9; i++)
+                        out.push(a[i] || ({}));
+                    return out;
+                }
 
                 Com.AppIcon {
-                    iconSource: modelData.icon
+                    entry: modelData
                     bgColor: theme.button.background
                     animationProgress: root.animationProgress
                     revealThreshold: 0.5 + (index * 0.1)
+                    onEditRequested: root.editRequested(index)
                 }
             }
         }

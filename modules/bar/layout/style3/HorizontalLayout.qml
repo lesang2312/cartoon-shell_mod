@@ -6,6 +6,7 @@ import Quickshell.Services.Pipewire
 import qs.commons
 import qs.services
 import qs.components
+import "."
 import "../../widget/" as Com
 
 // Thanh kiểu Windows 11: Weather bên trái | cụm giữa (Start, Search, Workspaces, Music, Widgets)
@@ -56,17 +57,14 @@ RowLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        Rectangle {
-            id: barBg
-            // Luôn lấp đầy thanh (không animate từ 0) và luôn có nền đặc/mờ bên dưới lớp kính,
-            // để thanh không bao giờ "biến mất" khi kính chưa render được.
-            anchors.fill: parent
-            opacity: root.animationProgress
-            color: glassBg.active ? Qt.alpha(theme.primary.background, 0.35) : theme.primary.background
-
+        CustomRectangle {
             GlassPanel {
                 id: glassBg
             }
+            color: glassBg.active ? "transparent" : theme.primary.background
+            anchors.centerIn: parent
+            implicitWidth: root.animationProgress > 0.1 ? parent.width : 0
+            implicitHeight: root.animationProgress > 0.1 ? parent.height : 0
 
             // Viền trên mảnh giống taskbar Win11
             Rectangle {
@@ -80,7 +78,7 @@ RowLayout {
             }
 
             // ---- Trái: thời tiết (Win11 Widgets) ----
-            Com.TaskButton {
+            TaskButton {
                 id: weatherBtn
                 anchors.left: parent.left
                 anchors.leftMargin: ScalerService.s(8)
@@ -114,7 +112,7 @@ RowLayout {
                 anchors.centerIn: parent
                 spacing: ScalerService.s(6)
 
-                Com.TaskButton {
+                TaskButton {
                     panelName: "launcher"
                     IconImage {
                         path: "launcher/win11.svg"
@@ -123,7 +121,7 @@ RowLayout {
                 }
 
                 // Ô tìm kiếm: bấm mở launcher (có ô search)
-                Com.TaskButton {
+                TaskButton {
                     panelName: "launcher"
                     implicitWidth: ScalerService.s(190)
                     baseColor: Qt.rgba(1, 1, 1, 0.08)
@@ -162,7 +160,7 @@ RowLayout {
                     }
                 }
 
-                Com.TaskButton {
+                TaskButton {
                     panelName: "music"
                     IconText {
                         name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "graphic_eq" : "music_note"
@@ -171,7 +169,7 @@ RowLayout {
                     }
                 }
 
-                Com.TaskButton {
+                TaskButton {
                     panelName: "dashboard"
                     IconText {
                         name: "widgets"
@@ -189,7 +187,7 @@ RowLayout {
                 spacing: ScalerService.s(2)
 
                 // Khay hệ thống (hidden icons)
-                Com.TaskButton {
+                TaskButton {
                     panelName: "tray"
                     visible: TrayService.hasTray
                     IconText {
@@ -199,7 +197,7 @@ RowLayout {
                 }
 
                 // Ngôn ngữ / cờ
-                Com.TaskButton {
+                TaskButton {
                     panelName: "flag"
                     CustomText {
                         name: (Settings.appearance.countryFlag || "vn").toUpperCase()
@@ -209,7 +207,7 @@ RowLayout {
                 }
 
                 // Cụm Quick Settings: wifi + âm lượng + pin
-                Com.TaskButton {
+                TaskButton {
                     panelName: "quickSettings"
                     IconText {
                         name: NetworkService.wifi_icon_text_1
@@ -235,7 +233,7 @@ RowLayout {
                 }
 
                 // Ngày giờ -> Calendar
-                Com.TaskButton {
+                TaskButton {
                     panelName: "calendar"
                     implicitHeight: ScalerService.s(42)
                     ColumnLayout {

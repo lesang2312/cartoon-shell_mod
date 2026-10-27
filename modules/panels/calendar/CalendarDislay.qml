@@ -10,6 +10,7 @@ Rectangle {
   id: calendar
 
   property date currentDate: new Date()
+  readonly property color ctrlBg: popupGlass.active ? Qt.rgba(1, 1, 1, 0.14) : theme.button.background
   property int currentMonth: currentDate.getMonth()
   property int currentYear: currentDate.getFullYear()
   property date selectedDate: new Date()
@@ -247,8 +248,8 @@ Rectangle {
     // Đã fix lỗi kh căn chính xác
     x: (parent.width - width)/2
     y: (parent.height - height)/2
-    width: 240
-    height: 260
+    width: Math.min(ScalerService.s(320), calendar.width - ScalerService.s(24))
+    height: 270
 
     padding: ScalerService.s(5)
     margins: 5
@@ -315,12 +316,19 @@ Rectangle {
 
     background: Rectangle {
       id: popupBg
-      color: theme.primary.background
-      border.color: theme.button.border
-      border.width: ScalerService.s(3)
+      // Liquid Glass; tắt kính thì quay về nền đặc như cũ
+      GlassPanel {
+        id: popupGlass
+        tint: 0.05
+        frostAmount: 0.14
+        rim: 0.8
+      }
+      color: popupGlass.active ? "transparent" : theme.primary.background
+      border.color: popupGlass.active ? Qt.rgba(1, 1, 1, 0.34) : theme.button.border
+      border.width: popupGlass.active ? ScalerService.s(1) : ScalerService.s(3)
       radius: ScalerService.s(15)
 
-      layer.enabled: true
+      layer.enabled: !popupGlass.active
       layer.effect: DropShadow {
         horizontalOffset: 0
         verticalOffset: ScalerService.s(4)
@@ -608,7 +616,7 @@ Rectangle {
           Layout.fillWidth: true
           Layout.preferredHeight: ScalerService.s(38)
           radius: height / 2
-          color: theme.button.background
+          color: calendar.ctrlBg
 
           function pulseAttention() {
             attentionShake.restart();
@@ -682,7 +690,7 @@ Rectangle {
           Layout.fillWidth: true
           Layout.preferredHeight: ScalerService.s(38)
           radius: height / 2
-          color: theme.button.background
+          color: calendar.ctrlBg
 
           RowLayout {
             anchors.fill: parent
@@ -716,7 +724,7 @@ Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: ScalerService.s(42)
         radius: height / 2
-        color: theme.button.background
+        color: calendar.ctrlBg
         opacity: 0
 
         transform: Translate {

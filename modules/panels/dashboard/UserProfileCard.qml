@@ -10,6 +10,8 @@ Item {
     id: root
 
     property real animationProgress: 0
+    // true khi đang gõ tên -> DashboardPanel bật nhận phím
+    readonly property bool editing: fullnameEdit.editing || usernameEdit.editing
 
     Loader {
         source: "../../dialogs/FileDialog.qml"
@@ -29,6 +31,19 @@ Item {
 
     Layout.fillWidth: true
     Layout.fillHeight: true
+
+    // Cửa sổ cần một nhịp để được compositor cấp focus bàn phím, rồi mới focus ô nhập
+    Timer {
+        id: focusTimer
+        interval: 120
+        property var target: null
+        onTriggered: {
+            if (target) {
+                target.forceActiveFocus();
+                target.selectAll();
+            }
+        }
+    }
 
     Rectangle {
         GlassPanel { id: glassBg1 }
@@ -68,8 +83,8 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: ScalerService.s(20)
-            spacing: ScalerService.s(15)
+            anchors.margins: ScalerService.s(60)
+            spacing: ScalerService.s(10)
 
             // Avatar
             Rectangle {
@@ -169,22 +184,160 @@ Item {
                 }
             }
 
-            // User Name
-            CustomText {
+            // Tên + username: bấm vào để sửa (Enter = lưu, Esc = huỷ)
+            Item {
+                id: fullnameEdit
                 Layout.alignment: Qt.AlignHCenter
-                name: Settings.dashboard.fullname
-                textColor: theme.button.text
-                size: "xl"
-                isBold: true
+                Layout.maximumWidth: parent.width
+                implicitWidth: Math.max(fullnameLabel.implicitWidth, ScalerService.s(60)) + ScalerService.s(26)
+                implicitHeight: Math.max(fullnameLabel.implicitHeight, fullnameInput.implicitHeight) + ScalerService.s(6)
                 opacity: root.animationProgress > 0.15 ? 1 : 0
+                property bool editing: false
+
+                function commit() {
+                    if (!editing)
+                        return;
+                    editing = false;
+                    const t = fullnameInput.text.trim();
+                    if (t !== "")
+                        Settings.dashboard.fullname = t;
+                }
+
+                CustomText {
+                    id: fullnameLabel
+                    anchors.centerIn: parent
+                    visible: !fullnameEdit.editing
+                    name: Settings.dashboard.fullname
+                    textColor: theme.button.text
+                    size: "xl"
+                    isBold: true
+                    elide: Text.ElideRight
+                    width: Math.min(implicitWidth, fullnameEdit.width - ScalerService.s(26))
+                }
+                IconText {
+                    visible: !fullnameEdit.editing && fullnameMouse.containsMouse
+                    anchors.left: fullnameLabel.right
+                    anchors.leftMargin: ScalerService.s(4)
+                    anchors.verticalCenter: parent.verticalCenter
+                    name: "edit"
+                    font.pixelSize: ScalerService.s(16)
+                }
+                TextInput {
+                    id: fullnameInput
+                    anchors.centerIn: parent
+                    width: parent.width - ScalerService.s(12)
+                    visible: fullnameEdit.editing
+                    horizontalAlignment: TextInput.AlignHCenter
+                    color: theme.button.text
+                    selectionColor: theme.normal.blue
+                    font: fullnameLabel.font
+                    maximumLength: 40
+                    clip: true
+                    selectByMouse: true
+                    onAccepted: fullnameEdit.commit()
+                    onActiveFocusChanged: if (!activeFocus)
+                        fullnameEdit.commit()
+                    Keys.onEscapePressed: fullnameEdit.editing = false
+                }
+                Rectangle {
+                    visible: fullnameEdit.editing
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    width: parent.width - ScalerService.s(12)
+                    height: ScalerService.s(2)
+                    radius: 1
+                    color: theme.normal.blue
+                }
+                MouseArea {
+                    id: fullnameMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    enabled: !fullnameEdit.editing
+                    cursorShape: Qt.IBeamCursor
+                    onClicked: {
+                        fullnameInput.text = Settings.dashboard.fullname;
+                        fullnameEdit.editing = true;
+                        focusTimer.target = fullnameInput;
+                        focusTimer.restart();
+                    }
+                }
             }
 
-            // User Handle
-            CustomText {
+            Item {
+                id: usernameEdit
                 Layout.alignment: Qt.AlignHCenter
-                name: Settings.dashboard.username
-                textColor: theme.primary.dim_foreground
+                Layout.topMargin: -ScalerService.s(12)
+                Layout.maximumWidth: parent.width
+                implicitWidth: Math.max(usernameLabel.implicitWidth, ScalerService.s(60)) + ScalerService.s(26)
+                implicitHeight: Math.max(usernameLabel.implicitHeight, usernameInput.implicitHeight) + ScalerService.s(6)
                 opacity: root.animationProgress > 0.2 ? 1 : 0
+                property bool editing: false
+
+                function commit() {
+                    if (!editing)
+                        return;
+                    editing = false;
+                    const t = usernameInput.text.trim();
+                    if (t !== "")
+                        Settings.dashboard.username = t;
+                }
+
+                CustomText {
+                    id: usernameLabel
+                    anchors.centerIn: parent
+                    visible: !usernameEdit.editing
+                    name: Settings.dashboard.username
+                    textColor: theme.primary.dim_foreground
+                    elide: Text.ElideRight
+                    width: Math.min(implicitWidth, usernameEdit.width - ScalerService.s(26))
+                }
+                IconText {
+                    visible: !usernameEdit.editing && usernameMouse.containsMouse
+                    anchors.left: usernameLabel.right
+                    anchors.leftMargin: ScalerService.s(4)
+                    anchors.verticalCenter: parent.verticalCenter
+                    name: "edit"
+                    font.pixelSize: ScalerService.s(14)
+                }
+                TextInput {
+                    id: usernameInput
+                    anchors.centerIn: parent
+                    width: parent.width - ScalerService.s(12)
+                    visible: usernameEdit.editing
+                    horizontalAlignment: TextInput.AlignHCenter
+                    color: theme.primary.foreground
+                    selectionColor: theme.normal.blue
+                    font: usernameLabel.font
+                    maximumLength: 40
+                    clip: true
+                    selectByMouse: true
+                    onAccepted: usernameEdit.commit()
+                    onActiveFocusChanged: if (!activeFocus)
+                        usernameEdit.commit()
+                    Keys.onEscapePressed: usernameEdit.editing = false
+                }
+                Rectangle {
+                    visible: usernameEdit.editing
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    width: parent.width - ScalerService.s(12)
+                    height: ScalerService.s(2)
+                    radius: 1
+                    color: theme.normal.blue
+                }
+                MouseArea {
+                    id: usernameMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    enabled: !usernameEdit.editing
+                    cursorShape: Qt.IBeamCursor
+                    onClicked: {
+                        usernameInput.text = Settings.dashboard.username;
+                        usernameEdit.editing = true;
+                        focusTimer.target = usernameInput;
+                        focusTimer.restart();
+                    }
+                }
             }
         }
     }

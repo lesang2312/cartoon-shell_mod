@@ -38,6 +38,9 @@ PanelWindow {
 
     color: "transparent"
 
+    // Cần nhận phím khi trình chỉnh sửa App Grid đang mở (gõ URL / tên)
+    focusable: appGridEditor.visible || profileCard.editing
+
     Rectangle {
         anchors.fill: parent
         color: "transparent"
@@ -53,6 +56,7 @@ PanelWindow {
                 spacing: ScalerService.s(15)
 
                 Com.UserProfileCard {
+                    id: profileCard
                     animationProgress: root.animationProgress
                 }
 
@@ -140,6 +144,9 @@ PanelWindow {
 
                             Com.AppGridCard {
                                 animationProgress: root.animationProgress
+                                onEditRequested: function (index) {
+                                    appGridEditor.openFor(index);
+                                }
                             }
                         }
 
@@ -195,6 +202,12 @@ PanelWindow {
                     }
                 }
             }
+        }
+
+        // Trình chỉnh sửa ô App Grid (overlay, mở bằng chuột phải vào ô)
+        Com.AppGridEditor {
+            id: appGridEditor
+            anchors.fill: parent
         }
     }
 }

@@ -1,8 +1,7 @@
 pragma Singleton
 import QtQuick
-import Qt.labs.settings as Labs
+import Qt.labs.settings
 import Quickshell
-import qs.commons
 
 Singleton {
     id: root
@@ -27,7 +26,7 @@ Singleton {
         }
     }
 
-    property Labs.Settings store: Labs.Settings {
+    property Settings store: Settings {
         category: "cartoon_shell_widget_layout"
         property string positionsJson: "{}"
         property string visibilityJson: "{}"
@@ -37,8 +36,6 @@ Singleton {
         property bool notesPhotoWidgetRepairApplied: false
         // First boot: every desktop widget starts hidden; the user turns on what they want.
         property bool firstRunHiddenApplied: false
-        // Một lần: ẩn đồng hồ desktop (Pixel clock + đồng hồ panel cũ), dù trước đó đang bật.
-        property bool clockHiddenApplied: false
     }
 
     readonly property var allWidgetIds: ["main-clock", "calendar", "clock-summary", "music-player", "sticky-note", "calculator", "battery", "cute-habits", "system-usage", "photo-frame"]
@@ -83,18 +80,15 @@ Singleton {
             store.firstRunHiddenApplied = true;
         }
 
-        if (!store.clockHiddenApplied) {
-            const v = Object.assign({}, root.widgetVisibility || {});
-            v["main-clock"] = false;
-            root.widgetVisibility = v;
-            store.visibilityJson = JSON.stringify(v);
-            Settings.clock.enableWidget = false;
-            store.clockHiddenApplied = true;
-        }
-
         // Older runs may have saved these new widgets as hidden or placed with a zero-sized Loader.
         // Restore a known-visible first-run state once; afterwards the user's show/hide choices persist.
         if (!store.notesPhotoWidgetRepairApplied) {
+            const migratedVisibility = Object.assign({}, root.widgetVisibility || {});
+            migratedVisibility["sticky-note"] = true;
+            migratedVisibility["photo-frame"] = true;
+            root.widgetVisibility = migratedVisibility;
+            store.visibilityJson = JSON.stringify(migratedVisibility);
+
             const migratedPositions = Object.assign({}, root.positions || {});
             delete migratedPositions["sticky-note"];
             delete migratedPositions["photo-frame"];
@@ -148,8 +142,7 @@ Singleton {
 
     function isWidgetVisible(widgetId) {
         const visibility = root.widgetVisibility || {};
-        // Mặc định ẨN: widget chỉ hiện khi người dùng chủ động bật (cài mới = không có widget nào).
-        return visibility[widgetId] === true;
+        return visibility[widgetId] !== false;
     }
 
     function setWidgetVisible(widgetId, isVisible) {
