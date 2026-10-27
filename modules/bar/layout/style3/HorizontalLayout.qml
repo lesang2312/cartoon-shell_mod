@@ -6,7 +6,7 @@ import Quickshell.Services.Pipewire
 import qs.commons
 import qs.services
 import qs.components
-import "."
+import "." as Style3
 import "../../widget/" as Com
 
 // Thanh kiểu Windows 11: Weather bên trái | cụm giữa (Start, Search, Workspaces, Music, Widgets)
@@ -78,7 +78,7 @@ RowLayout {
             }
 
             // ---- Trái: thời tiết (Win11 Widgets) ----
-            TaskButton {
+            Style3.TaskButton {
                 id: weatherBtn
                 anchors.left: parent.left
                 anchors.leftMargin: ScalerService.s(8)
@@ -112,7 +112,7 @@ RowLayout {
                 anchors.centerIn: parent
                 spacing: ScalerService.s(6)
 
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "launcher"
                     IconImage {
                         path: "launcher/win11.svg"
@@ -121,7 +121,7 @@ RowLayout {
                 }
 
                 // Ô tìm kiếm: bấm mở launcher (có ô search)
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "launcher"
                     implicitWidth: ScalerService.s(190)
                     baseColor: Qt.rgba(1, 1, 1, 0.08)
@@ -160,7 +160,7 @@ RowLayout {
                     }
                 }
 
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "music"
                     IconText {
                         name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "graphic_eq" : "music_note"
@@ -169,7 +169,7 @@ RowLayout {
                     }
                 }
 
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "dashboard"
                     IconText {
                         name: "widgets"
@@ -187,7 +187,7 @@ RowLayout {
                 spacing: ScalerService.s(2)
 
                 // Khay hệ thống (hidden icons)
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "tray"
                     visible: TrayService.hasTray
                     IconText {
@@ -197,7 +197,7 @@ RowLayout {
                 }
 
                 // Ngôn ngữ / cờ
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "flag"
                     CustomText {
                         name: (Settings.appearance.countryFlag || "vn").toUpperCase()
@@ -207,7 +207,7 @@ RowLayout {
                 }
 
                 // Cụm Quick Settings: wifi + âm lượng + pin
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "quickSettings"
                     IconText {
                         name: NetworkService.wifi_icon_text_1
@@ -233,7 +233,7 @@ RowLayout {
                 }
 
                 // Ngày giờ -> Calendar
-                TaskButton {
+                Style3.TaskButton {
                     panelName: "calendar"
                     implicitHeight: ScalerService.s(42)
                     ColumnLayout {

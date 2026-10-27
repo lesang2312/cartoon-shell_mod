@@ -248,10 +248,11 @@ Rectangle {
     // Đã fix lỗi kh căn chính xác
     x: (parent.width - width)/2
     y: (parent.height - height)/2
-    width: Math.min(ScalerService.s(320), calendar.width - ScalerService.s(24))
-    height: 270
+    // Popup rộng hơn, có giới hạn theo panel để không tràn trên màn hình nhỏ.
+    width: Math.min(ScalerService.s(360), calendar.width - ScalerService.s(20))
+    height: Math.min(ScalerService.s(326), calendar.height - ScalerService.s(20))
 
-    padding: ScalerService.s(5)
+    padding: ScalerService.s(8)
     margins: 5
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
@@ -319,14 +320,15 @@ Rectangle {
       // Liquid Glass; tắt kính thì quay về nền đặc như cũ
       GlassPanel {
         id: popupGlass
-        tint: 0.05
-        frostAmount: 0.14
-        rim: 0.8
+        // Kính mờ có màu nền nhẹ, viền bắt sáng rõ mà không che mất shader.
+        tint: 0.28
+        frostAmount: 1.45
+        rim: 0.86
       }
       color: popupGlass.active ? "transparent" : theme.primary.background
-      border.color: popupGlass.active ? Qt.rgba(1, 1, 1, 0.34) : theme.button.border
-      border.width: popupGlass.active ? ScalerService.s(1) : ScalerService.s(3)
-      radius: ScalerService.s(15)
+      border.color: popupGlass.active ? Qt.rgba(0.92, 0.96, 1.0, 0.72) : theme.button.border
+      border.width: popupGlass.active ? ScalerService.s(1) : ScalerService.s(2)
+      radius: ScalerService.s(22)
 
       layer.enabled: !popupGlass.active
       layer.effect: DropShadow {
@@ -342,13 +344,14 @@ Rectangle {
     //-----------------Phần bên trong----------------
     contentItem: ColumnLayout {
       anchors.fill: parent
-      spacing: ScalerService.s(10)
-      anchors.margins: 8
+      spacing: ScalerService.s(11)
+      anchors.margins: ScalerService.s(14)
 
       // Header: thanh accent + ngày + thứ + nút đóng
       RowLayout {
         id: headerRow
         Layout.fillWidth: true
+        Layout.preferredHeight: ScalerService.s(36)
         spacing: ScalerService.s(10)
         opacity: 0
 
@@ -401,9 +404,33 @@ Rectangle {
           }
         }
 
-        ButtonIconText {
-          name: "close"
-          onClicked: reminderPopup.close()
+        Rectangle {
+          Layout.preferredWidth: ScalerService.s(36)
+          Layout.preferredHeight: ScalerService.s(36)
+          radius: ScalerService.s(12)
+          color: "transparent"
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: GlassService.base
+            tintAmount: 0.20
+            tintStrength: 0.82
+            frost: 1.0
+            rim: 0.78
+            fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.62)
+          }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: ScalerService.s(1)
+            border.color: Qt.rgba(0.92, 0.96, 1.0, 0.34)
+          }
+          ButtonIconText {
+            anchors.fill: parent
+            name: "close"
+            onClicked: reminderPopup.close()
+          }
         }
       }
 
@@ -473,32 +500,39 @@ Rectangle {
             width: reminderList.width
             height: ScalerService.s(46)
 
+            GlassSurface {
+              anchors.fill: parent
+              radius: ScalerService.s(11)
+              fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, hoverArea.containsMouse ? 0.76 : 0.48)
+              tintColor: GlassService.base
+              tintAmount: hoverArea.containsMouse ? 0.30 : 0.20
+              tintStrength: 0.82
+              frost: 1.12
+              rim: 0.78
+            }
+
             Rectangle {
               anchors.fill: parent
-              radius: ScalerService.s(10)
-              color: theme.button.background
-              opacity: hoverArea.containsMouse ? 0.32 : 0.16
-              Behavior on opacity {
-                NumberAnimation {
-                  duration: 150
-                }
-              }
+              radius: ScalerService.s(11)
+              color: "transparent"
+              border.width: hoverArea.containsMouse ? ScalerService.s(1) : 0
+              border.color: Qt.rgba(0.92, 0.96, 1.0, hoverArea.containsMouse ? 0.72 : 0.28)
             }
 
             Rectangle {
               width: ScalerService.s(3)
-              height: parent.height - ScalerService.s(14)
+              height: parent.height - ScalerService.s(16)
               anchors.verticalCenter: parent.verticalCenter
               anchors.left: parent.left
-              anchors.leftMargin: ScalerService.s(8)
+              anchors.leftMargin: ScalerService.s(7)
               radius: ScalerService.s(2)
               color: theme.button.text
             }
 
             RowLayout {
               anchors.fill: parent
-              anchors.leftMargin: ScalerService.s(22)
-              anchors.rightMargin: ScalerService.s(10)
+              anchors.leftMargin: ScalerService.s(20)
+              anchors.rightMargin: ScalerService.s(8)
               spacing: ScalerService.s(8)
 
               ColumnLayout {
@@ -514,8 +548,9 @@ Rectangle {
                   name: modelData.text
                   size: "small"
                   elide: Text.ElideRight
+                  maximumLineCount: 1
                   Layout.fillWidth: true
-                  opacity: 0.7
+                  opacity: 0.76
                 }
               }
 
@@ -616,7 +651,26 @@ Rectangle {
           Layout.fillWidth: true
           Layout.preferredHeight: ScalerService.s(38)
           radius: height / 2
-          color: calendar.ctrlBg
+          color: "transparent"
+          border.width: 0
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.70)
+            tintColor: GlassService.base
+            tintAmount: 0.22
+            tintStrength: 0.82
+            frost: 1.05
+            rim: 0.76
+          }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: ScalerService.s(1)
+            border.color: Qt.rgba(0.92, 0.96, 1.0, 0.34)
+          }
 
           function pulseAttention() {
             attentionShake.restart();
@@ -690,7 +744,26 @@ Rectangle {
           Layout.fillWidth: true
           Layout.preferredHeight: ScalerService.s(38)
           radius: height / 2
-          color: calendar.ctrlBg
+          color: "transparent"
+          border.width: 0
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.70)
+            tintColor: GlassService.base
+            tintAmount: 0.22
+            tintStrength: 0.82
+            frost: 1.05
+            rim: 0.76
+          }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: ScalerService.s(1)
+            border.color: Qt.rgba(0.92, 0.96, 1.0, 0.34)
+          }
 
           RowLayout {
             anchors.fill: parent
@@ -705,6 +778,7 @@ Rectangle {
               name: calendar.reminderSoundName
               size: "small"
               elide: Text.ElideRight
+              maximumLineCount: 1
               Layout.fillWidth: true
             }
           }
@@ -724,8 +798,27 @@ Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: ScalerService.s(42)
         radius: height / 2
-        color: calendar.ctrlBg
+        color: "transparent"
+        border.width: 0
         opacity: 0
+
+        GlassSurface {
+          anchors.fill: parent
+          radius: parent.radius
+          fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.76)
+          tintColor: GlassService.base
+          tintAmount: 0.22
+          tintStrength: 0.82
+          frost: 1.05
+          rim: 0.76
+        }
+        Rectangle {
+          anchors.fill: parent
+          radius: parent.radius
+          color: "transparent"
+          border.width: ScalerService.s(1)
+          border.color: Qt.rgba(0.92, 0.96, 1.0, 0.34)
+        }
 
         transform: Translate {
           id: inputTranslate
@@ -775,7 +868,25 @@ Rectangle {
             Layout.preferredWidth: ScalerService.s(34)
             Layout.preferredHeight: ScalerService.s(34)
             radius: width / 2
-            color: theme.button.text
+            color: "transparent"
+
+            GlassSurface {
+              anchors.fill: parent
+              radius: parent.radius
+              tintColor: theme.button.text
+              tintAmount: 0.34
+              tintStrength: 0.86
+              frost: 0.95
+              rim: 0.88
+              fallbackColor: Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.94)
+            }
+            Rectangle {
+              anchors.fill: parent
+              radius: parent.radius
+              color: "transparent"
+              border.width: ScalerService.s(1)
+              border.color: Qt.rgba(1, 1, 1, 0.46)
+            }
 
             SequentialAnimation {
               id: addPulse
@@ -837,8 +948,12 @@ Rectangle {
     modal: true
     focus: true
     parent: calendar
-    margins: 0
-    padding: ScalerService.s(18)
+    margins: ScalerService.s(8)
+    padding: ScalerService.s(14)
+    width: Math.min(ScalerService.s(340), calendar.width - ScalerService.s(20))
+    height: Math.min(ScalerService.s(370), calendar.height - ScalerService.s(20))
+    x: (parent.width - width) / 2
+    y: (parent.height - height) / 2
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     transformOrigin: Item.Center
@@ -871,12 +986,18 @@ Rectangle {
     }
 
     background: Rectangle {
-      color: theme.primary.background
-      border.color: theme.button.border
+      GlassPanel {
+        id: timePickerGlass
+        tint: 0.28
+        frostAmount: 1.45
+        rim: 0.86
+      }
+      color: timePickerGlass.active ? "transparent" : theme.primary.background
+      border.color: timePickerGlass.active ? Qt.rgba(0.92, 0.96, 1.0, 0.72) : theme.button.border
       border.width: ScalerService.s(1)
-      radius: ScalerService.s(10)
+      radius: ScalerService.s(22)
 
-      layer.enabled: true
+      layer.enabled: !timePickerGlass.active
       layer.effect: DropShadow {
         horizontalOffset: 0
         verticalOffset: ScalerService.s(4)
@@ -905,8 +1026,12 @@ Rectangle {
     modal: true
     focus: true
     parent: calendar
-    margins: 5
-    padding: ScalerService.s(18)
+    margins: ScalerService.s(8)
+    padding: ScalerService.s(14)
+    width: Math.min(ScalerService.s(352), calendar.width - ScalerService.s(20))
+    height: Math.min(ScalerService.s(356), calendar.height - ScalerService.s(20))
+    x: (parent.width - width) / 2
+    y: (parent.height - height) / 2
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     transformOrigin: Item.Center
@@ -939,12 +1064,18 @@ Rectangle {
     }
 
     background: Rectangle {
-      color: theme.primary.background
-      border.color: theme.button.border
+      GlassPanel {
+        id: soundPickerGlass
+        tint: 0.28
+        frostAmount: 1.45
+        rim: 0.86
+      }
+      color: soundPickerGlass.active ? "transparent" : theme.primary.background
+      border.color: soundPickerGlass.active ? Qt.rgba(0.92, 0.96, 1.0, 0.72) : theme.button.border
       border.width: ScalerService.s(1)
-      radius: ScalerService.s(10)
+      radius: ScalerService.s(22)
 
-      layer.enabled: true
+      layer.enabled: !soundPickerGlass.active
       layer.effect: DropShadow {
         horizontalOffset: 0
         verticalOffset: ScalerService.s(4)

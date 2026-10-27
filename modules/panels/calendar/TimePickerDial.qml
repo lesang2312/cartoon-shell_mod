@@ -19,8 +19,10 @@ Item {
   // Góc hiện tại (độ) của kim, 0 = 12 giờ / phút 00, tăng theo chiều kim đồng hồ
   readonly property real handDeg: mode === "hour" ? (hour12() % 12) * 30 : minutes * 6
 
-  implicitWidth: 260
-  implicitHeight: 260
+  // Bao gồm cả màn hình số, mặt đồng hồ và hàng nút; trước đây chiều cao 260
+  // làm các nút Huỷ/Xác nhận tràn ra ngoài nền Popup.
+  implicitWidth: ScalerService.s(272)
+  implicitHeight: ScalerService.s(332)
   
 
   function setInitialTime(timeStr) {
@@ -63,7 +65,7 @@ Item {
 
   ColumnLayout {
     anchors.fill: parent
-    spacing: ScalerService.s(14)
+    spacing: ScalerService.s(12)
 
     // Đồng hồ số + AM/PM
     RowLayout {
@@ -77,7 +79,20 @@ Item {
           Layout.preferredWidth: ScalerService.s(56)
           Layout.preferredHeight: ScalerService.s(50)
           radius: ScalerService.s(10)
-          color: root.mode === "hour" ? theme.button.text : "transparent"
+          color: "transparent"
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: root.mode === "hour" ? theme.button.text : GlassService.base
+            tintAmount: root.mode === "hour" ? 0.30 : 0.14
+            tintStrength: 0.84
+            frost: 1.0
+            rim: 0.80
+            fallbackColor: root.mode === "hour"
+                           ? Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.94)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.32)
+          }
 
           CustomText {
             anchors.centerIn: parent
@@ -105,7 +120,20 @@ Item {
           Layout.preferredWidth: ScalerService.s(56)
           Layout.preferredHeight: ScalerService.s(50)
           radius: ScalerService.s(10)
-          color: root.mode === "minute" ? theme.button.text : "transparent"
+          color: "transparent"
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: root.mode === "minute" ? theme.button.text : GlassService.base
+            tintAmount: root.mode === "minute" ? 0.30 : 0.14
+            tintStrength: 0.84
+            frost: 1.0
+            rim: 0.80
+            fallbackColor: root.mode === "minute"
+                           ? Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.94)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.32)
+          }
 
           CustomText {
             anchors.centerIn: parent
@@ -129,7 +157,20 @@ Item {
           Layout.preferredWidth: ScalerService.s(36)
           Layout.preferredHeight: ScalerService.s(24)
           radius: ScalerService.s(6)
-          color: !root.isPM ? theme.button.text : theme.button.background
+          color: "transparent"
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: !root.isPM ? theme.button.text : GlassService.base
+            tintAmount: !root.isPM ? 0.28 : 0.14
+            tintStrength: 0.82
+            frost: 0.95
+            rim: 0.76
+            fallbackColor: !root.isPM
+                           ? Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.92)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.36)
+          }
 
           CustomText {
             anchors.centerIn: parent
@@ -148,7 +189,20 @@ Item {
           Layout.preferredWidth: ScalerService.s(36)
           Layout.preferredHeight: ScalerService.s(24)
           radius: ScalerService.s(6)
-          color: root.isPM ? theme.button.text : theme.button.background
+          color: "transparent"
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: root.isPM ? theme.button.text : GlassService.base
+            tintAmount: root.isPM ? 0.28 : 0.14
+            tintStrength: 0.82
+            frost: 0.95
+            rim: 0.76
+            fallbackColor: root.isPM
+                           ? Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.92)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.36)
+          }
 
           CustomText {
             anchors.centerIn: parent
@@ -169,16 +223,26 @@ Item {
     Item {
       id: dialCircle
       Layout.alignment: Qt.AlignHCenter
-      width: ScalerService.s(220)
-      height: ScalerService.s(220)
+      width: ScalerService.s(216)
+      height: ScalerService.s(216)
 
       readonly property real ringR: width / 2 - ScalerService.s(28)
 
       Rectangle {
         anchors.fill: parent
         radius: width / 2
-        color: theme.button.background
-        opacity: 0.5
+        color: "transparent"
+
+        GlassSurface {
+          anchors.fill: parent
+          radius: width / 2
+          tintColor: GlassService.base
+          tintAmount: 0.25
+          tintStrength: 0.82
+          frost: 1.28
+          rim: 0.86
+          fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.52)
+        }
       }
 
       Rectangle {
@@ -244,11 +308,24 @@ Item {
           width: ScalerService.s(30)
           height: ScalerService.s(30)
 
+          GlassSurface {
+            anchors.fill: parent
+            radius: width / 2
+            visible: root.mode === "hour" ? root.hour12() === numItem.valueForMode : root.minutes === numItem.valueForMode
+            tintColor: theme.button.text
+            tintAmount: 0.30
+            tintStrength: 0.86
+            frost: 0.9
+            rim: 0.86
+            fallbackColor: Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.88)
+          }
+
           CustomText {
             anchors.centerIn: parent
             name: root.mode === "hour" ? String(numItem.valueForMode) : root.pad2(numItem.valueForMode)
             size: "small"
             isBold: root.mode === "hour" ? root.hour12() === numItem.valueForMode : root.minutes === numItem.valueForMode
+            textColor: (root.mode === "hour" ? root.hour12() === numItem.valueForMode : root.minutes === numItem.valueForMode) ? theme.button.background : theme.button.text
           }
 
           MouseArea {
@@ -300,15 +377,49 @@ Item {
     RowLayout {
       Layout.fillWidth: true
       Layout.alignment: Qt.AlignHCenter
-      spacing: ScalerService.s(24)
+      spacing: ScalerService.s(30)
 
-      ButtonIconText {
-        name: "close"
-        onClicked: root.cancelled()
+      Rectangle {
+        Layout.preferredWidth: ScalerService.s(42)
+        Layout.preferredHeight: ScalerService.s(42)
+        radius: width / 2
+        color: "transparent"
+        GlassSurface {
+          anchors.fill: parent
+          radius: parent.radius
+          tintAmount: 0.22
+          tintStrength: 0.82
+          frost: 1.0
+          rim: 0.78
+          fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.60)
+        }
+        ButtonIconText {
+          anchors.fill: parent
+          name: "close"
+          onClicked: root.cancelled()
+        }
       }
-      ButtonIconText {
-        name: "check_circle"
-        onClicked: root.timeConfirmed(root.currentTimeString())
+      Rectangle {
+        Layout.preferredWidth: ScalerService.s(42)
+        Layout.preferredHeight: ScalerService.s(42)
+        radius: width / 2
+        color: "transparent"
+        GlassSurface {
+          anchors.fill: parent
+          radius: parent.radius
+          tintColor: theme.button.text
+          tintAmount: 0.30
+          tintStrength: 0.84
+          frost: 1.0
+          rim: 0.84
+          fallbackColor: Qt.rgba(theme.button.text.r, theme.button.text.g, theme.button.text.b, 0.90)
+        }
+        ButtonIconText {
+          anchors.fill: parent
+          name: "check_circle"
+          textColor: theme.button.background
+          onClicked: root.timeConfirmed(root.currentTimeString())
+        }
       }
     }
   }

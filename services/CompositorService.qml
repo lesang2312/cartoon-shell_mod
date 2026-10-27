@@ -46,6 +46,50 @@ Singleton {
         detectCompositor();
     }
 
+    // Trả về scale hợp lệ cho mỗi màn hình. Background.qml dùng hàm này để
+    // tính kích thước wallpaper theo scale của compositor; mặc định 1 nếu
+    // cache chưa được nạp hoặc màn hình chưa có dữ liệu.
+    function getDisplayScale(displayName) {
+        const displays = root.displayScales || ({});
+        const entry = displayName ? displays[displayName] : null;
+        const rawScale = (typeof entry === "number") ? entry : (entry ? entry.scale : 1.0);
+        const scale = Number(rawScale);
+        return isFinite(scale) && scale > 0 ? scale : 1.0;
+    }
+
+    // Được gọi bởi backend Hyprland/Niri sau khi truy vấn màn hình. Lưu dữ liệu
+    // dưới cùng dạng map mà display.json đang dùng và phát signal cho UI cần cập nhật.
+    function onDisplayScalesUpdated(scales) {
+        if (!scales || typeof scales !== "object")
+            return;
+
+        const normalized = {};
+        for (const name in scales) {
+            if (!Object.prototype.hasOwnProperty.call(scales, name))
+                continue;
+            const entry = scales[name];
+            const rawScale = (typeof entry === "number") ? entry : (entry ? entry.scale : 1.0);
+            const parsedScale = Number(rawScale);
+            const safeScale = isFinite(parsedScale) && parsedScale > 0 ? parsedScale : 1.0;
+
+            if (entry && typeof entry === "object") {
+                const copy = {};
+                for (const key in entry) {
+                    if (Object.prototype.hasOwnProperty.call(entry, key))
+                        copy[key] = entry[key];
+                }
+                copy.name = copy.name || name;
+                copy.scale = safeScale;
+                normalized[name] = copy;
+            } else {
+                normalized[name] = { name: name, scale: safeScale };
+            }
+        }
+
+        displayCacheAdapter.displays = normalized;
+        root.displayScalesLoaded = true;
+    }
+
     FileView {
         id: displayCacheFileView
         path: root.displayCachePath

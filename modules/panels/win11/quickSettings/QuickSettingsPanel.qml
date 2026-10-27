@@ -11,7 +11,7 @@ import Quickshell.Services.Pipewire
 import qs.commons
 import qs.components
 import qs.services
-import "."
+import "." as QuickSettingsComponents
 
 PanelWindow {
     id: root
@@ -122,7 +122,7 @@ PanelWindow {
                         rowSpacing: ScalerService.s(8)
                         columnSpacing: ScalerService.s(8)
 
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: QuickSettingsService.wifiEnabled && !QuickSettingsService.airplane ? NetworkService.wifi_icon_text_1 : "wifi_off"
                             title: "Wi-Fi"
                             subtitle: root.wifiSubtitle
@@ -131,7 +131,7 @@ PanelWindow {
                             onToggled: QuickSettingsService.toggleWifi()
                             onDetailRequested: VisibleService.openPanel("wifi")
                         }
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: root.btAdapter && root.btAdapter.enabled ? "bluetooth" : "bluetooth_disabled"
                             title: "Bluetooth"
                             subtitle: root.btSubtitle
@@ -141,14 +141,14 @@ PanelWindow {
                             onToggled: root.btAdapter.enabled = !root.btAdapter.enabled
                             onDetailRequested: VisibleService.openPanel("bluetooth")
                         }
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: "flight"
                             title: "Airplane mode"
                             subtitle: QuickSettingsService.airplane ? "On" : "Off"
                             checked: QuickSettingsService.airplane
                             onToggled: QuickSettingsService.toggleAirplane()
                         }
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: "battery_saver"
                             title: "Battery saver"
                             subtitle: !QuickSettingsService.hasPowerProfiles ? "Unavailable" : (QuickSettingsService.batterySaver ? "On" : "Off")
@@ -156,7 +156,7 @@ PanelWindow {
                             available: QuickSettingsService.hasPowerProfiles
                             onToggled: QuickSettingsService.toggleBatterySaver()
                         }
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: "nightlight"
                             title: "Night light"
                             subtitle: !QuickSettingsService.hasNightLight ? "Unavailable" : (QuickSettingsService.nightLight ? "On" : "Off")
@@ -164,7 +164,7 @@ PanelWindow {
                             available: QuickSettingsService.hasNightLight
                             onToggled: QuickSettingsService.toggleNightLight()
                         }
-                        QuickTile {
+                        QuickSettingsComponents.QuickTile {
                             icon: "dashboard"
                             title: "Dashboard"
                             subtitle: "Open"

@@ -23,8 +23,8 @@ Item {
   property string selectedFileUrl: ""
   property string selectedFileName: root.defaultSoundLabel
 
-  implicitWidth: 264
-  implicitHeight: 260
+  implicitWidth: ScalerService.s(292)
+  implicitHeight: ScalerService.s(300)
 
   readonly property url soundsDirUrl: Qt.resolvedUrl("./sounds/")
   readonly property string soundsDirPath: soundsDirUrl.toString().replace(/^file:\/\//, "")
@@ -99,11 +99,13 @@ Item {
 
   ColumnLayout {
     anchors.fill: parent
-    spacing: ScalerService.s(10)
+    anchors.margins: ScalerService.s(2)
+    spacing: ScalerService.s(14)
 
     RowLayout {
       Layout.fillWidth: true
-      spacing: ScalerService.s(6)
+      Layout.preferredHeight: ScalerService.s(34)
+      spacing: ScalerService.s(8)
 
       CustomText {
         name: lang?.calendar?.alarm_sound_title || "Âm thanh báo"
@@ -112,13 +114,45 @@ Item {
         Layout.fillWidth: true
       }
 
-      ButtonIconText {
-        name: "refresh"
-        onClicked: root.refresh()
+      Rectangle {
+        Layout.preferredWidth: ScalerService.s(34)
+        Layout.preferredHeight: ScalerService.s(34)
+        radius: ScalerService.s(11)
+        color: "transparent"
+        GlassSurface {
+          anchors.fill: parent
+          radius: parent.radius
+          tintAmount: 0.20
+          tintStrength: 0.78
+          frost: 1.0
+          rim: 0.76
+          fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.54)
+        }
+        ButtonIconText {
+          anchors.fill: parent
+          name: "refresh"
+          onClicked: root.refresh()
+        }
       }
-      ButtonIconText {
-        name: "close"
-        onClicked: root.closed()
+      Rectangle {
+        Layout.preferredWidth: ScalerService.s(34)
+        Layout.preferredHeight: ScalerService.s(34)
+        radius: ScalerService.s(11)
+        color: "transparent"
+        GlassSurface {
+          anchors.fill: parent
+          radius: parent.radius
+          tintAmount: 0.20
+          tintStrength: 0.78
+          frost: 1.0
+          rim: 0.76
+          fallbackColor: Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.54)
+        }
+        ButtonIconText {
+          anchors.fill: parent
+          name: "close"
+          onClicked: root.closed()
+        }
       }
     }
 
@@ -144,11 +178,29 @@ Item {
         header: Rectangle {
           width: soundList.width
           height: ScalerService.s(40)
-          radius: ScalerService.s(10)
-          color: theme.button.background
-          opacity: root.selectedFileUrl === "" ? 1 : 0.35
-          border.width: root.selectedFileUrl === "" ? ScalerService.s(1) : 0
-          border.color: theme.button.text
+          radius: ScalerService.s(11)
+          color: "transparent"
+          border.width: 0
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: GlassService.base
+            tintAmount: root.selectedFileUrl === "" ? 0.28 : 0.16
+            tintStrength: 0.82
+            frost: 1.0
+            rim: 0.80
+            fallbackColor: root.selectedFileUrl === ""
+                           ? Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.82)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.48)
+          }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: root.selectedFileUrl === "" ? ScalerService.s(1) : 0
+            border.color: Qt.rgba(0.92, 0.96, 1.0, 0.66)
+          }
 
           RowLayout {
             anchors.fill: parent
@@ -160,6 +212,9 @@ Item {
             }
             CustomText {
               name: root.defaultSoundLabel
+              size: "small"
+              elide: Text.ElideRight
+              maximumLineCount: 1
               Layout.fillWidth: true
             }
           }
@@ -176,10 +231,28 @@ Item {
           width: soundList.width
           height: ScalerService.s(40)
           radius: ScalerService.s(10)
-          color: theme.button.background
-          opacity: root.selectedFileUrl === model.fileUrl ? 1 : 0.35
-          border.width: root.selectedFileUrl === model.fileUrl ? ScalerService.s(1) : 0
-          border.color: theme.button.text
+          color: "transparent"
+          border.width: 0
+
+          GlassSurface {
+            anchors.fill: parent
+            radius: parent.radius
+            tintColor: GlassService.base
+            tintAmount: root.selectedFileUrl === model.fileUrl ? 0.28 : 0.16
+            tintStrength: 0.82
+            frost: 1.0
+            rim: 0.78
+            fallbackColor: root.selectedFileUrl === model.fileUrl
+                           ? Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.82)
+                           : Qt.rgba(theme.button.background.r, theme.button.background.g, theme.button.background.b, 0.48)
+          }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: root.selectedFileUrl === model.fileUrl ? ScalerService.s(1) : 0
+            border.color: Qt.rgba(0.92, 0.96, 1.0, 0.66)
+          }
 
           MouseArea {
             anchors.fill: parent
@@ -193,7 +266,9 @@ Item {
 
             CustomText {
               name: model.fileName
+              size: "small"
               elide: Text.ElideRight
+              maximumLineCount: 1
               Layout.fillWidth: true
             }
 
