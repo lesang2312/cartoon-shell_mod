@@ -10,7 +10,6 @@ import qs.services
 import qs.commons
 import qs.components
 import "." as Com
-import "../../../components/glass"
 
 PanelWindow {
   id: root

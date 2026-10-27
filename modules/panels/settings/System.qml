@@ -30,6 +30,9 @@ Item {
           var data = JSON.parse(txt);
           root.systemInfo = parseSystemInfo(data);
           root.dataLoaded = true;
+          var d = root.systemInfo.disk;
+          if (!d || !isFinite(d.used) || !isFinite(d.available))
+            dfProcess.running = true;
         }
       } catch (e) {
         console.error("Error parsing fastfetch output:", e);
@@ -97,24 +100,18 @@ Item {
         };
       }
       
-      // Disk
+      // Disk (prefer the root mount point; fastfetch may omit used/available on some filesystems)
       if (item.type === "Disk" && item.result) {
-        var disk = item.result[0];
+        var disks = Array.isArray(item.result) ? item.result : [item.result];
+        var disk = disks.find(function(d) { return d && d.mountpoint === "/"; }) || disks[0];
         if (disk && disk.bytes) {
-          var total = disk.bytes.total;
-          var used = disk.bytes.used;
-          var available = disk.bytes.available;
-          info.disk = {
-            total: total,
-            used: used,
-            available: available,
-            totalFormatted: formatBytes(total),
-            usedFormatted: formatBytes(used),
-            availableFormatted: formatBytes(available),
-            filesystem: disk.filesystem || "Unknown",
-            mountpoint: disk.mountpoint || "/",
-            percent: Math.round((used / total) * 100)
-          };
+          var dTotal = Number(disk.bytes.total);
+          var dUsed = Number(disk.bytes.used);
+          var dAvail = Number(disk.bytes.available);
+          if (!isFinite(dAvail)) dAvail = Number(disk.bytes.free);
+          if (!isFinite(dUsed) && isFinite(dTotal) && isFinite(dAvail)) dUsed = dTotal - dAvail;
+          if (!isFinite(dAvail) && isFinite(dTotal) && isFinite(dUsed)) dAvail = dTotal - dUsed;
+          info.disk = makeDiskInfo(dTotal, dUsed, dAvail, disk.filesystem, disk.mountpoint);
         }
       }
       
@@ -188,11 +185,47 @@ Item {
     return info;
   }
   
+  function makeDiskInfo(total, used, available, filesystem, mountpoint) {
+    return {
+      total: total,
+      used: used,
+      available: available,
+      totalFormatted: formatBytes(total),
+      usedFormatted: formatBytes(used),
+      availableFormatted: formatBytes(available),
+      filesystem: filesystem || "Unknown",
+      mountpoint: mountpoint || "/",
+      percent: total > 0 && isFinite(used) ? Math.round((used / total) * 100) : 0
+    };
+  }
+
+  // Fallback when fastfetch gives no usable used/available values
+  Process {
+    id: dfProcess
+    running: false
+    stdout: StdioCollector {
+      id: dfCollector
+    }
+    command: ["df", "-B1", "--output=size,used,avail", "/"]
+
+    onExited: {
+      var lines = (dfCollector.text || "").trim().split("\n");
+      if (lines.length < 2) return;
+      var parts = lines[1].trim().split(/\s+/).map(Number);
+      if (parts.length < 3 || parts.some(function(n) { return !isFinite(n); })) return;
+      var prev = root.systemInfo.disk || {};
+      var info = root.systemInfo;
+      info.disk = makeDiskInfo(parts[0], parts[1], parts[2], prev.filesystem, prev.mountpoint);
+      root.systemInfo = Object.assign({}, info);
+    }
+  }
+
   function formatBytes(bytes) {
+    if (typeof bytes !== "number" || !isFinite(bytes) || bytes < 0) return "Unknown";
     if (bytes === 0) return "0 B";
     var k = 1024;
     var sizes = ["B", "KB", "MB", "GB", "TB"];
-    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    var i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   }
   

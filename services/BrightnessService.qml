@@ -11,9 +11,10 @@ Singleton {
     property real currentBrightness: 0.5
     property bool shouldShowOsd: false
 
+    // Dùng thang tuyến tính (không -e4) để khớp với cách đọc lại giá trị (current/max).
     function changeBright(delta) {
         brightnessProcess.command = ["sh", "-c", `
-          brightnessctl -e4 -n2 set ${delta > 0 ? "5%+" : "5%-"}
+          brightnessctl -n2 set ${delta > 0 ? "5%+" : "5%-"}
           qs ipc --path "${Quickshell.shellDir}" \
               call brightness set \
               "$(awk "BEGIN {print $(brightnessctl g)/$(brightnessctl m)}")"
@@ -21,14 +22,23 @@ Singleton {
 
         brightnessProcess.running = true;
     }
-    function setBright(value) {
-        brightnessProcess.command = ["sh", "-c", `
-        brightnessctl -e4 -n2 set ${Math.round(value * 100)}%
-        qs ipc --path "${Quickshell.shellDir}" \
-            call brightness set \
-            "$(awk "BEGIN {print $(brightnessctl g)/$(brightnessctl m)}")"
-        `];
 
+    // Gộp các lần kéo thanh trượt: chỉ giữ giá trị mới nhất, không spawn tiến trình chồng nhau.
+    property real _pending: -1
+    function setBright(value) {
+        currentBrightness = value;
+        shouldShowOsd = true;
+        hideTimer.restart();
+        _pending = value;
+        if (!brightnessProcess.running)
+            _flush();
+    }
+    function _flush() {
+        if (_pending < 0)
+            return;
+        const v = _pending;
+        _pending = -1;
+        brightnessProcess.command = ["brightnessctl", "-n2", "set", Math.round(v * 100) + "%"];
         brightnessProcess.running = true;
     }
 
@@ -37,7 +47,10 @@ Singleton {
         running: false
 
         onExited: {
-            getBrightProcess.running = true;
+            if (root._pending >= 0)
+                root._flush();
+            else
+                getBrightProcess.running = true;
         }
     }
 

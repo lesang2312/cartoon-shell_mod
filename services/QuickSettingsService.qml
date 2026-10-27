@@ -15,6 +15,15 @@ Singleton {
     property bool hasPowerProfiles: true
     property bool hasNightLight: true
 
+    // Profile nguồn hiện tại: "power-saver" | "balanced" | "performance"
+    property string powerProfile: "balanced"
+    // Hiệu ứng Hyprland (animation/blur/đổ bóng)
+    property bool effectsEnabled: true
+    // Chế độ tiết kiệm điện tổng hợp (profile + effects + Liquid Glass)
+    property bool powerSaverMode: false
+    property string _prevProfile: "balanced"
+    property bool _prevGlass: true
+
     // ---- Đọc trạng thái (chỉ chạy khi panel đang mở) ----
     function refresh() {
         if (!stateProc.running)
@@ -29,7 +38,9 @@ Singleton {
             hp=0; s=0; if command -v powerprofilesctl >/dev/null 2>&1; then hp=1; [ "$(powerprofilesctl get 2>/dev/null)" = power-saver ] && s=1; fi
             hn=0; n=0
             for t in hyprsunset wlsunset gammastep; do command -v $t >/dev/null 2>&1 && hn=1; pgrep -x $t >/dev/null 2>&1 && n=1; done
-            echo "$w $a $s $n $hp $hn"
+            pp=balanced; [ $hp = 1 ] && pp=$(powerprofilesctl get 2>/dev/null)
+            ef=1; if command -v hyprctl >/dev/null 2>&1; then hyprctl getoption animations:enabled -j 2>/dev/null | grep -Eq '"int": *0' && ef=0; fi
+            echo "$w $a $s $n $hp $hn \${pp:-balanced} $ef"
         `]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -42,6 +53,13 @@ Singleton {
                 root.nightLight = p[3] === "1";
                 root.hasPowerProfiles = p[4] === "1";
                 root.hasNightLight = p[5] === "1";
+                if (p.length >= 8) {
+                    root.powerProfile = p[6];
+                    root.effectsEnabled = p[7] === "1";
+                }
+                // Người dùng đổi profile thủ công -> không còn ở chế độ tiết kiệm tổng hợp
+                if (root.powerSaverMode && root.hasPowerProfiles && root.powerProfile !== "power-saver")
+                    root.powerSaverMode = false;
             }
         }
     }
@@ -55,16 +73,75 @@ Singleton {
     }
 
     // ---- Hành động ----
+    property var _queue: []
     Process {
         id: actionProc
         onExited: {
             NetworkService.updateWifi();
             root.refresh();
+            if (root._queue.length > 0) {
+                const next = root._queue.shift();
+                actionProc.command = ["sh", "-c", next];
+                actionProc.running = true;
+            }
         }
     }
     function _run(cmd) {
+        if (actionProc.running) {
+            _queue.push(cmd);
+            return;
+        }
         actionProc.command = ["sh", "-c", cmd];
         actionProc.running = true;
+    }
+
+    // Tắt: animation/blur/đổ bóng. Bật: reload để nạp lại đúng cấu hình của người dùng.
+    function _effectsCmd(on) {
+        return on ? "hyprctl reload" : "hyprctl --batch 'keyword animations:enabled 0 ; keyword decoration:blur:enabled 0 ; keyword decoration:shadow:enabled 0 ; keyword decoration:drop_shadow 0'";
+    }
+
+    function setPowerProfile(id) {
+        if (!hasPowerProfiles || ["power-saver", "balanced", "performance"].indexOf(id) < 0)
+            return;
+        powerProfile = id;
+        batterySaver = id === "power-saver";
+        if (powerSaverMode && id !== "power-saver")
+            powerSaverMode = false;
+        _run(`powerprofilesctl set ${id}`);
+    }
+
+    function setEffects(on) {
+        effectsEnabled = on;
+        _run(_effectsCmd(on));
+    }
+
+    function setPowerSaverMode(on) {
+        if (on === powerSaverMode)
+            return;
+        const cmds = [];
+        if (on) {
+            _prevProfile = powerProfile === "power-saver" ? "balanced" : powerProfile;
+            _prevGlass = GlassService.enabled;
+            if (hasPowerProfiles) {
+                powerProfile = "power-saver";
+                batterySaver = true;
+                cmds.push("powerprofilesctl set power-saver");
+            }
+            effectsEnabled = false;
+            cmds.push(_effectsCmd(false));
+            GlassService.setEnabled(false);
+        } else {
+            if (hasPowerProfiles) {
+                powerProfile = _prevProfile;
+                batterySaver = false;
+                cmds.push(`powerprofilesctl set ${_prevProfile}`);
+            }
+            effectsEnabled = true;
+            cmds.push(_effectsCmd(true));
+            GlassService.setEnabled(_prevGlass);
+        }
+        powerSaverMode = on;
+        _run(cmds.join("; ") + "; true");
     }
 
     function toggleWifi() {

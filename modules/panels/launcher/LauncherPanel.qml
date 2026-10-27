@@ -10,7 +10,6 @@ import qs.components
 // Import các thành phần phụ trong cùng thư mục
 import "../../../components/" as Components
 import "./" as LauncherComponents
-import "../../../components/glass"
 
 PanelWindow {
     id: root
@@ -85,10 +84,10 @@ PanelWindow {
 
     // Focus scope để quản lý focus
     Rectangle {
-        anchors.top: Settings.bar.position == "top" ? parent.top : false
-        anchors.left: Settings.bar.position == "left" ? parent.left : false
-        anchors.bottom: Settings.bar.position === "bottom" ? parent.bottom : false
-        anchors.right: Settings.bar.position === "right" ? parent.right : false
+        anchors.top: Settings.bar.position == "top" ? parent.top : undefined
+        anchors.left: Settings.bar.position == "left" ? parent.left : undefined
+        anchors.bottom: Settings.bar.position === "bottom" ? parent.bottom : undefined
+        anchors.right: Settings.bar.position === "right" ? parent.right : undefined
         implicitWidth: root.animationProgress > 0 ? parent.width : 0
         implicitHeight: root.animationProgress > 0 ? parent.height : 0
         Behavior on implicitHeight {

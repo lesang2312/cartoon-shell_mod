@@ -27,8 +27,9 @@ Slider {
         Rectangle {
             width: root.visualPosition * parent.width
             Behavior on width {
+                enabled: !root.pressed
                 NumberAnimation {
-                    duration: 500
+                    duration: 120
                     easing.type: Easing.OutCubic
                 }
             }
@@ -48,8 +49,9 @@ Slider {
         x: root.leftPadding + root.visualPosition * (root.availableWidth - width)
         y: root.topPadding + root.availableHeight / 2 - height / 2
         Behavior on x {
+            enabled: !root.pressed
             NumberAnimation {
-                duration: 500
+                duration: 120
                 easing.type: Easing.OutCubic
             }
         }
@@ -75,7 +77,7 @@ Slider {
         }
         radius: root.pressed ? ScalerService.s(9) : ScalerService.s(8)
         color: theme.primary.background
-        border.color: theme.button.dim_foreground
+        border.color: theme.button.border
         border.width: ScalerService.s(1)
 
         // Inner dot

@@ -195,6 +195,7 @@ PanelWindow {
                         }
                     }
                     CustomSlider {
+                        to: 1.5
                         Layout.fillWidth: true
                         enabled: root.sink !== null && root.sink !== undefined
                         value: root.sink ? root.sink.audio.volume : 0

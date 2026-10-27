@@ -41,15 +41,11 @@ Item {
             currentIndex: root.currentTab
 
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 0
 
                 sourceComponent: Com.Theme {}
             }
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 1
 
                 sourceComponent: Com.Panel {}
@@ -100,24 +96,18 @@ Item {
                 }
             }
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 3
 
                 sourceComponent: Com.Fonts {}
             }
 
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 4
 
                 sourceComponent: Com.Icons {}
             }
 
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 5
 
                 sourceComponent: Com.Effects {}
@@ -125,16 +115,12 @@ Item {
 
             // Tab 6: Dashboard
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 6
 
                 source: "./appearance/dashboard/Dashboard.qml"
             }
 
             Loader {
-                anchors.fill: parent
-
                 active: root.currentTab === 7
 
                 sourceComponent: Com.Wallpapers {}

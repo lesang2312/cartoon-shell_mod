@@ -3,7 +3,6 @@ import qs.components
 import QtQuick.Layouts
 import Quickshell
 import qs.services
-import "../../../components/glass"
 
 PanelWindow {
   id: root

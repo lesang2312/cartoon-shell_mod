@@ -8,7 +8,6 @@ import Quickshell.Io
 import qs.services
 import qs.commons
 import qs.components
-import "../../../components/glass"
 
 PanelWindow {
     id: root

@@ -7,7 +7,6 @@ import qs.commons
 import Quickshell.Services.SystemTray
 import qs.components
 import qs.services
-import "../../../components/glass"
 
 PanelWindow {
   id: root
@@ -77,7 +76,7 @@ PanelWindow {
 
   margins {
     top: Settings.bar.position === "top" ? ScalerService.s(10) : 0
-    bottom: (Settings.bar.position === "bottom" || Settings.bar.position === "left" || Settings.bar.position === "right") ? ScalerService.s(170) : 0
+    bottom: Settings.bar.position === "bottom" ? ScalerService.s(10) : ((Settings.bar.position === "left" || Settings.bar.position === "right") ? ScalerService.s(170) : 0)
     left: Settings.bar.position === "left" ? ScalerService.s(10) : 0
     right: (Settings.bar.position === "right" || Settings.bar.position === "top" || Settings.bar.position === "bottom") ? ScalerService.s(300) : 0
   }

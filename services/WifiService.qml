@@ -7,7 +7,7 @@ Item {
 
     property var wifiList: []
     property bool wifiEnabled: true
-    property string connectedWifi: "Not connected"
+    property string connectedWifi: ""
     property bool isScanning: false
     property string openSsid: ""     // SSID đang mở hộp mật khẩu
     property bool userTyping: false  // true khi đang nhập password
@@ -55,14 +55,31 @@ Item {
     Process {
         id: wifiScanProcess
 
-        command: ["bash", "-c", 'printf "%-20s %-8s %-15s %s\n" "SSID" "SIGNAL" "SECURITY" "PASSWORD"; ' + 'nmcli -t -f SSID,SIGNAL,SECURITY device wifi list | ' + 'while IFS=":" read -r SSID SIGNAL SECURITY; do ' + 'PASS=$(nmcli -s -g 802-11-wireless-security.psk connection show "$SSID" 2>/dev/null); ' + '[ -z "$PASS" ] && PASS="--"; ' + 'printf "%-20s %-8s %-15s %s\n" "$SSID" "$SIGNAL" "$SECURITY" "$PASS"; ' + 'done']
+        command: ["bash", "-c", `
+# Tab-separated output: IN-USE, SIGNAL, SECURITY, SSID, SAVED_PASSWORD ("--" if none)
+saved=$(nmcli -t --escape no -f NAME,TYPE connection show 2>/dev/null | sed -n 's/:802-11-wireless$//p')
+declare -A cache
+nmcli -t --escape no -f IN-USE,SIGNAL,SECURITY,SSID device wifi list 2>/dev/null | while IFS= read -r line; do
+  inuse=\${line%%:*}; rest=\${line#*:}
+  signal=\${rest%%:*}; rest=\${rest#*:}
+  sec=\${rest%%:*};    ssid=\${rest#*:}
+  [ -z "$ssid" ] && continue
+  if [ -z "\${cache[$ssid]+x}" ]; then
+    pass="--"
+    if printf '%s\n' "$saved" | grep -Fxq -- "$ssid"; then
+      p=$(nmcli -s -g 802-11-wireless-security.psk connection show "$ssid" 2>/dev/null)
+      [ -n "$p" ] && pass=$p
+    fi
+    cache[$ssid]=$pass
+  fi
+  printf '%s\t%s\t%s\t%s\t%s\n' "\${inuse// /}" "$signal" "\${sec:-Open}" "$ssid" "\${cache[$ssid]}"
+done
+`]
 
         stdout: StdioCollector {
             onStreamFinished: {
-                if (this.text) {
-                    parseWifiList(this.text);
-                    wifiManager.isScanning = false;
-                }
+                parseWifiList(this.text || "");
+                wifiManager.isScanning = false;
             }
         }
     }
@@ -84,6 +101,7 @@ Item {
             if (!running) {
                 Qt.callLater(function () {
                     checkConnectedWifi();
+                    scanWifiNetworks();
                 });
             }
         }
@@ -91,20 +109,17 @@ Item {
 
     Process {
         id: connectedWifiProcess
-        command: ["nmcli", "-t", "-f", "NAME", "connection", "show", "--active"]
+        command: ["nmcli", "-t", "--escape", "no", "-f", "ACTIVE,SSID", "device", "wifi", "list"]
         stdout: StdioCollector {
             onStreamFinished: {
-                if (this.text) {
-                    const lines = this.text.trim().split('\n');
-                    for (var i = 0; i < lines.length; i++) {
-                        var conn = lines[i];
-                        if (conn && conn !== "lo" && !conn.startsWith("Wired")) {
-                            wifiManager.connectedWifi = conn;
-                            return;
-                        }
+                var lines = (this.text || "").trim().split('\n');
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].startsWith("yes:")) {
+                        wifiManager.connectedWifi = lines[i].substring(4);
+                        return;
                     }
-                    wifiManager.connectedWifi = "Not connected";
                 }
+                wifiManager.connectedWifi = "";
             }
         }
     }
@@ -161,7 +176,7 @@ Item {
     function disconnectWifi() {
         wifiConnectProcess.command = ["nmcli", "device", "disconnect"];
         wifiConnectProcess.running = true;
-        wifiManager.connectedWifi = "Not connected";
+        wifiManager.connectedWifi = "";
     }
 
     function checkConnectedWifi() {
@@ -170,35 +185,35 @@ Item {
     }
 
     function parseWifiList(text) {
-        var lines = text.trim().split('\n');
+        var lines = text.split('\n');
         var networksMap = {};
 
-        for (var i = 1; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (line && line !== "--") {
-                var parts = line.split(/\s{2,}/);
-                if (parts.length >= 2) {
-                    var ssid = parts[0].trim();
-                    var signal = parseInt(parts[1].trim()) || 0;
-                    var security = parts.length >= 3 ? parts[2].trim() : "Open";
-                    var saved_password = (parts[3] || "").trim();
-                    if (ssid && ssid !== "--" && ssid !== "SSID") {
-                        if (!networksMap[ssid] || signal > networksMap[ssid].signal) {
-                            networksMap[ssid] = {
-                                ssid: ssid,
-                                signal: signal,
-                                security: security,
-                                isConnected: ssid === wifiManager.connectedWifi,
-                                saved_password: saved_password
-                            };
-                        }
-                    }
-                }
+        for (var i = 0; i < lines.length; i++) {
+            if (!lines[i].trim())
+                continue;
+            var parts = lines[i].split('\t');
+            if (parts.length < 4)
+                continue;
+            var inUse = parts[0] === "*";
+            var signal = parseInt(parts[1]) || 0;
+            var security = parts[2] || "Open";
+            var ssid = parts[3];
+            var savedPassword = parts.length >= 5 ? parts[4] : "--";
+            if (!ssid)
+                continue;
+            var existing = networksMap[ssid];
+            if (!existing || signal > existing.signal || inUse) {
+                networksMap[ssid] = {
+                    ssid: ssid,
+                    signal: signal,
+                    security: security,
+                    isConnected: inUse || (existing ? existing.isConnected : false) || ssid === wifiManager.connectedWifi,
+                    saved_password: savedPassword
+                };
             }
         }
 
-        var networks = Object.values(networksMap).sort((a, b) => b.signal - a.signal);
-        wifiManager.wifiList = networks;
+        wifiManager.wifiList = Object.values(networksMap).sort((a, b) => b.signal - a.signal);
     }
 
     // =============================

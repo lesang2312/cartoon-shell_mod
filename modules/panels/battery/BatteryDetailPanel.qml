@@ -6,7 +6,7 @@ import Quickshell.Io
 import qs.services
 import qs.commons
 import "./" as Com
-import "../../../components/glass"
+import qs.components
 
 PanelWindow {
   id: batteryDetailPanel

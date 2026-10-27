@@ -64,7 +64,7 @@ Scope {
         bottom: true
       }
       margins {
-        bottom: ScalerService.s(120)
+        bottom: ScalerService.s(10)
       }
       exclusiveZone: 0
       implicitWidth: ScalerService.s(280)
