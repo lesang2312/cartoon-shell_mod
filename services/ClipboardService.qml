@@ -115,7 +115,7 @@ Singleton {
     // Hyprland reload config có thể làm mất bind runtime; timer tự đăng ký lại nếu thiếu.
     // Sway không cung cấp API liệt kê bind runtime, nên chỉ đăng ký một lần khi init/thay đổi.
     Timer {
-        interval: 15000
+        interval: 120000
         repeat: true
         running: root.enabled
         onTriggered: root.apply(true)

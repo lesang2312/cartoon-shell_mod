@@ -97,6 +97,19 @@ Singleton {
       workspace_icons: "Workspace icons", choose_workspace_icon: "Choose a character for your workspaces",
       selected: "Selected", system_stats: "System stats", image_style: "Illustrated", symbol_style: "Symbols"
     },
+    update: {
+      title: "Cartoon Shell update", current: "Installed version", latest: "Latest version", unknown: "unknown",
+      check: "Check for updates", checking: "Checking…", update_now: "Update now", updating: "Updating…",
+      reload: "Reload shell", up_to_date: "You are on the latest version", available: "A new update is available",
+      baseline: "Current version recorded as the baseline. You will be notified when a newer one appears.",
+      done: "Update finished! Press \"Reload shell\" to apply it.", auto_check: "Check for updates automatically",
+      auto_check_desc: "Checks at startup and every 2 hours, and shows a notification when an update is available.",
+      notify_title: "Cartoon Shell has a new update", notify_body: "Open Settings → System to update.",
+      backup: "Backup", err_network: "Could not reach GitHub.", err_git_conflict: "Local changes conflict with the update. Run git pull/stash yourself.",
+      err_download: "Downloading the update failed.", err_backup: "Could not create a backup, aborted to stay safe.",
+      err_generic: "Update failed.", step_fetch: "Fetching…", step_merge: "Merging changes…", step_backup: "Backing up…",
+      step_download: "Downloading…", step_extract: "Extracting…", step_install: "Installing…"
+    },
     shortcuts: {
       title: "Hyprland Shortcuts", help: "Select a shortcut to edit it. Press a key combination; Esc cancels.",
       conflict_title: "Shortcut conflict", conflict_message: "The key combination is already assigned to:",
@@ -109,12 +122,33 @@ Singleton {
     }
   })
 
+  // Bản tiếng Việt cho các mục chưa có trong file locale (chỉ dùng khi ngôn ngữ = vi)
+  readonly property var fallbackTranslationsVi: ({
+    update: {
+      title: "Cập nhật Cartoon Shell", current: "Phiên bản đang dùng", latest: "Phiên bản mới nhất", unknown: "chưa rõ",
+      check: "Kiểm tra cập nhật", checking: "Đang kiểm tra…", update_now: "Cập nhật ngay", updating: "Đang cập nhật…",
+      reload: "Tải lại shell", up_to_date: "Bạn đang dùng bản mới nhất", available: "Có bản cập nhật mới",
+      baseline: "Đã ghi nhận phiên bản hiện tại làm mốc. Lần sau có bản mới sẽ báo ngay.",
+      done: "Cập nhật xong! Bấm \"Tải lại shell\" để áp dụng.", auto_check: "Tự kiểm tra cập nhật",
+      auto_check_desc: "Kiểm tra khi khởi động và mỗi 2 giờ, có bản mới sẽ hiện thông báo.",
+      notify_title: "Cartoon Shell có bản cập nhật mới", notify_body: "Vào Cài đặt → Hệ thống để cập nhật.",
+      backup: "Bản sao lưu", err_network: "Không kết nối được tới GitHub.", err_git_conflict: "Bạn có thay đổi cục bộ xung đột với bản mới. Hãy tự git pull/stash.",
+      err_download: "Tải bản cập nhật thất bại.", err_backup: "Không tạo được bản sao lưu, đã hủy để an toàn.",
+      err_generic: "Cập nhật thất bại.", step_fetch: "Đang lấy dữ liệu…", step_merge: "Đang gộp thay đổi…", step_backup: "Đang sao lưu…",
+      step_download: "Đang tải về…", step_extract: "Đang giải nén…", step_install: "Đang cài đặt…"
+    }
+  })
+
   // ===============================
   // Translation helper
   // ===============================
   function t(section, key) {
     const local = translations?.[section]?.[key];
     if (local !== undefined && local !== null && local !== "") return local;
+    if (currentLanguage === "vi") {
+      const vi = fallbackTranslationsVi?.[section]?.[key];
+      if (vi !== undefined) return vi;
+    }
     const fallback = fallbackTranslations?.[section]?.[key];
     return fallback !== undefined ? fallback : key;
   }

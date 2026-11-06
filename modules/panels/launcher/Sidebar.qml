@@ -171,6 +171,15 @@ Rectangle {
                         Layout.fillWidth: true
                     }
 
+                    // Chấm báo có bản cập nhật Cartoon Shell mới (xem Cài đặt → Hệ thống)
+                    Rectangle {
+                        visible: UpdateService.hasUpdate
+                        Layout.preferredWidth: ScalerService.s(10)
+                        Layout.preferredHeight: ScalerService.s(10)
+                        radius: width / 2
+                        color: theme.normal.red
+                    }
+
                     // Indicator khi selected
                     Rectangle {
                         Layout.preferredWidth: ScalerService.s(4)

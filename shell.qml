@@ -69,6 +69,7 @@ ShellRoot {
                 LanguageService.init();
                 IdleService.init();
                 ClipboardService.init();
+                UpdateService.init();
             }
 
             Background {}

@@ -670,6 +670,17 @@ Rectangle {
                         Layout.fillWidth: true
                     }
 
+                    // Chấm báo có bản cập nhật mới
+                    Rectangle {
+                        visible: UpdateService.hasUpdate
+                        Layout.preferredWidth: ScalerService.s(10)
+                        Layout.preferredHeight: ScalerService.s(10)
+                        radius: width / 2
+                        color: theme.normal.red
+                        border.width: ScalerService.s(1)
+                        border.color: theme.primary.dim_background
+                    }
+
                     Rectangle {
                         Layout.preferredWidth: root.currentIndex === 6 ? ScalerService.s(4) : 0
                         Layout.preferredHeight: root.currentIndex === 6 ? ScalerService.s(20) : 0

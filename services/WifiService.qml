@@ -228,8 +228,18 @@ done
         if (wifiManager.wifiEnabled)
             scanWifiNetworks();
     }
+    // Quét mạng (nmcli rescan) tốn CPU/pin: chỉ khi người dùng đang nhìn vào danh sách mạng.
+    readonly property bool listVisible: VisibleService.wifi || VisibleService.quickSettings || VisibleService.setting
+    onListVisibleChanged: {
+        if (listVisible) {
+            checkWifiStatus();
+            checkConnectedWifi();
+            if (wifiManager.wifiEnabled)
+                scanWifiNetworks();
+        }
+    }
     Timer {
-        interval: 10000
+        interval: wifiManager.listVisible ? 10000 : 60000
         running: true
         repeat: true
         onTriggered: {
@@ -238,7 +248,7 @@ done
             }
             checkWifiStatus();
             checkConnectedWifi();
-            if (wifiManager.wifiEnabled)
+            if (wifiManager.wifiEnabled && wifiManager.listVisible)
                 scanWifiNetworks();
         }
     }

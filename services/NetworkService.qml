@@ -94,14 +94,14 @@ Singleton {
 
     // Timers
     Timer {
-        interval: 5000
+        interval: 20000
         running: true
         repeat: true
         onTriggered: networkService.updateWifi()
     }
 
     Timer {
-        interval: 8000
+        interval: 30000
         running: true
         repeat: true
         onTriggered: networkService.updateSignalWifi()

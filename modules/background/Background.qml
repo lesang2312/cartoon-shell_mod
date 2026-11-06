@@ -297,7 +297,7 @@ Variants {
             Loader {
                 id: shaderLoader
                 anchors.fill: parent
-                active: true
+                active: root.transitioning
                 sourceComponent: ShaderEffect {
                     anchors.fill: parent
 

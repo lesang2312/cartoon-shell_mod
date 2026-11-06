@@ -21,7 +21,7 @@ Item {
       to: 360
       duration: 10000
       loops: Animation.Infinite
-      running: Players.mprisPlayer?.isPlaying ?? false
+      running: (Players.mprisPlayer?.isPlaying ?? false) && root.visible && root.opacity > 0
     }
 
     ClippingRectangle {

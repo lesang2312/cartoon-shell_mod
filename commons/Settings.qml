@@ -122,6 +122,9 @@ Singleton {
         property string notifMutedApps: ""       // các ứng dụng bị tắt popup (cách nhau dấu phẩy)
         // ---- Privacy ----
         property string privacyNotifDetail: "full" // full | title | none: mức nội dung lộ ra trong popup
+        // ---- Update ----
+        property bool updateAutoCheck: true      // tự kiểm tra bản cập nhật (lúc khởi động + mỗi 6 giờ)
+        property string updateLastNotified: ""   // commit đã báo rồi, để không báo lặp
     }
     component Dashboard: JsonObject {
         property string splitMethod: "dwindle_default"

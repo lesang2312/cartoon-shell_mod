@@ -260,6 +260,9 @@ Item {
         isBold: true
         Layout.topMargin: ScalerService.s(5)
       }
+
+      // Cập nhật Cartoon Shell (hiện luôn, không cần đợi fastfetch)
+      Com.UpdateCard {}
       
       // Loading state
       Rectangle {
