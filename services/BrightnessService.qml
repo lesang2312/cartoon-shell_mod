@@ -4,6 +4,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.commons
 
 Singleton {
     id: root
@@ -90,7 +91,7 @@ Singleton {
 
     Timer {
         id: hideTimer
-        interval: 1500
+        interval: Math.max(Settings.behavior.osdDurationMs, 600)
         onTriggered: root.shouldShowOsd = false
     }
 }

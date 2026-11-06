@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import qs.services
 import qs.components
+import qs.commons
 import Quickshell
 import Quickshell.Io
 
@@ -32,10 +33,10 @@ ColumnLayout {
   Rectangle {
     Layout.fillWidth: true
     height: ScalerService.s(46)
-    color: theme.primary.dim_background
+    color: Qt.alpha(theme.primary.dim_background, 0.72)
     radius: ScalerService.s(10)
     border.width: ScalerService.s(1)
-    border.color: theme.normal.black
+    border.color: Qt.rgba(0.88, 0.93, 1.0, 0.48)
 
     Text {
       anchors.centerIn: parent
@@ -55,10 +56,10 @@ ColumnLayout {
       Rectangle {
         Layout.fillWidth: true
         implicitHeight: Math.max(ScalerService.s(55), rowContent.implicitHeight + ScalerService.s(20))
-        color: theme.button.background
+        color: Qt.alpha(theme.button.background, 0.52)
         radius: ScalerService.s(8)
         border.width: ScalerService.s(1)
-        border.color: theme.button.border
+        border.color: Qt.rgba(0.88, 0.93, 1.0, 0.68)
 
         RowLayout {
           id: rowContent
@@ -86,7 +87,7 @@ ColumnLayout {
 
           Text {
             text: modelData.action
-            color: theme.primary.foreground
+            color: "#FFFFFF"
             font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
@@ -139,7 +140,7 @@ ColumnLayout {
       Layout.fillWidth: true
       implicitHeight: ScalerService.s(42)
       visible: !root.readOnly
-      color: theme.button.background
+      color: Qt.alpha(theme.button.background, 0.28)
       radius: ScalerService.s(8)
       border.width: ScalerService.s(1)
       border.color: addMouse.containsMouse ? theme.normal.blue : theme.button.border
@@ -155,7 +156,7 @@ ColumnLayout {
         spacing: ScalerService.s(8)
         Text { text: "➕"; color: theme.primary.foreground; font.pixelSize: ScalerService.s(13) }
         Text {
-          text: "Add New Shortcut"
+          text: LanguageService.t("shortcuts", "add_new")
           color: theme.primary.foreground
           font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13); bold: true }
         }
@@ -164,9 +165,37 @@ ColumnLayout {
       MouseArea {
         id: addMouse; anchors.fill: parent; hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: addDialog.open()
+        onClicked: (Settings.appearance.dialogStyle === "cute") ? cuteDialog.open() : addDialog.open()
       }
     }
+  }
+
+  // Lưu shortcut mới (dùng chung cho dialog cổ điển và dialog cute).
+  function addShortcut(actionName, command, key, inTerminal) {
+    let s_id = "custom_" + Date.now();
+    let finalCmd = inTerminal
+      ? ("kitty --hold -e bash -c " + root._shQuote(command))
+      : command;
+
+    // Cập nhật model ngay lập tức -> cả 2 bảng hiển thị refresh liền.
+    KeybindsService.addNewShortcut(root.categoryData.id, s_id, key, actionName, finalCmd);
+
+    let pyCmd = "python3 ~/.config/quickshell/cartoon-shell/scripts/update_keybinds.py add "
+      + root._shQuote(root.categoryData.id) + " "
+      + root._shQuote(s_id) + " "
+      + root._shQuote(key) + " "
+      + root._shQuote(actionName) + " "
+      + root._shQuote(finalCmd);
+    pyRunner.command = ["bash", "-c", pyCmd];
+    pyRunner.running = true;
+  }
+
+  CuteShortcutDialog {
+    id: cuteDialog
+    parent: root.dialogAnchorItem ? root.dialogAnchorItem : root
+    anchorItem: root.dialogAnchorItem
+    categoryId: root.categoryData.id
+    onSaveRequested: (name, cmd, key, inTerm) => root.addShortcut(name, cmd, key, inTerm)
   }
 
   Dialog {
@@ -201,45 +230,45 @@ ColumnLayout {
     }
 
     Overlay.modal: Rectangle {
-      color: "#00000099"
+      color: "#00000066"
       Behavior on opacity { NumberAnimation { duration: 140 } }
     }
 
     background: Rectangle {
-      color: theme.primary.dim_background
-      radius: ScalerService.s(12)
-      border.width: ScalerService.s(2)
-      border.color: theme.normal.black
+      color: Qt.alpha(theme.primary.dim_background, 0.74)
+      radius: ScalerService.s(16)
+      border.width: ScalerService.s(1)
+      border.color: theme.button.border
     }
 
     contentItem: ColumnLayout {
       spacing: ScalerService.s(15)
-      width: ScalerService.s(320)
+      width: Math.min(root.dialogAnchorItem ? root.dialogAnchorItem.width * 0.88 : ScalerService.s(380), ScalerService.s(420))
 
       Text {
-        text: "Configure New Shortcut"
+        text: LanguageService.t("shortcuts", "configure_new")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(18); bold: true }
         Layout.alignment: Qt.AlignHCenter
         Layout.bottomMargin: ScalerService.s(10)
       }
 
-      Text { text: "Action Name (e.g., Open Firefox):"; color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) } }
+      Text { text: LanguageService.t("shortcuts", "action_name"); color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) } }
       TextField {
         id: actionNameField
         Layout.fillWidth: true
-        placeholderText: "Action Name..."
+        placeholderText: LanguageService.t("shortcuts", "action_placeholder")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
         leftPadding: ScalerService.s(10); rightPadding: ScalerService.s(10)
         background: Rectangle {
-          color: theme.button.background; radius: ScalerService.s(6)
-          border.width: ScalerService.s(1); border.color: theme.button.border
+          color: Qt.alpha(theme.button.background, 0.34); radius: ScalerService.s(9)
+          border.width: ScalerService.s(1); border.color: actionNameField.activeFocus ? theme.button.border_select : theme.button.border
         }
       }
 
       Text {
-        text: "Command / App Executable:"
+        text: LanguageService.t("shortcuts", "command")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
         Layout.topMargin: ScalerService.s(10)
@@ -247,18 +276,18 @@ ColumnLayout {
       TextField {
         id: cmdField
         Layout.fillWidth: true
-        placeholderText: "e.g., firefox"
+        placeholderText: LanguageService.t("shortcuts", "command_placeholder")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
         leftPadding: ScalerService.s(10); rightPadding: ScalerService.s(10)
         background: Rectangle {
-          color: theme.button.background; radius: ScalerService.s(6)
-          border.width: ScalerService.s(1); border.color: theme.button.border
+          color: Qt.alpha(theme.button.background, 0.34); radius: ScalerService.s(9)
+          border.width: ScalerService.s(1); border.color: cmdField.activeFocus ? theme.button.border_select : theme.button.border
         }
       }
 
       Text {
-        text: "Gán phím tắt (tuỳ chọn):"
+        text: LanguageService.t("shortcuts", "assign_key")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
         Layout.topMargin: ScalerService.s(10)
@@ -277,7 +306,7 @@ ColumnLayout {
             const conflict = KeybindsService.findConflict(newKey, root.categoryData.id, "__pending_add__");
             if (conflict) {
               addDialog.pendingKey = "";
-              addDialog.keyConflictText = "⚠️ Phím này đang gán cho: " + conflict.action;
+              addDialog.keyConflictText = "⚠️ " + LanguageService.t("shortcuts", "key_conflict") + conflict.action;
             } else {
               addDialog.pendingKey = newKey;
               addDialog.keyConflictText = "";
@@ -287,7 +316,7 @@ ColumnLayout {
 
         Text {
           visible: addDialog.pendingKey === "" && addDialog.keyConflictText === ""
-          text: "(bấm để gán, Esc để bỏ qua)"
+          text: LanguageService.t("shortcuts", "capture_hint")
           color: theme.primary.foreground; opacity: 0.6
           font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(11) }
         }
@@ -322,7 +351,7 @@ ColumnLayout {
           }
         }
         Text {
-          text: "Chạy trong Terminal (kitty) — dùng cho lệnh thuần CLI như htop"
+          text: LanguageService.t("shortcuts", "run_terminal")
           color: theme.primary.foreground
           wrapMode: Text.WordWrap; Layout.fillWidth: true
           font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(12) }
@@ -344,7 +373,7 @@ ColumnLayout {
           scale: cancelMouse.pressed ? 0.96 : 1.0
           Behavior on border.color { ColorAnimation { duration: 120 } }
           Behavior on scale { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-          Text { anchors.centerIn: parent; text: "Cancel"; color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) } }
+          Text { anchors.centerIn: parent; text: LanguageService.t("shortcuts", "cancel"); color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) } }
           MouseArea {
             id: cancelMouse
             anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
@@ -359,12 +388,14 @@ ColumnLayout {
           scale: saveMouse.pressed ? 0.96 : 1.0
           Behavior on opacity { NumberAnimation { duration: 120 } }
           Behavior on scale { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-          Text { anchors.centerIn: parent; text: "Save"; color: theme.primary.background; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14); bold: true } }
+          Text { anchors.centerIn: parent; text: LanguageService.t("shortcuts", "save"); color: theme.primary.background; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14); bold: true } }
           MouseArea {
             id: saveMouse
             anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
             onClicked: {
-              if (actionNameField.text !== "" && cmdField.text !== "") {
+              if (actionNameField.text.trim() === "" || cmdField.text.trim() === "") {
+                addDialog.keyConflictText = "⚠️ " + LanguageService.t("shortcuts", "required_fields");
+              } else {
                 let s_id = "custom_" + Date.now();
                 let finalKey = addDialog.pendingKey !== "" ? addDialog.pendingKey : "Unbound";
                 let finalCmd = addDialog.runInTerminal

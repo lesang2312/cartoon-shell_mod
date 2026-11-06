@@ -59,12 +59,64 @@ Singleton {
   }
 
   // ===============================
+  // Shared fallback catalog for UI sections that were not present in older
+  // locale files. A translated locale value always takes priority.
+  // ===============================
+  readonly property var fallbackTranslations: ({
+    network: {
+      title: "Network", connection_status: "Connection status", airplane_active: "Airplane mode is on",
+      disconnected: "No network connection", internet_connected: "Connected to the Internet", captive_portal: "Sign-in required for this network",
+      limited_connection: "Limited connection (no Internet)", connected: "Connected", no_connection: "No connection",
+      download: "Download", upload: "Upload", latency: "Latency", error: "Error", quick_connection: "Quick connection",
+      wifi_on_desc: "On — scanning for nearby networks", wifi_off_desc: "Off", airplane_mode: "Airplane mode",
+      airplane_desc: "Turn off Wi-Fi and Bluetooth", wifi_networks: "Nearby Wi-Fi networks", scanning: "Scanning networks…",
+      no_wifi: "No Wi-Fi networks found", dns_title: "DNS servers", dns_for_connection: "Applied to connection",
+      current_dns: "Current DNS", unknown: "Unknown", dns_auto: "Automatic", dns_google: "Google",
+      dns_cloudflare: "Cloudflare", dns_adguard: "AdGuard", custom_dns: "Custom DNS", custom_dns_hint: "Enter one or two IPv4 DNS addresses.",
+      dns_primary_placeholder: "Primary · 1.1.1.1", dns_secondary_placeholder: "Secondary · 1.0.0.1", apply_custom_dns: "Apply custom DNS",
+      dns_need_connection: "Connect to a network before changing DNS.", dns_invalid: "Enter valid IPv4 addresses for DNS.",
+      dns_failed: "DNS update failed — check permissions or NetworkManager.", dns_applied: "✓ DNS settings updated",
+      dns_reconnect_failed: "DNS saved, but reconnecting failed.", connection_details: "Connection details", interface: "Interface",
+      ipv4_address: "IPv4 address", gateway: "Gateway", mac_address: "MAC address", network_tools: "Network tools",
+      ping_test: "Check latency", refresh: "Refresh", restart_network: "Restart network", connection_editor: "Connection editor",
+      network_restarted: "✓ Network restarted", network_restart_failed: "Network restart failed", wifi_toggle_failed: "Could not change Wi-Fi state",
+      editor_unavailable: "Network editor and nmtui are not installed"
+    },
+    performance: {
+      title: "Performance", current_profile: "Current power profile", power_saver: "Power saver", power_saver_desc: "Lower power use",
+      balanced: "Balanced", balanced_desc: "Everyday use", performance: "High performance", performance_desc: "Maximum responsiveness",
+      profiles_unavailable: "power-profiles-daemon is not installed. Install it to change power profiles.",
+      saver_mode: "One-touch power saver", saver_mode_desc: "Power saver profile + disable animations, blur, shadows and Liquid Glass.",
+      visual_effects: "Visual effects", effects_title: "Animations, blur and shadows", effects_desc: "Turn off to reduce GPU load.",
+      liquid_glass: "Liquid Glass", glass_desc: "The glass shader can use more GPU. Turn it off to reduce rendering load.",
+      enabled: "Enabled", disabled: "Disabled"
+    },
+    icons: {
+      title: "Icon Settings", style: "Icon style", cute: "Cute", cute_desc: "Soft illustrated icons and playful details",
+      anime: "Anime", anime_desc: "Character icons for a more personal look", minimal: "Minimal", minimal_desc: "Clean system symbols",
+      workspace_icons: "Workspace icons", choose_workspace_icon: "Choose a character for your workspaces",
+      selected: "Selected", system_stats: "System stats", image_style: "Illustrated", symbol_style: "Symbols"
+    },
+    shortcuts: {
+      title: "Hyprland Shortcuts", help: "Select a shortcut to edit it. Press a key combination; Esc cancels.",
+      conflict_title: "Shortcut conflict", conflict_message: "The key combination is already assigned to:",
+      overwrite_question: "Do you want to replace the existing shortcut?", cancel: "Cancel", overwrite: "Overwrite",
+      add_new: "Add new shortcut", configure_new: "Configure new shortcut", action_name: "Action name (e.g. Open Firefox):",
+      action_placeholder: "Action name…", command: "Command / app executable:", command_placeholder: "e.g. firefox",
+      assign_key: "Assign shortcut (optional):", capture_hint: "Click to assign; Esc to skip",
+      key_conflict: "This key is already assigned to: ", run_terminal: "Run in Kitty terminal — for CLI commands such as htop",
+      save: "Save", required_fields: "Enter both an action name and a command."
+    }
+  })
+
+  // ===============================
   // Translation helper
   // ===============================
   function t(section, key) {
-    if (translations?.[section]?.[key])
-    return translations[section][key];
-    return key;
+    const local = translations?.[section]?.[key];
+    if (local !== undefined && local !== null && local !== "") return local;
+    const fallback = fallbackTranslations?.[section]?.[key];
+    return fallback !== undefined ? fallback : key;
   }
 
   // ===============================
@@ -81,7 +133,11 @@ Singleton {
         "performance": "Performance",
         "shortcuts": "Shortcuts",
         "system": "System"
-      }
+      },
+      "network": fallbackTranslations.network,
+      "performance": fallbackTranslations.performance,
+      "icons": fallbackTranslations.icons,
+      "shortcuts": fallbackTranslations.shortcuts
     };
   }
 

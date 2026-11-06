@@ -58,7 +58,7 @@ ColumnLayout {
           anchors.fill: parent
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
-          onClicked: root.requestAction("Are you sure you want to log out?", ["loginctl", "terminate-user", ""])
+          onClicked: root.requestAction("Are you sure you want to log out?", CompositorService.logoutCommand)
         }
       }
     }

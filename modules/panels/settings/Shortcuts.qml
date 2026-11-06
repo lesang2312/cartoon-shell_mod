@@ -44,7 +44,7 @@ Item {
       spacing: ScalerService.s(16)
 
       Text {
-        text: "⌨️ Hyprland Shortcuts"
+        text: "⌨️ " + LanguageService.t("shortcuts", "title")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(24); bold: true }
         Layout.alignment: Qt.AlignHCenter
@@ -57,7 +57,7 @@ Item {
       }
 
       Text {
-        text: "💡 Click a shortcut to edit, then press key combination · Esc to cancel · 🔒 = locked"
+        text: "💡 " + LanguageService.t("shortcuts", "help") + " · 🔒"
         color: theme.primary.foreground; opacity: 0.7
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
         Layout.fillWidth: true; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter
@@ -100,22 +100,22 @@ Item {
     }
 
     background: Rectangle {
-      color: theme.primary.dim_background; radius: ScalerService.s(12)
-      border.width: ScalerService.s(2); border.color: theme.normal.black
+      color: Qt.alpha(theme.primary.dim_background, 0.76); radius: ScalerService.s(16)
+      border.width: ScalerService.s(1); border.color: theme.button.border
     }
 
     contentItem: ColumnLayout {
       spacing: ScalerService.s(15); width: ScalerService.s(340)
 
       Text {
-        text: "⚠️ Shortcut Conflict"
+        text: "⚠️ " + LanguageService.t("shortcuts", "conflict_title")
         color: "#ff4444"
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(18); bold: true }
         Layout.alignment: Qt.AlignHCenter
       }
 
       Text {
-        text: "The key combination \"" + conflictDialog.newKey + "\" is already assigned.\nDo you want to overwrite it?"
+        text: "“" + conflictDialog.newKey + "” · " + LanguageService.t("shortcuts", "conflict_message") + "\n" + LanguageService.t("shortcuts", "overwrite_question")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
         wrapMode: Text.WordWrap; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter
@@ -128,7 +128,7 @@ Item {
           Layout.fillWidth: true; implicitHeight: ScalerService.s(38)
           color: theme.button.background; radius: ScalerService.s(6)
           border.width: ScalerService.s(1); border.color: theme.button.border
-          Text { anchors.centerIn: parent; text: "Cancel"; color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) } }
+          Text { anchors.centerIn: parent; text: LanguageService.t("shortcuts", "cancel"); color: theme.primary.foreground; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) } }
           MouseArea {
             anchors.fill: parent; cursorShape: Qt.PointingHandCursor
             onClicked: { KeybindsService.cancelEdit(); conflictDialog.reject(); }
@@ -138,7 +138,7 @@ Item {
         Rectangle {
           Layout.fillWidth: true; implicitHeight: ScalerService.s(38)
           color: "#ff4444"; radius: ScalerService.s(6)
-          Text { anchors.centerIn: parent; text: "Overwrite"; color: theme.primary.background; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14); bold: true } }
+          Text { anchors.centerIn: parent; text: LanguageService.t("shortcuts", "overwrite"); color: theme.primary.background; font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14); bold: true } }
           MouseArea {
             anchors.fill: parent; cursorShape: Qt.PointingHandCursor
             onClicked: {

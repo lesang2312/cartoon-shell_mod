@@ -50,6 +50,11 @@ PanelWindow {
   function show(action, actionLabel) {
     pendingAction = action;
     pendingActionLabel = actionLabel;
+    // Settings -> General -> Behavior: tắt xác nhận => thực hiện luôn
+    if (!Settings.behavior.confirmPowerActions) {
+      executeAction();
+      return;
+    }
     visible = true;
   }
 
@@ -82,8 +87,7 @@ PanelWindow {
       lockProcess.startDetached();
       break;
       case "logout":
-      logoutProcess.command = ["hyprctl", "dispatch", "exit"];
-      logoutProcess.startDetached();
+      CompositorService.logout();
       break;
       case "restart":
       restartProcess.command = ["systemctl", "reboot"];

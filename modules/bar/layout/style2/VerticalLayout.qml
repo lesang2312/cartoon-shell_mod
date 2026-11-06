@@ -9,6 +9,7 @@ import qs.services
 import qs.services.ram
 import qs.services.cpu
 import qs.components
+import qs.modules.panels.settings.audio as Audio
 import Quickshell.Services.Pipewire
 import "../../widget/" as Com
 
@@ -189,35 +190,12 @@ ColumnLayout {
                     }
                 }
 
-                ColumnLayout {
-                    id: controlsRow
-                    spacing: ScalerService.s(2)
+                Audio.NowPlayingMiniCard {
+                    Layout.preferredWidth: ScalerService.s(58)
+                    Layout.preferredHeight: ScalerService.s(120)
                     Layout.alignment: Qt.AlignHCenter
-
-                    ButtonIconText {
-                        name: "skip_previous"
-                        size: "normal"
-                        textColor: theme.normal.blue
-                        Layout.alignment: Qt.AlignHCenter
-                        onClicked: Players?.mprisPlayer.previous()
-                        opacity: root.animationProgress > 0.55 ? 1 : 0
-                    }
-                    ButtonIconText {
-                        name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
-                        size: "normal"
-                        Layout.alignment: Qt.AlignHCenter
-                        textColor: theme.normal.green
-                        onClicked: Players?.mprisPlayer.togglePlaying()
-                        opacity: root.animationProgress > 0.6 ? 1 : 0
-                    }
-                    ButtonIconText {
-                        name: "skip_next"
-                        size: "normal"
-                        textColor: theme.normal.blue
-                        Layout.alignment: Qt.AlignHCenter
-                        onClicked: Players?.mprisPlayer.next()
-                        opacity: root.animationProgress > 0.65 ? 1 : 0
-                    }
+                    vertical: true
+                    embedded: false
                 }
 
                 CustomRectangle {

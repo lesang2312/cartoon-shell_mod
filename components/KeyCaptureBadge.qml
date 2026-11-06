@@ -40,11 +40,11 @@ Rectangle {
     if (root.showModifierHint) return theme.normal.red;
     if (root.listening) return theme.normal.yellow;
     if (root.hovered && root.editable) return Qt.lighter(theme.normal.blue, 1.15);
-    return theme.normal.blue; 
+    return Qt.lighter(theme.normal.blue, 1.12); 
   }
-  opacity: root.editable ? 1.0 : 0.6
+  opacity: 1.0
   border.width: (root.listening || root.showModifierHint) ? ScalerService.s(2) : ScalerService.s(1)
-  border.color: (root.listening || root.showModifierHint) ? theme.normal.white : theme.button.border
+  border.color: (root.listening || root.showModifierHint) ? "#FFFFFF" : Qt.rgba(1, 1, 1, 0.72)
 
   Behavior on color { ColorAnimation { duration: 120 } }
   Behavior on opacity { NumberAnimation { duration: 120 } }
@@ -69,9 +69,9 @@ Rectangle {
 
         Rectangle {
           radius: ScalerService.s(5)
-          color: Qt.rgba(0, 0, 0, 0.18)
+          color: Qt.rgba(1, 1, 1, 0.24)
           border.width: ScalerService.s(1)
-          border.color: Qt.rgba(1, 1, 1, 0.14)
+          border.color: Qt.rgba(1, 1, 1, 0.42)
           Layout.preferredHeight: ScalerService.s(22)
           Layout.preferredWidth: chipLabel.implicitWidth + ScalerService.s(12)
 

@@ -7,7 +7,7 @@ import "./" as Com
 
 ColumnLayout {
   id: root
-  spacing: ScalerService.s(32)
+  spacing: ScalerService.s(14)
   Layout.fillWidth: true
 
   function changeStyle(nameSystem, style) {
@@ -51,7 +51,7 @@ ColumnLayout {
   }
 
   CustomText {
-    name: "System Stats"
+    name: LanguageService.t("icons", "system_stats")
     isBold: true
   }
 

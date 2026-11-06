@@ -9,6 +9,7 @@ import qs.services
 import qs.services.ram
 import qs.services.cpu
 import qs.components
+import qs.modules.panels.settings.audio as Audio
 import Quickshell.Services.Pipewire
 import "../../widget/" as Com
 
@@ -187,68 +188,11 @@ RowLayout {
                     Layout.fillWidth: true
                     Layout.minimumWidth: ScalerService.s(28)
                 }
-                RowLayout {
-                    spacing: ScalerService.s(16)
+                Audio.NowPlayingMiniCard {
+                    Layout.preferredWidth: ScalerService.s(250)
                     Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignVCenter
-                    Item {
-                        Layout.preferredWidth: ScalerService.s(140)
-                        Layout.fillHeight: true
-                        ColumnLayout {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            spacing: 0
-                            CustomText {
-                                Layout.fillWidth: true
-                                name: Players.mprisPlayer?.trackTitle ?? "Not Playing"
-                                size: "xs"
-                                elide: Text.ElideRight
-                                maximumLineCount: 1
-                            }
-                            CustomText {
-                                Layout.fillWidth: true
-                                name: Players.mprisPlayer ? (Players.mprisPlayer.trackArtist || "Unknown Artist") : "Unknown Artist"
-                                textColor: theme.primary.dim_foreground
-                                size: "2xs"
-                                elide: Text.ElideRight
-                                maximumLineCount: 1
-                            }
-                        }
-                        Com.StatContainer {
-                            anchors.fill: parent
-                            panelName: "music"
-                        }
-                    }
-                    RowLayout {
-                        id: controlsRow
-
-                        spacing: ScalerService.s(2)
-
-                        ButtonIconText {
-                            name: "skip_previous"
-                            size: "normal"
-
-                            textColor: theme.normal.blue
-                            Layout.alignment: Qt.AlignVCenter
-                            onClicked: Players?.mprisPlayer.previous()
-                        }
-                        ButtonIconText {
-                            name: Players.mprisPlayer && Players.mprisPlayer.isPlaying ? "pause" : "play_arrow"
-                            size: "normal"
-
-                            Layout.alignment: Qt.AlignVCenter
-                            textColor: theme.normal.green
-                            onClicked: Players?.mprisPlayer.togglePlaying()
-                        }
-                        ButtonIconText {
-                            name: "skip_next"
-                            size: "normal"
-                            textColor: theme.normal.blue
-
-                            Layout.alignment: Qt.AlignVCenter
-                            onClicked: Players?.mprisPlayer.next()
-                        }
-                    }
+                    vertical: false
+                    embedded: false
                 }
                 Item {
                     Layout.fillWidth: true

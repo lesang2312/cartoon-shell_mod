@@ -37,7 +37,9 @@ PanelWindow {
     implicitWidth: root.animationProgress > 0 ? parent.width : 0
     implicitHeight: root.animationProgress > 0 ? parent.height : 0
 
-    color: glassBg.active ? "transparent" : theme.primary.background
+    // A gentle dark glass tint keeps the wallpaper visible while giving
+    // shortcut labels and cards enough contrast to stay crisp.
+    color: glassBg.active ? Qt.rgba(0.075, 0.095, 0.16, 0.34) : theme.primary.background
     border.color: theme.button.border
     radius: ScalerService.s(Settings.appearance.radius1)
     GlassPanel { id: glassBg }

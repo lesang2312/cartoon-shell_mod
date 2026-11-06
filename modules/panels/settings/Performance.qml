@@ -1,4 +1,4 @@
-// Cài đặt Hiệu suất / tiết kiệm điện
+// Balanced, compact performance controls.
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -10,82 +10,53 @@ Item {
   id: root
 
   Component.onCompleted: QuickSettingsService.refresh()
+  function tr(key) { return LanguageService.t("performance", key); }
 
   readonly property var profiles: [
-    {
-      "id": "power-saver",
-      "icon": "eco",
-      "label": "Tiết kiệm pin"
-    },
-    {
-      "id": "balanced",
-      "icon": "balance",
-      "label": "Cân bằng"
-    },
-    {
-      "id": "performance",
-      "icon": "bolt",
-      "label": "Hiệu suất cao"
-    }
+    { id: "power-saver", icon: "eco", label: "power_saver", desc: "power_saver_desc" },
+    { id: "balanced", icon: "balance", label: "balanced", desc: "balanced_desc" },
+    { id: "performance", icon: "bolt", label: "performance", desc: "performance_desc" }
   ]
 
   ScrollView {
     anchors.fill: parent
-    anchors.margins: ScalerService.s(20)
+    anchors.margins: ScalerService.s(18)
     clip: true
+    contentWidth: availableWidth
+    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
     ColumnLayout {
       width: parent.width
-      spacing: ScalerService.s(15)
+      spacing: ScalerService.s(12)
 
       CustomText {
-        name: "Hiệu suất"
+        name: root.tr("title")
         size: "large"
         isBold: true
-        Layout.topMargin: ScalerService.s(10)
+        Layout.topMargin: ScalerService.s(8)
       }
+      Rectangle { Layout.fillWidth: true; height: 1; color: theme.primary.foreground; opacity: 0.28 }
 
+      // One-touch profile, with a clear compact status line.
       Rectangle {
         Layout.fillWidth: true
-        height: ScalerService.s(1)
-        color: theme.primary.foreground
-      }
-
-      // ---- Chế độ tiết kiệm điện tổng hợp ----
-      Rectangle {
-        Layout.fillWidth: true
-        implicitHeight: saverRow.implicitHeight + ScalerService.s(24)
+        implicitHeight: saverRow.implicitHeight + ScalerService.s(22)
         radius: ScalerService.s(Settings.appearance.radius2)
-        color: QuickSettingsService.powerSaverMode ? Qt.alpha(theme.button.text, 0.2) : Qt.alpha(theme.button.background, 0.4)
+        color: QuickSettingsService.powerSaverMode ? Qt.alpha(theme.normal.green, 0.18) : Qt.alpha(theme.button.background, 0.25)
         border.width: ScalerService.s(1)
-        border.color: QuickSettingsService.powerSaverMode ? theme.button.text : theme.button.border
+        border.color: QuickSettingsService.powerSaverMode ? Qt.alpha(theme.normal.green, 0.8) : theme.button.border
 
         RowLayout {
           id: saverRow
           anchors.fill: parent
-          anchors.margins: ScalerService.s(12)
-          spacing: ScalerService.s(12)
-
-          IconText {
-            name: "battery_saver"
-            size: "large"
-            textColor: theme.button.text
-          }
+          anchors.margins: ScalerService.s(11)
+          spacing: ScalerService.s(10)
+          IconText { name: "battery_saver"; size: "large"; textColor: QuickSettingsService.powerSaverMode ? theme.normal.green : theme.button.text }
           ColumnLayout {
             Layout.fillWidth: true
-            spacing: ScalerService.s(2)
-            CustomText {
-              name: "Chế độ tiết kiệm điện"
-              size: "small"
-              isBold: true
-            }
-            CustomText {
-              Layout.fillWidth: true
-              name: "Một chạm: profile Tiết kiệm pin + tắt animation/blur/đổ bóng + tắt Liquid Glass."
-              size: "xs"
-              textColor: theme.primary.dim_foreground
-              wrapMode: Text.WordWrap
-            }
+            spacing: ScalerService.s(3)
+            CustomText { name: root.tr("saver_mode"); size: "small"; isBold: true }
+            CustomText { Layout.fillWidth: true; name: root.tr("saver_mode_desc"); size: "xs"; textColor: theme.primary.dim_foreground; wrapMode: Text.WordWrap }
           }
           CustomToggleSwitch {
             adapter: QuickSettingsService.powerSaverMode
@@ -94,24 +65,28 @@ Item {
         }
       }
 
-      // ---- Profile nguồn ----
-      CustomText {
-        name: "Chế độ nguồn"
-        size: "small"
-        isBold: true
-      }
-      CustomText {
-        Layout.fillWidth: true
-        visible: !QuickSettingsService.hasPowerProfiles
-        name: "Không tìm thấy powerprofilesctl. Cài power-profiles-daemon để dùng mục này."
-        size: "xs"
-        textColor: theme.primary.dim_foreground
-        wrapMode: Text.WordWrap
-      }
       RowLayout {
         Layout.fillWidth: true
-        spacing: ScalerService.s(10)
-        opacity: QuickSettingsService.hasPowerProfiles ? 1 : 0.4
+        CustomText { name: root.tr("current_profile"); size: "small"; isBold: true }
+        Item { Layout.fillWidth: true }
+        CustomText {
+          name: {
+            var id = QuickSettingsService.powerProfile;
+            for (var i = 0; i < root.profiles.length; i++) if (root.profiles[i].id === id) return root.tr(root.profiles[i].label);
+            return root.tr("balanced");
+          }
+          size: "xs"
+          textColor: theme.button.text
+          isBold: true
+        }
+      }
+
+      GridLayout {
+        Layout.fillWidth: true
+        columns: 3
+        columnSpacing: ScalerService.s(8)
+        rowSpacing: ScalerService.s(8)
+        opacity: QuickSettingsService.hasPowerProfiles ? 1 : 0.45
 
         Repeater {
           model: root.profiles
@@ -119,18 +94,16 @@ Item {
             required property var modelData
             readonly property bool selected: QuickSettingsService.powerProfile === modelData.id
             Layout.fillWidth: true
-            implicitHeight: ScalerService.s(72)
+            Layout.preferredHeight: ScalerService.s(104)
             radius: ScalerService.s(Settings.appearance.radius2)
-            color: selected ? Qt.alpha(theme.button.text, 0.25) : (pa.containsMouse ? Qt.alpha(theme.button.background_select, 0.4) : Qt.alpha(theme.button.background, 0.4))
-            border.width: ScalerService.s(1)
-            border.color: selected ? theme.button.text : theme.button.border
-            Behavior on color {
-              ColorAnimation {
-                duration: 150
-              }
-            }
+            color: selected ? Qt.alpha(theme.button.background_select, 0.54) : Qt.alpha(theme.button.background, 0.22)
+            border.width: ScalerService.s(selected ? 2 : 1)
+            border.color: selected ? theme.button.border_select : theme.button.border
+
+            Behavior on color { ColorAnimation { duration: 140 } }
             ColumnLayout {
-              anchors.centerIn: parent
+              anchors.fill: parent
+              anchors.margins: ScalerService.s(7)
               spacing: ScalerService.s(4)
               IconText {
                 Layout.alignment: Qt.AlignHCenter
@@ -139,18 +112,26 @@ Item {
                 textColor: selected ? theme.button.text : theme.primary.foreground
               }
               CustomText {
-                Layout.alignment: Qt.AlignHCenter
-                name: modelData.label
+                Layout.fillWidth: true
+                name: root.tr(modelData.label)
                 size: "xs"
                 isBold: selected
+                horizontalAlignment: Text.AlignHCenter
+              }
+              CustomText {
+                Layout.fillWidth: true
+                name: root.tr(modelData.desc)
+                size: "2xs"
+                textColor: theme.primary.dim_foreground
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
               }
             }
             MouseArea {
-              id: pa
               anchors.fill: parent
               hoverEnabled: true
               enabled: QuickSettingsService.hasPowerProfiles
-              cursorShape: Qt.PointingHandCursor
+              cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
               onClicked: {
                 SoundService.playSound("pick");
                 QuickSettingsService.setPowerProfile(modelData.id);
@@ -160,65 +141,59 @@ Item {
         }
       }
 
-      // ---- Hiệu ứng ----
       CustomText {
-        name: "Hiệu ứng hình ảnh"
-        size: "small"
-        isBold: true
-        Layout.topMargin: ScalerService.s(6)
-      }
-
-      RowLayout {
         Layout.fillWidth: true
-        spacing: ScalerService.s(12)
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: ScalerService.s(2)
-          CustomText {
-            name: "Animation, blur, đổ bóng (Hyprland)"
-            size: "small"
-          }
-          CustomText {
-            Layout.fillWidth: true
-            name: "Tắt để giảm tải GPU."
-            size: "xs"
-            textColor: theme.primary.dim_foreground
-            wrapMode: Text.WordWrap
-          }
-        }
-        CustomToggleSwitch {
-          adapter: QuickSettingsService.effectsEnabled
-          onClicked: QuickSettingsService.setEffects(!QuickSettingsService.effectsEnabled)
-        }
+        visible: !QuickSettingsService.hasPowerProfiles
+        name: root.tr("profiles_unavailable")
+        size: "xs"
+        textColor: theme.normal.yellow
+        wrapMode: Text.WordWrap
       }
 
-      RowLayout {
+      // Visual controls share a single glassy group to avoid oversized gaps.
+      Rectangle {
         Layout.fillWidth: true
-        spacing: ScalerService.s(12)
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: ScalerService.s(2)
-          CustomText {
-            name: "Liquid Glass"
-            size: "small"
-          }
-          CustomText {
-            Layout.fillWidth: true
-            name: "Hiệu ứng kính tốn GPU nhất. Tắt đi để tiết kiệm điện."
-            size: "xs"
-            textColor: theme.primary.dim_foreground
-            wrapMode: Text.WordWrap
-          }
-        }
-        CustomToggleSwitch {
-          adapter: GlassService.enabled
-          onClicked: GlassService.toggle()
-        }
-      }
+        implicitHeight: effectsColumn.implicitHeight + ScalerService.s(20)
+        radius: ScalerService.s(Settings.appearance.radius2)
+        color: Qt.alpha(theme.button.background, 0.22)
+        border.width: ScalerService.s(1)
+        border.color: theme.button.border
 
-      Item {
-        Layout.fillHeight: true
+        ColumnLayout {
+          id: effectsColumn
+          anchors.fill: parent
+          anchors.margins: ScalerService.s(10)
+          spacing: ScalerService.s(10)
+
+          CustomText { name: root.tr("visual_effects"); size: "small"; isBold: true }
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: ScalerService.s(10)
+            IconText { name: "auto_awesome"; size: "normal"; textColor: theme.button.text }
+            ColumnLayout {
+              Layout.fillWidth: true
+              spacing: ScalerService.s(2)
+              CustomText { name: root.tr("effects_title"); size: "small"; isBold: true }
+              CustomText { Layout.fillWidth: true; name: root.tr("effects_desc"); size: "xs"; textColor: theme.primary.dim_foreground; wrapMode: Text.WordWrap }
+            }
+            CustomToggleSwitch { adapter: QuickSettingsService.effectsEnabled; onClicked: QuickSettingsService.setEffects(!QuickSettingsService.effectsEnabled) }
+          }
+          Rectangle { Layout.fillWidth: true; height: 1; color: theme.button.border; opacity: 0.38 }
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: ScalerService.s(10)
+            IconText { name: "blur_on"; size: "normal"; textColor: theme.button.text }
+            ColumnLayout {
+              Layout.fillWidth: true
+              spacing: ScalerService.s(2)
+              CustomText { name: root.tr("liquid_glass"); size: "small"; isBold: true }
+              CustomText { Layout.fillWidth: true; name: root.tr("glass_desc"); size: "xs"; textColor: theme.primary.dim_foreground; wrapMode: Text.WordWrap }
+            }
+            CustomToggleSwitch { adapter: GlassService.enabled; onClicked: GlassService.toggle() }
+          }
+        }
       }
+      Item { Layout.preferredHeight: ScalerService.s(8) }
     }
   }
 }

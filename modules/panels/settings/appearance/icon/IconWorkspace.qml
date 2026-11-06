@@ -19,7 +19,7 @@ ColumnLayout {
         spacing: ScalerService.s(10)
 
         CustomText {
-            name: "Icon Workspace"
+            name: LanguageService.t("icons", "workspace_icons")
             size: "small"
             isBold: true
             Layout.fillWidth: true
@@ -30,14 +30,23 @@ ColumnLayout {
     FolderListModel {
         id: imageFolderModel
         folder: root.iconsFolderPath
-        //showDirsOnly: true      // Chỉ lấy các thư mục (pacman, luffy, zoro...)
-        showDotAndDotDot: false // Ẩn thư mục ẩn của hệ thống
+        showDirs: true
+        showFiles: false
+        showDotAndDotDot: false
         sortField: FolderListModel.Name // Sắp xếp theo tên alpha-b
+    }
+
+    CustomText {
+        Layout.fillWidth: true
+        name: LanguageService.t("icons", "choose_workspace_icon")
+        size: "xs"
+        textColor: theme.primary.dim_foreground
+        wrapMode: Text.WordWrap
     }
 
     GridLayout {
         Layout.fillWidth: true
-        columns: Math.min(8, Math.floor(root.width / ScalerService.s(50)))
+        columns: Math.max(3, Math.min(7, Math.floor(root.width / ScalerService.s(64))))
         rowSpacing: ScalerService.s(8)
         columnSpacing: ScalerService.s(8)
 
@@ -48,14 +57,17 @@ ColumnLayout {
             delegate: Item {
                 id: delegateItem
                 Layout.fillWidth: true
-                Layout.preferredHeight: width
+                Layout.preferredHeight: width + ScalerService.s(17)
                 
                 Rectangle {
                     id: container
                     implicitWidth: 0
                     implicitHeight: 0
-                    anchors.centerIn: delegateItem
+                    anchors.top: delegateItem.top
+                    anchors.horizontalCenter: delegateItem.horizontalCenter
                     property real currentOpacity: 0
+                    width: implicitWidth
+                    height: implicitHeight
 
                     SequentialAnimation on currentOpacity {
                         running: root.animationProgress > 0.2
@@ -70,7 +82,7 @@ ColumnLayout {
                     SequentialAnimation on implicitHeight {
                         running: root.animationProgress > 0.1
                         PauseAnimation { duration: index * 15 }
-                        NumberAnimation { to: delegateItem.height; duration: 500; easing.type: Easing.OutCubic }
+                        NumberAnimation { to: delegateItem.width; duration: 500; easing.type: Easing.OutCubic }
                     }
 
                     anchors.margins: ScalerService.s(2)
@@ -90,9 +102,8 @@ ColumnLayout {
                         anchors.centerIn: parent
                         path: `workspace/${fileName}/active.png`
                         opacity: container.currentOpacity
-                        // Fix luôn lỗi missing size nếu cần
-                        width: container.width > 0 ? container.width : ScalerService.s(32)
-                        height: container.height > 0 ? container.height : ScalerService.s(32)
+                        width: Math.min(container.width, ScalerService.s(42))
+                        height: Math.min(container.height, ScalerService.s(42))
                     }
 
                     MouseArea {
@@ -111,6 +122,17 @@ ColumnLayout {
                             SoundService.playSound("hover");
                         }
                     }
+                }
+                CustomText {
+                    anchors.top: container.bottom
+                    anchors.topMargin: ScalerService.s(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width
+                    name: String(fileName).replace(/[-_]/g, " ")
+                    size: "2xs"
+                    textColor: Settings.bar.iconWorkspace === fileName ? theme.button.text : theme.primary.dim_foreground
+                    horizontalAlignment: Text.AlignHCenter
+                    elide: Text.ElideRight
                 }
             }
         }

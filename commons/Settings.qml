@@ -18,6 +18,10 @@ Singleton {
     readonly property alias weather: adapter.weather
     readonly property alias bar: adapter.bar
     readonly property alias dashboard: adapter.dashboard
+    // Cài đặt âm thanh/EQ nằm trong nhóm effects
+    readonly property alias audio: adapter.effects
+    // Cài đặt Behavior (Settings -> General -> Behavior) cũng nằm trong nhóm effects, không tạo kiểu mới
+    readonly property alias behavior: adapter.effects
 
     signal settingsLoaded
     signal settingsSaved
@@ -81,6 +85,43 @@ Singleton {
 
     component Effects: JsonObject {
         property string workspaceAnimation: ""
+        // Equalizer 10 băng tần (dB, cách nhau bởi dấu phẩy: 31Hz ... 16kHz)
+        property bool eqEnabled: false
+        property string eqPreset: "Flat"
+        property string eqBands: "0,0,0,0,0,0,0,0,0,0"
+        // ---- Behavior ----
+        property bool soundEffects: true         // âm thanh hover/click
+        property real soundVolume: 0.8           // 0.0 - 1.0
+        property bool confirmPowerActions: true  // hỏi xác nhận trước khi ngủ/khóa/đăng xuất/khởi động lại/tắt máy
+        property bool reduceMotion: false        // tắt animation chạy nền cho đỡ nóng máy
+        property int lockAfterMin: 0             // tự khóa sau N phút không thao tác (0 = tắt)
+        property int suspendAfterMin: 0          // tự ngủ sau N phút không thao tác (0 = tắt)
+        property bool keepAwake: false           // giữ máy thức: tạm tắt tự khóa/ngủ
+        property bool hotCorner: false           // rê chuột vào góc => mở launcher
+        property string hotCornerPos: "top-left" // top-left | top-right | bottom-left | bottom-right
+        property bool doNotDisturb: false        // ẩn popup thông báo (khẩn cấp vẫn hiện)
+        property int notifTimeoutSec: 10         // thời gian hiện popup khi ứng dụng không chỉ định (giây)
+        property int notifMax: 4                 // số popup tối đa cùng lúc
+        property string notifPos: "top"          // left | top | right
+        property bool osdEnabled: true           // hiện OSD âm lượng / độ sáng
+        property int osdDurationMs: 1000         // thời gian hiện OSD
+        // ---- Clipboard (lịch sử kiểu Windows) ----
+        property bool clipboardEnabled: true     // bật lịch sử clipboard + phím tắt
+        property string clipboardShortcut: "ctrl-shift-z" // ctrl-shift-z | super-v
+        // ---- Session ----
+        property string logoutMethod: "auto"     // auto | graceful | force | custom
+        property string logoutCustom: ""         // lệnh shell khi logoutMethod = custom
+        property int monitorOffAfterMin: 0       // tắt màn hình sau N phút không thao tác (0 = tắt)
+        // ---- Notifications ----
+        property bool notifSound: false          // phát âm khi có thông báo mới
+        property bool notifHideLow: false        // không hiện popup cho thông báo mức thấp
+        property bool dndSchedule: false         // không làm phiền theo giờ
+        property int dndFromHour: 22
+        property int dndToHour: 7
+        property string notifSeenApps: ""        // các ứng dụng từng gửi thông báo (cách nhau dấu phẩy)
+        property string notifMutedApps: ""       // các ứng dụng bị tắt popup (cách nhau dấu phẩy)
+        // ---- Privacy ----
+        property string privacyNotifDetail: "full" // full | title | none: mức nội dung lộ ra trong popup
     }
     component Dashboard: JsonObject {
         property string splitMethod: "dwindle_default"
@@ -219,6 +260,8 @@ Singleton {
         property bool enableBorder: false
         // Hiệu ứng kính lỏng (Liquid Glass) cho các panel
         property bool liquidGlass: true
+        // Kiểu hộp thoại: "classic" hoặc "cute"
+        property string dialogStyle: "cute"
         // Thêm các properties cho dynamic theme
         property bool dynamic: false
         property string light: "light"

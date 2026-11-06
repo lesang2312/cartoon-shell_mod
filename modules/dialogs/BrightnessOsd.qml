@@ -13,7 +13,7 @@ Scope {
 
   property var theme: ThemeService.theme
   property var lang: LanguageService.translations
-  property bool shouldShowOsd: BrightnessService.shouldShowOsd
+  property bool shouldShowOsd: Settings.behavior.osdEnabled && BrightnessService.shouldShowOsd
   property real currentBrightness: BrightnessService.currentBrightness
   property bool isBrightnessMuted: false
 

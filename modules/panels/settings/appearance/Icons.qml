@@ -33,11 +33,11 @@ Item {
         model: 1
         delegate: ColumnLayout {
             id: mainLayout
-            width: scrollView.width
-            spacing: ScalerService.s(25)
+            width: scrollViewCategory.width
+            spacing: ScalerService.s(14)
 
             HeaderSettings {
-                name: "Icons Settings"
+                name: LanguageService.t("icons", "title")
                 Layout.fillWidth: true
             }
             Com.StyleIconSettings {}

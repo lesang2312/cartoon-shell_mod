@@ -61,7 +61,7 @@ PanelWindow {
     // Sửa hàm closePanel
 
     function togglePanel() {
-        root.visible = !launcherPanel.visible;
+        root.visible = !root.visible;
         if (root.visible) {
             openLauncher();
         }
@@ -118,6 +118,17 @@ PanelWindow {
         radius: ScalerService.s(Settings.appearance.radius1)
         color: glassBg.active ? "transparent" : theme.primary.background
         GlassPanel { id: glassBg }
+        // Trang trí kiểu Cute: mèo nhỏ ở góc dưới phải
+        CuteCat {
+            visible: Settings.appearance.dialogStyle === "cute"
+            unit: 0.7
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: ScalerService.s(22)
+            anchors.bottomMargin: ScalerService.s(6)
+            opacity: 0.9
+            z: 5
+        }
         border.color: theme.button.border
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
 
@@ -151,7 +162,7 @@ PanelWindow {
                         active: VisibleService.setting
                         source: "../settings/SettingsPanel.qml"
                         onLoaded: {
-                            item.root = launcherPanel;
+                            item.launcherPanel = root;
                             item.visible = Qt.binding(function () {
                                 return VisibleService.setting;
                             });

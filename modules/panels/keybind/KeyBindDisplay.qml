@@ -48,13 +48,13 @@ Item {
       // nội dung thật. Divider + dòng hướng dẫn vẫn giữ nguyên bên dưới.
       Rectangle {
         Layout.fillWidth: true; height: ScalerService.s(1)
-        color: theme.primary.foreground; opacity: 0.3
+        color: "#FFFFFF"; opacity: 0.62
         Layout.topMargin: ScalerService.s(6)
       }
 
       Text {
         text: "💡 View only · Remove shortcuts here · Edit keys in Settings → Shortcuts · 🔒 = locked"
-        color: theme.primary.foreground; opacity: 0.7
+        color: "#FFFFFF"; opacity: 0.94
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
         Layout.fillWidth: true; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter
       }

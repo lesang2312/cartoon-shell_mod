@@ -12,16 +12,20 @@ PanelWindow {
   implicitWidth: ScalerService.s(430)
   anchors {
     top: true
+    left: Settings.behavior.notifPos === "left"
+    right: Settings.behavior.notifPos === "right"
   }
   margins {
     top: ScalerService.s(10)
+    left: ScalerService.s(10)
+    right: ScalerService.s(10)
   }
   exclusiveZone: 0
   visible: notificationModel.count > 0
   color: "transparent"
 
   // Cấu hình kích thước cố định
-  property int maxNotifications: 4
+  property int maxNotifications: Settings.behavior.notifMax
   property int notificationHeight: ScalerService.s(100)
   property int notificationSpacing: ScalerService.s(10)
   property int containerMargin: ScalerService.s(10)
@@ -34,6 +38,34 @@ PanelWindow {
       duration: 10
       easing.type: Easing.OutCubic
     }
+  }
+
+
+  // ---- Bộ lọc thông báo (Settings -> General -> Notifications) ----
+  function csv(str) {
+    return (str || "").split(",").map(x => x.trim()).filter(x => x !== "");
+  }
+  function isMuted(app) {
+    return app !== "" && csv(Settings.behavior.notifMutedApps).indexOf(app) >= 0;
+  }
+  function rememberApp(app) {
+    app = app.replace(/,/g, " ").trim();
+    if (app === "")
+      return;
+    const list = csv(Settings.behavior.notifSeenApps);
+    if (list.indexOf(app) >= 0)
+      return;
+    list.unshift(app);
+    Settings.behavior.notifSeenApps = list.slice(0, 20).join(",");
+  }
+  // Không làm phiền theo giờ; hỗ trợ khoảng qua nửa đêm (vd 22 -> 7)
+  function inDndSchedule() {
+    if (!Settings.behavior.dndSchedule)
+      return false;
+    const h = new Date().getHours(), f = Settings.behavior.dndFromHour, t = Settings.behavior.dndToHour;
+    if (f === t)
+      return false;
+    return f < t ? (h >= f && h < t) : (h >= f || h < t);
   }
 
   // Container chính cho popup
@@ -100,7 +132,7 @@ PanelWindow {
         // Timer tự động xóa
         Timer {
           id: autoDismiss
-          interval: model.timeout > 0 ? model.timeout * 1000 : 10000
+          interval: model.timeout > 0 ? model.timeout * 1000 : Settings.behavior.notifTimeoutSec * 1000
           onTriggered: removeNotification()
         }
 
@@ -205,7 +237,7 @@ PanelWindow {
           Text {
             id: summaryText
             width: parent.width
-            text: model.summary
+            text: Settings.behavior.privacyNotifDetail === "none" ? "Thông báo mới" : model.summary
             font.bold: true
             font.pixelSize: ScalerService.s(14)
             wrapMode: Text.WordWrap
@@ -218,6 +250,7 @@ PanelWindow {
           Text {
             id: bodyText
             width: parent.width
+            visible: Settings.behavior.privacyNotifDetail === "full"
             text: model.body
             font.pixelSize: ScalerService.s(12)
             wrapMode: Text.WordWrap
@@ -314,6 +347,17 @@ PanelWindow {
     inlineReplySupported: true
 
     onNotification: function (notification) {
+      const app = notification.appName || "";
+      rememberApp(app);
+      // Chỉ thông báo khẩn cấp mới vượt qua các bộ lọc bên dưới
+      if (notification.urgency !== NotificationUrgency.Critical
+          && (Settings.behavior.doNotDisturb
+              || inDndSchedule()
+              || isMuted(app)
+              || (Settings.behavior.notifHideLow && notification.urgency === NotificationUrgency.Low))) {
+        notification.tracked = true;
+        return;
+      }
       notificationModel.insert(0, {
           id: notification.id,
           appName: notification.appName || "",
@@ -329,6 +373,9 @@ PanelWindow {
         // Xóa notification cũ nhất
         notificationModel.remove(maxNotifications);
       }
+
+      if (Settings.behavior.notifSound)
+        SoundService.playSound("pick");
 
       // Giữ thông báo
       notification.tracked = true;

@@ -39,7 +39,12 @@ Singleton {
             hn=0; n=0
             for t in hyprsunset wlsunset gammastep; do command -v $t >/dev/null 2>&1 && hn=1; pgrep -x $t >/dev/null 2>&1 && n=1; done
             pp=balanced; [ $hp = 1 ] && pp=$(powerprofilesctl get 2>/dev/null)
-            ef=1; if command -v hyprctl >/dev/null 2>&1; then hyprctl getoption animations:enabled -j 2>/dev/null | grep -Eq '"int": *0' && ef=0; fi
+            ef=1
+            if command -v hyprctl >/dev/null 2>&1; then
+              hyprctl getoption animations:enabled -j 2>/dev/null | grep -Eq '"int": *0' && ef=0
+              hyprctl getoption decoration:blur:enabled -j 2>/dev/null | grep -Eq '"int": *0' && ef=0
+              hyprctl getoption decoration:shadow:enabled -j 2>/dev/null | grep -Eq '"int": *0' && ef=0
+            fi
             echo "$w $a $s $n $hp $hn \${pp:-balanced} $ef"
         `]
         stdout: StdioCollector {

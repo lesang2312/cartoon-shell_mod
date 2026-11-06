@@ -89,6 +89,10 @@ Item {
           Com.LiquidGlassToggle {
             Layout.fillWidth: true
           }
+          // Chọn kiểu hộp thoại (Classic / Cute)
+          Com.DialogStyleSelector {
+            Layout.fillWidth: true
+          }
           Com.ListTheme {
 
           }

@@ -67,10 +67,14 @@ ShellRoot {
                 SddmService.init();
                 ProgramCheckerService.init();
                 LanguageService.init();
+                IdleService.init();
+                ClipboardService.init();
             }
 
             Background {}
             Bar {}
+            HotCorner {}
+            ClipboardPanel {}
             NotificationPopup {}
             VolumeOsd {}
             BrightnessOsd {}

@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import qs.services
+import qs.commons
 
 Singleton {
     id: root
@@ -26,8 +27,16 @@ Singleton {
             updateDateTime();
         }
     }
+    Connections {
+        target: Settings.clock
+        function onTimeFormatChanged() {
+            root.updateDateTime();
+        }
+    }
+
     function updateDateTime() {
         const now = clock.date;
+        const h12 = Settings.clock.timeFormat === "12h";
 
         const weekdayData = lang?.calendar?.weekdays;
         const weekdays = weekdayData ? [weekdayData.sunday || "CN", weekdayData.monday || "T2", weekdayData.tuesday || "T3", weekdayData.wednesday || "T4", weekdayData.thursday || "T5", weekdayData.friday || "T6", weekdayData.saturday || "T7"] : ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
@@ -44,11 +53,11 @@ Singleton {
         root.currentMonth = months[now.getMonth()];
         root.currentYear = now.getFullYear();
         root.currentOfDays = now.getDate();
-        root.currentTime = Qt.formatTime(now, "HH:mm");
-        root.currentHour = Qt.formatTime(now, "HH");
+        root.currentTime = Qt.formatTime(now, h12 ? "h:mm AP" : "HH:mm");
+        root.currentHour = (h12 ? String(now.getHours() % 12 || 12).padStart(2, "0") : Qt.formatTime(now, "HH"));
         root.currentMinus = Qt.formatTime(now, "mm");
         //Lay gio va phut rieng
-        root.currentHours = Qt.formatTime(now, "HH");
+        root.currentHours = (h12 ? String(now.getHours() % 12 || 12).padStart(2, "0") : Qt.formatTime(now, "HH"));
         root.currentMinutes = Qt.formatTime(now, "mm");
     }
 

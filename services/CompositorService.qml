@@ -278,9 +278,57 @@ Singleton {
     }
 
     // System Actions
+    // ĐĂNG XUẤT — lỗi hay gặp: màn hình đen / kẹt con trỏ nhấp nháy, SDDM không quay lại
+    // (Hyprland + SDDM/greetd, nhất là khi chạy qua uwsm). Không có lệnh nào đúng cho mọi máy nên:
+    //   graceful : thoát compositor đúng cách (niri/sway/uwsm stop/hyprshutdown/hyprctl dispatch exit)
+    //   auto     : graceful + "chó canh" chạy tách rời: nếu sau 10 giây phiên còn sống thì ép đóng ĐÚNG phiên này
+    //              bằng logind (an toàn: chỉ đụng session id cũ, không bao giờ giết phiên đăng nhập mới)
+    //   force    : đóng phiên ngay bằng logind (ứng dụng không kịp lưu)
+    //   custom   : chạy lệnh người dùng tự đặt (Settings -> General -> Session)
+    readonly property string _sid: 'sid="${XDG_SESSION_ID:-$(loginctl show-user "$USER" -p Display --value 2>/dev/null)}"\n'
+    readonly property string _graceful:
+        'if [ -n "$NIRI_SOCKET" ]; then niri msg action quit --skip-confirmation\n'
+        + 'elif [ -n "$SWAYSOCK" ]; then swaymsg exit\n'
+        + 'else\n'
+        + '  [ -z "$HYPRLAND_INSTANCE_SIGNATURE" ] && export HYPRLAND_INSTANCE_SIGNATURE="$(ls -t "$XDG_RUNTIME_DIR/hypr" 2>/dev/null | head -n1)"\n'
+        + '  if command -v uwsm >/dev/null 2>&1 && uwsm check is-active >/dev/null 2>&1; then uwsm stop\n'
+        + '  elif command -v hyprshutdown >/dev/null 2>&1; then hyprshutdown\n'
+        + '  else hyprctl dispatch exit; fi\n'
+        + 'fi\n'
+    readonly property string _force:
+        'if [ -n "$sid" ]; then loginctl terminate-session "$sid" 2>/dev/null; sleep 2; loginctl kill-session -s KILL "$sid" 2>/dev/null; fi\n'
+    readonly property string _watchdog:
+        // chạy nền, tách khỏi shell; chỉ ép khi chính phiên "$sid" vẫn còn tồn tại
+        '( setsid sh -c \'sleep 10; loginctl show-session "$0" -p Id >/dev/null 2>&1 || exit 0; '
+        + 'loginctl terminate-session "$0" 2>/dev/null; sleep 3; loginctl kill-session -s KILL "$0" 2>/dev/null\' "$sid" >/dev/null 2>&1 & )\n'
+
+    function buildLogoutCommand() {
+        const m = Settings.behavior.logoutMethod;
+        if (m === "custom" && Settings.behavior.logoutCustom.trim() !== "")
+            return ["sh", "-c", Settings.behavior.logoutCustom];
+        if (m === "force")
+            return ["sh", "-c", _sid + _force];
+        if (m === "graceful")
+            return ["sh", "-c", _graceful];
+        return ["sh", "-c", _sid + '[ -n "$sid" ] && ' + _watchdog.replace(/\n$/, "") + "\n" + _graceful];
+    }
+    readonly property var logoutCommand: buildLogoutCommand()
     function logout() {
-        if (backend && backend.logout)
-            backend.logout();
+        Quickshell.execDetached(buildLogoutCommand());
+    }
+
+    // Tắt / bật màn hình (DPMS) — dùng cho "Tắt màn hình khi rảnh"
+    function monitorsOff() {
+        Quickshell.execDetached(["sh", "-c",
+            'if [ -n "$NIRI_SOCKET" ]; then niri msg action power-off-monitors\n'
+            + 'elif [ -n "$SWAYSOCK" ]; then swaymsg "output * power off"\n'
+            + 'else hyprctl dispatch dpms off; fi']);
+    }
+    function monitorsOn() {
+        Quickshell.execDetached(["sh", "-c",
+            'if [ -n "$NIRI_SOCKET" ]; then niri msg action power-on-monitors\n'
+            + 'elif [ -n "$SWAYSOCK" ]; then swaymsg "output * power on"\n'
+            + 'else hyprctl dispatch dpms on; fi']);
     }
     function shutdown() {
         Quickshell.execDetached(["sh", "-c", "systemctl poweroff || loginctl poweroff"]);

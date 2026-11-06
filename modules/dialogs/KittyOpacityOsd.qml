@@ -18,7 +18,7 @@ Scope {
 
     Timer {
         id: hideTimer
-        interval: 1000
+        interval: Settings.behavior.osdDurationMs
         onTriggered: root.shouldShowOsd = false
     }
 
@@ -26,6 +26,8 @@ Scope {
         target: KittyOpacityService
 
         function onDisplayOpacityChanged () {
+            if (!Settings.behavior.osdEnabled)
+                return
             root.shouldShowOsd = true
             hideTimer.restart()
         }

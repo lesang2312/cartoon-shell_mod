@@ -51,6 +51,11 @@ ColumnLayout {
                     accent: "black"
                 },
                 {
+                    name: "Sakura 🌸",
+                    type: "sakura",
+                    accent: "#ff9ec4"
+                },
+                {
                     name: "Macchiato",
                     type: "macchiato",
                     accent: "#24273a"
