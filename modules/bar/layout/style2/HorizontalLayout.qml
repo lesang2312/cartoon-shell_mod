@@ -190,9 +190,14 @@ RowLayout {
                 }
                 Audio.NowPlayingMiniCard {
                     Layout.preferredWidth: ScalerService.s(250)
-                    Layout.fillHeight: true
+                    Layout.preferredHeight: ScalerService.s(30)
+                    Layout.minimumHeight: 0
+                    Layout.maximumHeight: ScalerService.s(32)
+                    Layout.alignment: Qt.AlignVCenter
                     vertical: false
                     embedded: false
+                    archBar: true
+                    clip: true
                 }
                 Item {
                     Layout.fillWidth: true

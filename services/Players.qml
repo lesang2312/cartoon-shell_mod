@@ -8,7 +8,22 @@ import Quickshell.Services.Mpris
 Singleton {
   id: root
 
-  readonly property var mprisPlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+  // Ưu tiên ứng dụng đang phát nhạc; không mặc định lấy phần tử đầu tiên vì
+  // danh sách MPRIS có thể chứa player đã dừng/đang rảnh đứng trước player thật.
+  readonly property var mprisPlayer: {
+    const available = Mpris.players.values || [];
+    for (let i = 0; i < available.length; i++) {
+      const candidate = available[i];
+      if (candidate && candidate.isPlaying)
+        return candidate;
+    }
+    for (let i = 0; i < available.length; i++) {
+      const candidate = available[i];
+      if (candidate && candidate.trackTitle)
+        return candidate;
+    }
+    return available.length > 0 ? available[0] : null;
+  }
 
   function getArtUrl(player: MprisPlayer): string {
     if (!player)
@@ -16,7 +31,8 @@ Singleton {
     if (player.trackArtUrl)
     return player.trackArtUrl;
 
-    const url = player.metadata["xesam:url"] ?? "";
+    const metadata = player.metadata || {};
+    const url = metadata["xesam:url"] ?? "";
     if (url.startsWith("https://www.youtube.com/watch")) {
       // Fallback for youtube
       const id = url.match(/[?&]v=([\w-]{11})/)?.[1];
@@ -54,25 +70,30 @@ Singleton {
     return pad(minutes) + ":" + pad(secs)
   }
 
+  function getIdentity(player): string {
+    return player ? String(player.identity || player.desktopEntry || "Media player") : "No active player";
+  }
+
   function getActive(prop: string): string {
-    const active = root.active;
-    return active ? active[prop] ?? "Invalid property" : "No active player";
+    const active = root.mprisPlayer;
+    return active ? String(active[prop] ?? "Invalid property") : "No active player";
   }
 
   function list(): string {
-    return root.list.map(p => root.getIdentity(p)).join("\n");
+    const available = Mpris.players.values || [];
+    return available.map(player => root.getIdentity(player)).join("\n");
   }
 
   function play(): void {
-    const active = root.active;
+    const active = root.mprisPlayer;
     if (active?.canPlay)
-    active.play();
+      active.play();
   }
 
   function pause(): void {
-    const active = root.active;
+    const active = root.mprisPlayer;
     if (active?.canPause)
-    active.pause();
+      active.pause();
   }
 
   function playPause(): void {
@@ -101,7 +122,9 @@ Singleton {
   }
 
   function stop(): void {
-    root.active?.stop();
+    const active = root.mprisPlayer;
+    if (active && typeof active.stop === "function")
+      active.stop();
   }
 
 }

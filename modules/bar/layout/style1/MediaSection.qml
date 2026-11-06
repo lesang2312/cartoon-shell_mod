@@ -13,6 +13,8 @@ Rectangle {
     id: root
     GlassPanel { id: glassBg }
     color: glassBg.active ? "transparent" : theme.primary.background
+    // Keep the mini-player artwork inside the rounded bar segment.
+    clip: true
     border.color: theme.button.border
     border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
     radius: ScalerService.s(Settings.appearance.radius2)
@@ -53,7 +55,8 @@ Rectangle {
     // UI Layout
     Loader {
         anchors.fill: parent
-        anchors.margins: isVertical ? ScalerService.s(8) : ScalerService.s(10)
+        // Giữ đủ chiều cao cho mini-player trong dock ngang (50 px).
+        anchors.margins: isVertical ? ScalerService.s(8) : ScalerService.s(4)
         sourceComponent: isVertical ? verticalLayout : horizontalLayout
     }
 }

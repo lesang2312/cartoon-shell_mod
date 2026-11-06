@@ -196,6 +196,7 @@ ColumnLayout {
                     Layout.alignment: Qt.AlignHCenter
                     vertical: true
                     embedded: false
+                    archBar: true
                 }
 
                 CustomRectangle {
