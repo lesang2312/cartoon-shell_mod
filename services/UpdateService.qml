@@ -25,6 +25,7 @@ Singleton {
   readonly property bool hasUpdate: state === "available"
   readonly property bool busy: state === "checking" || state === "updating"
   readonly property string script: Directories.scriptsPath + "/update.sh"
+  readonly property string installDir: Directories.config + "/quickshell/cartoon-shell"
   readonly property string shortLocal: localCommit !== "" ? localCommit.substring(0, 7) : ""
   readonly property string shortRemote: remoteCommit !== "" ? remoteCommit.substring(0, 7) : ""
 
@@ -81,7 +82,7 @@ Singleton {
     root.stepKey = "";
     root.backupPath = "";
     root.state = "updating";
-    applyProc.command = ["bash", root.script, "apply", Quickshell.shellDir, root.remoteCommit, root.remoteBranch];
+    applyProc.command = ["bash", root.script, "apply", root.installDir, root.remoteCommit, root.remoteBranch];
     applyProc.running = true;
   }
 
@@ -114,7 +115,7 @@ Singleton {
 
   Process {
     id: checkProc
-    command: ["bash", root.script, "check", Quickshell.shellDir]
+    command: ["bash", root.script, "check", root.installDir]
     stdout: StdioCollector {}
     onExited: exitCode => {
       const r = root._parse(stdout.text);

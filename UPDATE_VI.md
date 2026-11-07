@@ -3,15 +3,17 @@
 - **Nút**: Cài đặt → Hệ thống → thẻ "Cập nhật Cartoon Shell" (Kiểm tra / Cập nhật ngay / Tải lại shell, công tắc tự kiểm tra).
 - **Thông báo**: sau khi shell chạy 20 giây rồi mỗi 2 giờ, nếu GitHub (`lesang2312/cartoon-shell_mod`, nhánh mặc định) có commit mới thì hiện popup 1 lần cho mỗi commit; đồng thời có chấm đỏ ở nút **Cài đặt** (menu trái) và mục **Hệ thống**.
 - **Cách hoạt động**: `scripts/update.sh` so mã commit.
-  - Thư mục shell là git clone → `git merge --ff-only` (không đè thay đổi cục bộ).
-  - Không phải git → tải tarball đúng commit, **sao lưu** vào `~/.cache/cartoon-shell/backups/` (giữ 3 bản), rồi chép đè; mã commit lưu ở `.installed_commit`.
-  - Repo kèm sẵn `VERSION` (số phiên bản hiển thị) và `.installed_commit` (mốc commit đã cài).
+  - Khi bấm **Cập nhật ngay**, updater tạo bản sao lưu của toàn bộ thư mục cũ (bao gồm metadata `.git` và các thay đổi cục bộ) trong `~/.cache/cartoon-shell/backups/`.
+  - Sau khi sao lưu thành công, updater chuyển thư mục cũ sang vùng rollback tạm, chạy `git clone --single-branch --branch <nhánh-mặc-định>` trực tiếp vào `~/.config/quickshell/cartoon-shell`, rồi xác minh SHA clone đúng bằng SHA vừa kiểm tra.
+  - Nếu clone, xác minh hoặc kết nối lại GitHub thất bại, updater xóa bản clone lỗi và đưa thư mục cũ trở lại. Chỉ xóa vùng rollback sau khi bản clone mới được xác minh thành công.
+  - Clone dùng đúng nhánh mặc định và SHA snapshot đã hiển thị; nếu repo đổi commit trong lúc clone, thao tác bị hủy và khôi phục bản cũ.
+  - Repo kèm sẵn `VERSION` (số phiên bản hiển thị); Git `HEAD` là mốc commit đã cài.
   - Mọi kiểu cài đặt đều hiển thị phiên bản từ file `VERSION` thực tế trong thư mục đang chạy; không lấy `VERSION` từ Git `HEAD` để giả làm phiên bản đã cài.
   - Nếu file `VERSION` tại máy cũ hơn phiên bản trên commit GitHub, updater vẫn báo có cập nhật kể cả khi SHA bị trùng do metadata Git cũ hoặc ZIP đóng gói nhầm `.git`.
-  - Bản ZIP phân phối không mang thư mục `.git`; `.installed_commit` dùng làm mốc commit cho kiểu cài archive. Nếu nâng cấp từ gói ZIP cũ vô tình kèm `.git`, hãy cài sang thư mục sạch để tránh Git metadata cũ làm sai trạng thái.
+  - Bản ZIP phân phối không mang thư mục `.git`; `.installed_commit` dùng làm mốc commit cho lần kiểm tra trước khi cài lại bằng Git. Nếu nâng cấp từ gói ZIP cũ vô tình kèm `.git`, hãy cài sang thư mục sạch để tránh Git metadata cũ làm sai trạng thái.
   - Khi không biết SHA đang cài, updater không tự ghi nhận commit mới nhất làm mốc nữa; nó sẽ đề xuất cài lại snapshot đã xác minh.
   - Version trên GitHub được đọc theo đúng SHA đang kiểm tra, không đọc theo tên nhánh đang có thể thay đổi.
-  - Nếu bản Git có thay đổi cục bộ, updater giữ nguyên và báo lỗi rõ ràng thay vì ghi đè.
+  - Các thay đổi cục bộ và metadata Git cũ được lưu trong archive sao lưu; sau khi clone mới được xác minh, thư mục cũ mới bị dọn khỏi đường dẫn cài đặt.
 - Thử tay: `bash scripts/update.sh check` / `bash scripts/update.sh apply`.
 
 ## Đóng băng tác vụ không dùng (giảm CPU/GPU)
@@ -33,7 +35,7 @@
 - `VERSION` đọc từ file đang cài để hiển thị. Đây cũng là tín hiệu bảo vệ bổ sung: nếu version trên GitHub cao hơn version thật tại máy, updater báo có cập nhật thay vì báo mới nhất chỉ vì SHA/metadata bị lệch.
 - Commit SHA vẫn phát hiện các commit mới kể cả khi người phát hành chưa tăng số version.
 - Khi bấm cập nhật, script lấy đúng nhánh vừa kiểm tra và xác minh SHA tải về vẫn trùng với SHA đã hiển thị. Nếu repo đổi giữa hai thao tác, cập nhật bị dừng và yêu cầu kiểm tra lại thay vì tải nhầm commit.
-- Bản cài Git dùng `git merge --ff-only`, không ghi đè thay đổi cục bộ. Bản không có Git tải tarball theo SHA chính xác, sao lưu trước, rồi ghi SHA đã cài vào `.installed_commit`.
+- Khi bấm cập nhật, mọi kiểu cài đặt đều được sao lưu rồi cài lại bằng `git clone` vào `~/.config/quickshell/cartoon-shell`; bản cũ được giữ lại cho đến khi SHA clone được xác minh. Cần có `git` và `tar`.
 - Nếu không xác định được commit hiện tại của bản cài, updater sẽ đề xuất cài lại snapshot mới nhất thay vì âm thầm báo đã mới nhất.
 - Kiểm tra tay: `bash scripts/update.sh check`; cập nhật tay: `bash scripts/update.sh apply`.
 

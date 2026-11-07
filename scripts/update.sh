@@ -9,11 +9,12 @@
 set -uo pipefail
 
 REPO="${CARTOON_SHELL_REPO:-lesang2312/cartoon-shell_mod}"
-REPO_URL="https://github.com/${REPO}"
+REPO_URL="${CARTOON_SHELL_GIT_URL:-https://github.com/${REPO}}"
 API_URL="https://api.github.com/repos/${REPO}"
 RAW_URL="https://raw.githubusercontent.com/${REPO}"
 CMD="${1:-check}"
-SHELL_DIR="${2:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+SHELL_DIR="${2:-${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/cartoon-shell}"
+SHELL_DIR="${SHELL_DIR%/}"
 MARK="$SHELL_DIR/.installed_commit"
 BACKUP_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/cartoon-shell/backups"
 UPDATE_TMP_DIR=""
@@ -196,17 +197,34 @@ do_check() {
 
 make_backup() {
   mkdir -p "$BACKUP_DIR" || return 1
-  local f="$BACKUP_DIR/cartoon-shell-$(date +%Y%m%d-%H%M%S).tar.gz"
-  tar -czf "$f" --exclude=.git -C "$(dirname "$SHELL_DIR")" "$(basename "$SHELL_DIR")" 2>/dev/null || return 1
+  local f="$BACKUP_DIR/cartoon-shell-$(date +%Y%m%d-%H%M%S)-$$.tar.gz"
+  tar -czf "$f" -C "$(dirname "$SHELL_DIR")" "$(basename "$SHELL_DIR")" 2>/dev/null || return 1
   out "backup=$f"
   ls -1t "$BACKUP_DIR"/cartoon-shell-*.tar.gz 2>/dev/null | tail -n +4 | xargs -r rm -f --
 }
 
-do_apply() {
-  local remote="${3:-}" remote_branch="${4:-}" info current fetched tmp
+restore_previous_install() {
+  local reason="$1" rollback_dir="${2:-}" had_old="${3:-0}"
+  out "step=restore"
+  rm -rf -- "$SHELL_DIR" 2>/dev/null || true
+  if [ "$had_old" = "1" ] && [ -n "$rollback_dir" ] && [ -d "$rollback_dir/old" ]; then
+    if ! mv -- "$rollback_dir/old" "$SHELL_DIR"; then
+      out "error=restore_failed"
+      out "status=error"
+      out "message=The new clone failed and the previous folder could not be restored automatically. The backup is preserved at $rollback_dir/old."
+      exit 1
+    fi
+  fi
+  [ -z "$rollback_dir" ] || rm -rf -- "$rollback_dir" 2>/dev/null || true
+  fail "$reason"
+}
 
-  # When invoked manually with no pin, resolve one. When a SHA was supplied,
-  # require its matching branch instead of silently switching to a new HEAD.
+do_apply() {
+  local remote="${3:-}" remote_branch="${4:-}" info current_sha current_branch actual
+  local parent base rollback_dir="" had_old=0
+
+  # The installed shell is replaced by a fresh clone of the exact default
+  # branch snapshot that was shown by the preceding check.
   if [ -z "$remote" ] && [ -z "$remote_branch" ]; then
     info=$(remote_info) || fail "network"
     remote_branch=$(printf '%s\n' "$info" | sed -n '1p')
@@ -215,61 +233,65 @@ do_apply() {
     fail "usage"
   fi
   is_sha "$remote" && is_branch "$remote_branch" || fail "network"
-  assert_remote_snapshot "$remote_branch" "$remote"
 
-  if is_git_checkout; then
-    # Never silently accept a dirty working tree, even when HEAD already
-    # equals the remote SHA (for example, a locally edited VERSION file).
-    if [ -n "$(git -C "$SHELL_DIR" status --porcelain 2>/dev/null)" ]; then
-      fail "local_changes"
-    fi
+  # Never allow an updater argument to remove an unrelated directory.
+  case "$SHELL_DIR" in
+    /*/cartoon-shell) ;;
+    *) fail "unsafe_target" ;;
+  esac
+  [ ! -L "$SHELL_DIR" ] || fail "unsafe_target"
 
-    out "step=fetch"
-    git -C "$SHELL_DIR" fetch --quiet --no-tags "$REPO_URL" "refs/heads/$remote_branch" 2>&1 || fail "fetch"
-    fetched=$(git -C "$SHELL_DIR" rev-parse FETCH_HEAD 2>/dev/null || true)
-    [ "$fetched" = "$remote" ] || fail "stale_remote"
-
-    current=$(git -C "$SHELL_DIR" rev-parse HEAD 2>/dev/null || true)
-    [ "$current" = "$remote" ] && { out "status=done"; return 0; }
-
-    # Clean Git installs update by fast-forward only.
-    out "step=merge"
-    git -C "$SHELL_DIR" merge --ff-only --no-edit FETCH_HEAD 2>&1 || fail "git_conflict"
-    [ "$(git -C "$SHELL_DIR" rev-parse HEAD 2>/dev/null)" = "$remote" ] || fail "stale_remote"
-    out "status=done"
-    return 0
-  fi
-
-  # Non-Git install: backup, then download the exact checked SHA.
-  command -v curl >/dev/null 2>&1 || fail "no_curl"
+  command -v git >/dev/null 2>&1 || fail "no_git"
   command -v tar >/dev/null 2>&1 || fail "no_tar"
-  UPDATE_TMP_DIR=$(mktemp -d) || fail "tmp"
-  tmp="$UPDATE_TMP_DIR"
-  trap 'if [ -n "$UPDATE_TMP_DIR" ]; then rm -rf -- "$UPDATE_TMP_DIR"; fi' EXIT
+  parent=$(dirname -- "$SHELL_DIR")
+  base=$(basename -- "$SHELL_DIR")
+  mkdir -p -- "$parent" || fail "install"
 
-  out "step=backup"
-  make_backup || fail "backup"
+  # Verify the same remote snapshot before touching the old installation.
+  info=$(remote_info) || fail "network"
+  current_branch=$(printf '%s\n' "$info" | sed -n '1p')
+  current_sha=$(printf '%s\n' "$info" | sed -n '2p')
+  [ "$current_branch" = "$remote_branch" ] && [ "$current_sha" = "$remote" ] || fail "stale_remote"
 
-  out "step=download"
-  curl -fsSL -m 180 "https://codeload.github.com/${REPO}/tar.gz/${remote}" -o "$tmp/src.tar.gz" || fail "download"
+  if [ -e "$SHELL_DIR" ]; then
+    [ -d "$SHELL_DIR" ] || fail "unsafe_target"
+    out "step=backup"
+    make_backup || fail "backup"
+    had_old=1
 
-  out "step=extract"
-  mkdir -p "$tmp/src"
-  tar -xzf "$tmp/src.tar.gz" -C "$tmp/src" --strip-components=1 || fail "extract"
-  [ -f "$tmp/src/shell.qml" ] || fail "invalid_archive"
-  # Recheck after the download so a branch move during transfer cannot install
-  # an old snapshot while the UI still claims it is the latest one.
-  assert_remote_snapshot "$remote_branch" "$remote"
-
-  out "step=install"
-  if command -v rsync >/dev/null 2>&1; then
-    # --checksum is intentional: archive extraction and existing files can
-    # share size + second-level mtime while their contents differ.
-    rsync -a --checksum --exclude='.git' "$tmp/src/" "$SHELL_DIR/" || fail "install"
+    # Keep the original directory in a same-filesystem holding folder until
+    # the clone has been verified. The archive in ~/.cache is the durable backup.
+    rollback_dir=$(mktemp -d "$parent/.${base}.rollback.XXXXXX") || fail "tmp"
+    mv -- "$SHELL_DIR" "$rollback_dir/old" || {
+      rm -rf -- "$rollback_dir"
+      fail "backup"
+    }
   else
-    cp -a "$tmp/src/." "$SHELL_DIR/" || fail "install"
+    out "step=backup"
+    out "backup="
   fi
-  printf '%s\n' "$remote" >"$MARK" || fail "install"
+
+  out "step=clone"
+  if ! git clone --quiet --single-branch --branch "$remote_branch" "$REPO_URL" "$SHELL_DIR"; then
+    restore_previous_install "clone" "$rollback_dir" "$had_old"
+  fi
+
+  out "step=verify"
+  actual=$(git -C "$SHELL_DIR" rev-parse HEAD 2>/dev/null || true)
+  if [ "$actual" != "$remote" ] || [ ! -f "$SHELL_DIR/shell.qml" ] || [ ! -f "$SHELL_DIR/VERSION" ]; then
+    restore_previous_install "stale_remote" "$rollback_dir" "$had_old"
+  fi
+
+  # Confirm that the default branch did not move while git clone was running.
+  info=$(remote_info) || restore_previous_install "network" "$rollback_dir" "$had_old"
+  current_branch=$(printf '%s\n' "$info" | sed -n '1p')
+  current_sha=$(printf '%s\n' "$info" | sed -n '2p')
+  if [ "$current_branch" != "$remote_branch" ] || [ "$current_sha" != "$remote" ]; then
+    restore_previous_install "stale_remote" "$rollback_dir" "$had_old"
+  fi
+
+  out "step=cleanup"
+  [ -z "$rollback_dir" ] || rm -rf -- "$rollback_dir"
   out "status=done"
 }
 

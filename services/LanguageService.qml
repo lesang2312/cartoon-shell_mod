@@ -107,9 +107,12 @@ Singleton {
       notify_title: "Cartoon Shell has a new update", notify_body: "Open Settings → System to update.",
       backup: "Backup", err_network: "Could not reach GitHub.", err_git_conflict: "Local changes conflict with the update. Run git pull/stash yourself.",
       err_download: "Downloading the update failed.", err_backup: "Could not create a backup, aborted to stay safe.",
+      err_clone: "Git clone failed. The previous installation was restored.", err_restore: "The clone failed and automatic restore was unsuccessful. The previous folder is preserved in the rollback directory.",
+      err_no_git: "Git is required to install updates. Please install Git and try again.", err_no_tar: "tar is required to create a backup.", err_unsafe_target: "The install path is not the expected cartoon-shell folder; no files were changed.",
       err_generic: "Update failed.", err_stale_remote: "The repository changed after the check. Check for updates again.",
       err_local_changes: "This Git folder has local changes. Save, commit, or stash them before updating.", step_fetch: "Fetching…", step_merge: "Merging changes…", step_backup: "Backing up…",
-      step_download: "Downloading…", step_extract: "Extracting…", step_install: "Installing…"
+      step_download: "Downloading…", step_extract: "Extracting…", step_install: "Installing…",
+      step_clone: "Cloning the latest shell…", step_verify: "Verifying the cloned commit…", step_cleanup: "Removing the old installation…", step_restore: "Restoring the previous installation…"
     },
     autotr: {
       title: "Auto-translate interface", desc: "Translates all text into the selected language, even strings missing from the bundled translations. Results are cached on this device.",
@@ -140,10 +143,13 @@ Singleton {
       notify_title: "Cartoon Shell có bản cập nhật mới", notify_body: "Vào Cài đặt → Hệ thống để cập nhật.",
       backup: "Bản sao lưu", err_network: "Không kết nối được tới GitHub.", err_git_conflict: "Bạn có thay đổi cục bộ xung đột với bản mới. Hãy tự git pull/stash.",
       err_download: "Tải bản cập nhật thất bại.", err_backup: "Không tạo được bản sao lưu, đã hủy để an toàn.",
+      err_clone: "Git clone thất bại. Bản cài đặt cũ đã được khôi phục.", err_restore: "Clone thất bại và không thể tự khôi phục. Thư mục cũ vẫn được giữ trong thư mục rollback.",
+      err_no_git: "Cần cài Git để cập nhật. Hãy cài Git rồi thử lại.", err_no_tar: "Cần có tar để tạo bản sao lưu.", err_unsafe_target: "Đường dẫn cài đặt không phải thư mục cartoon-shell dự kiến; không có file nào bị thay đổi.",
       err_generic: "Cập nhật thất bại.", err_stale_remote: "Repo vừa thay đổi sau lần kiểm tra. Hãy kiểm tra cập nhật lại.",
       err_local_changes: "Thư mục có thay đổi cục bộ. Hãy sao lưu/commit hoặc stash các thay đổi rồi cập nhật lại.",
       step_fetch: "Đang lấy dữ liệu…", step_merge: "Đang gộp thay đổi…", step_backup: "Đang sao lưu…",
-      step_download: "Đang tải về…", step_extract: "Đang giải nén…", step_install: "Đang cài đặt…"
+      step_download: "Đang tải về…", step_extract: "Đang giải nén…", step_install: "Đang cài đặt…",
+      step_clone: "Đang git clone bản mới…", step_verify: "Đang xác minh commit vừa clone…", step_cleanup: "Đang xóa bản cũ…", step_restore: "Đang khôi phục bản cũ…"
     },
     autotr: {
       title: "Tự động dịch giao diện", desc: "Dịch mọi chữ sang ngôn ngữ đang chọn, kể cả chữ chưa có trong bản dịch. Kết quả được lưu lại trên máy.",
