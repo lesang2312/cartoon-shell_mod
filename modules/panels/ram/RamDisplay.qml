@@ -341,7 +341,7 @@ Item {
       spacing: ScalerService.s(12)
 
       Text {
-        text: lang?.ram?.loading_memory || "Loading memory data..."
+        text: lang?.ram?.loading_memory || AutoTranslateService.t("Loading memory data...")
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(10)
         anchors.horizontalCenter: parent.horizontalCenter

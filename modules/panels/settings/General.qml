@@ -91,7 +91,7 @@ Item {
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
                     visible: tabLoader2.status === Loader.Error
-                    text: "⚠  Không tải được Session.qml\nXem lỗi bằng: qs log | grep -i Session"
+                    text: AutoTranslateService.t("⚠  Không tải được Session.qml\nXem lỗi bằng: qs log | grep -i Session")
                     color: "#ff8a8a"
                     font.pixelSize: ScalerService.s(14)
                 }
@@ -128,7 +128,7 @@ Item {
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
                     visible: tabLoader4.status === Loader.Error
-                    text: "⚠  Không tải được Notifications.qml\nXem lỗi bằng: qs log | grep -i Notifications"
+                    text: AutoTranslateService.t("⚠  Không tải được Notifications.qml\nXem lỗi bằng: qs log | grep -i Notifications")
                     color: "#ff8a8a"
                     font.pixelSize: ScalerService.s(14)
                 }
@@ -154,7 +154,7 @@ Item {
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
                     visible: tabLoader5.status === Loader.Error
-                    text: "⚠  Không tải được Privacy.qml\nXem lỗi bằng: qs log | grep -i Privacy"
+                    text: AutoTranslateService.t("⚠  Không tải được Privacy.qml\nXem lỗi bằng: qs log | grep -i Privacy")
                     color: "#ff8a8a"
                     font.pixelSize: ScalerService.s(14)
                 }

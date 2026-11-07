@@ -105,7 +105,7 @@ Rectangle {
   Text {
     anchors.centerIn: parent
     visible: root.listening || root.showModifierHint || root.pendingCombo !== ""
-    text: root.showModifierHint ? "⚠️ Modifier required" : (root.pendingCombo !== "" ? root.pendingCombo : "● Press new shortcut…")
+    text: root.showModifierHint ? AutoTranslateService.t("⚠️ Modifier required") : (root.pendingCombo !== "" ? root.pendingCombo : "● Press new shortcut…")
     color: theme.primary.background
     font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(12); bold: true }
   }

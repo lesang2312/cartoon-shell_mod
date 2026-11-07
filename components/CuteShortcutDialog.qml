@@ -201,7 +201,7 @@ Dialog {
           font { family: dlg.fontFamily; pixelSize: ScalerService.s(24); bold: true }
         }
         Text {
-          text: "Cấu hình phím tắt mới  •  新建快捷方式  •  새로운 바로가기 설정"
+          text: AutoTranslateService.t("Cấu hình phím tắt mới  •  新建快捷方式  •  새로운 바로가기 설정")
           color: dlg.cSub; Layout.fillWidth: true; wrapMode: Text.WordWrap
           font { family: dlg.fontFamily; pixelSize: ScalerService.s(12) }
         }
@@ -318,7 +318,7 @@ Dialog {
               font { family: dlg.fontFamily; pixelSize: ScalerService.s(14); bold: true }
             }
             Text {
-              text: "Chạy trong Terminal (Kitty)  •  在终端中运行  •  터미널에서 실행"
+              text: AutoTranslateService.t("Chạy trong Terminal (Kitty)  •  在终端中运行  •  터미널에서 실행")
               color: dlg.cSub; Layout.fillWidth: true; wrapMode: Text.WordWrap
               font { family: dlg.fontFamily; pixelSize: ScalerService.s(11) }
             }

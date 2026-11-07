@@ -147,21 +147,21 @@ PanelWindow {
 
                     Tile {
                         icon: NetworkService.wifi_icon_text_1
-                        title: "Wi-Fi"
+                        title: AutoTranslateService.t("Wi-Fi")
                         subtitle: NetworkService.connectedWifi === "Checking..." ? "..." : (NetworkService.connectedWifi || "Offline")
                         on: NetworkService.connectedWifi !== "" && NetworkService.connectedWifi !== "Checking..."
                         onClicked: VisibleService.openPanel("wifi")
                     }
                     Tile {
                         icon: "bluetooth"
-                        title: "Bluetooth"
-                        subtitle: lang.panel?.open || "Mở"
+                        title: AutoTranslateService.t("Bluetooth")
+                        subtitle: lang.panel?.open || AutoTranslateService.t("Mở")
                         on: false
                         onClicked: VisibleService.openPanel("bluetooth")
                     }
                     Tile {
                         icon: root.volumeIcon()
-                        title: lang.panel?.sound || "Âm thanh"
+                        title: lang.panel?.sound || AutoTranslateService.t("Âm thanh")
                         subtitle: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "—"
                         on: root.sink ? !root.sink.audio.muted : false
                         onClicked: {
@@ -171,8 +171,8 @@ PanelWindow {
                     }
                     Tile {
                         icon: "dashboard"
-                        title: "Dashboard"
-                        subtitle: lang.panel?.open || "Mở"
+                        title: AutoTranslateService.t("Dashboard")
+                        subtitle: lang.panel?.open || AutoTranslateService.t("Mở")
                         on: false
                         onClicked: VisibleService.openPanel("dashboard")
                     }

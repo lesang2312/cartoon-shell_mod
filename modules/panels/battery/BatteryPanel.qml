@@ -246,19 +246,19 @@ Item {
 
       // Energy
       Text {
-        text: "Energy:"
+        text: AutoTranslateService.t("Energy:")
         color: dimTextColor
         font.pointSize: ScalerService.s(9)
       }
       Text {
-        text: UPower.displayDevice.energy + " / " + UPower.displayDevice.energyCapacity + " Wh"
+        text: UPower.displayDevice.energy + " / " + UPower.displayDevice.energyCapacity + AutoTranslateService.t(" Wh")
         color: textColor
         font.pointSize: ScalerService.s(9)
         font.bold: true
       }
 
       Text {
-        text: "Status:"
+        text: AutoTranslateService.t("Status:")
         color: dimTextColor
         font.pointSize: ScalerService.s(9)
       }
@@ -298,7 +298,7 @@ Item {
       }
 
       Text {
-        text: "Loading battery data..."
+        text: AutoTranslateService.t("Loading battery data...")
         color: dimTextColor
         font.pointSize: ScalerService.s(10)
         anchors.horizontalCenter: parent.horizontalCenter

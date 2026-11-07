@@ -122,6 +122,8 @@ Singleton {
         property string notifMutedApps: ""       // các ứng dụng bị tắt popup (cách nhau dấu phẩy)
         // ---- Privacy ----
         property string privacyNotifDetail: "full" // full | title | none: mức nội dung lộ ra trong popup
+        // ---- Dịch tự động ----
+        property bool autoTranslate: true        // dịch mọi chữ trên giao diện sang ngôn ngữ đang chọn (cache cục bộ)
         // ---- Update ----
         property bool updateAutoCheck: true      // tự kiểm tra bản cập nhật (lúc khởi động + mỗi 6 giờ)
         property string updateLastNotified: ""   // commit đã báo rồi, để không báo lặp

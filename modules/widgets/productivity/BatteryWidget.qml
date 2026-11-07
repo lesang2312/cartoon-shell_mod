@@ -140,7 +140,7 @@ Item {
                     }
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: root.charging ? "ϟ Power" : "Battery"
+                        text: root.charging ? AutoTranslateService.t("ϟ Power") : AutoTranslateService.t("Battery")
                         color: root.charging ? "#9CF0BE" : "#BCC9E4"
                         font.pixelSize: ScalerService.s(10)
                         font.bold: true

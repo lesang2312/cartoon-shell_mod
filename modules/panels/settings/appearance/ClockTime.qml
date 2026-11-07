@@ -38,7 +38,7 @@ Item {
 
       // Nội dung Clock ở đây
       Text {
-        text: "Clock settings content"
+        text: AutoTranslateService.t("Clock settings content")
         color: theme.primary.foreground
         Layout.alignment: Qt.AlignLeft
         font.pixelSize: ScalerService.s(14)

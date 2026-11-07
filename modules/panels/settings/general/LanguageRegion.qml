@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import qs.commons
 import qs.services
 import qs.components
+import "./" as Com
 
 Item {
     id: root
@@ -301,6 +302,7 @@ Item {
                                     }
 
                                     CustomText {
+                                        translatable: false
                                         name: modelData.name
                                         textColor: Settings.general.lang === modelData.code ? theme.primary.background : theme.primary.foreground
                                         isBold: Settings.general.lang === modelData.code
@@ -375,6 +377,11 @@ Item {
                         }
                     }
                 }
+            }
+
+            Com.AutoTranslateCard {
+                Layout.fillWidth: true
+                Layout.topMargin: ScalerService.s(10)
             }
 
             Item {

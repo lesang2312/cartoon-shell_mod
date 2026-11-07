@@ -90,7 +90,7 @@ Item {
                 }
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: root.title === "Memory" ? "RAM" : root.title
+                    text: root.title === "Memory" ? AutoTranslateService.t("RAM") : root.title
                     color: "#D5DDF0"
                     font.pixelSize: ScalerService.s(8)
                 }

@@ -44,7 +44,7 @@ Item {
       spacing: ScalerService.s(16)
 
       Text {
-        text: "⌨️ " + LanguageService.t("shortcuts", "title")
+        text: AutoTranslateService.t("⌨️ ") + LanguageService.t("shortcuts", "title")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(24); bold: true }
         Layout.alignment: Qt.AlignHCenter
@@ -108,14 +108,14 @@ Item {
       spacing: ScalerService.s(15); width: ScalerService.s(340)
 
       Text {
-        text: "⚠️ " + LanguageService.t("shortcuts", "conflict_title")
+        text: AutoTranslateService.t("⚠️ ") + LanguageService.t("shortcuts", "conflict_title")
         color: "#ff4444"
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(18); bold: true }
         Layout.alignment: Qt.AlignHCenter
       }
 
       Text {
-        text: "“" + conflictDialog.newKey + "” · " + LanguageService.t("shortcuts", "conflict_message") + "\n" + LanguageService.t("shortcuts", "overwrite_question")
+        text: "“" + conflictDialog.newKey + AutoTranslateService.t("” · ") + LanguageService.t("shortcuts", "conflict_message") + AutoTranslateService.t("\n") + LanguageService.t("shortcuts", "overwrite_question")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
         wrapMode: Text.WordWrap; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter

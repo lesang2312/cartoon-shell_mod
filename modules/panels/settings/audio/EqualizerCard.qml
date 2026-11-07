@@ -75,12 +75,12 @@ Rectangle {
             ColumnLayout {
                 spacing: 0
                 Text {
-                    text: "Equalizer"
+                    text: AutoTranslateService.t("Equalizer")
                     color: root.accent
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(17); bold: true }
                 }
                 Text {
-                    text: root.eq.enabled ? (root.eq.preset + "  ·  10 band") : "Off  ·  bật công tắc để áp dụng"
+                    text: root.eq.enabled ? (root.eq.preset + "  ·  10 band") : AutoTranslateService.t("Off  ·  bật công tắc để áp dụng")
                     color: theme.primary.dim_foreground
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                 }
@@ -104,7 +104,7 @@ Rectangle {
                 Text {
                     id: savedText
                     anchors.centerIn: parent
-                    text: "✓ Saved"
+                    text: AutoTranslateService.t("✓ Saved")
                     color: root.accent
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(11); bold: true }
                 }
@@ -127,7 +127,7 @@ Rectangle {
                 Text {
                     id: resetText
                     anchors.centerIn: parent
-                    text: "↺  Reset"
+                    text: AutoTranslateService.t("↺  Reset")
                     color: theme.primary.foreground
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                 }

@@ -540,7 +540,7 @@ Rectangle {
                 spacing: 0
 
                 CustomText {
-                  name: modelData.time
+                  name: ReminderService.formatTime12(modelData.time)
                   isBold: true
                   size: "small"
                 }
@@ -721,7 +721,7 @@ Rectangle {
 
             CustomText {
               id: chooseHours
-              name: calendar.reminderTimeSet ? calendar.reminderTime : (lang?.calendar?.choose_hours || "Chọn giờ")
+              name: calendar.reminderTimeSet ? ReminderService.formatTime12(calendar.reminderTime) : (lang?.calendar?.choose_hours || "Chọn giờ")
               size: "small"
               opacity: calendar.reminderTimeSet ? 1 : 0.6
               Layout.fillWidth: true

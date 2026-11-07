@@ -154,7 +154,7 @@ FocusScope {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: "Bảng nhớ tạm" + (card.entries.length > 0 ? "  ·  " + card.entries.length : "")
+                    text: AutoTranslateService.t("Bảng nhớ tạm") + (card.entries.length > 0 ? "  ·  " + card.entries.length : "")
                     color: card.theme.primary.foreground
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(16); bold: true }
                 }
@@ -168,7 +168,7 @@ FocusScope {
                     Text {
                         id: wipeText
                         anchors.centerIn: parent
-                        text: card.wipeArmed ? "Bấm lần nữa để xóa" : "Xóa tất cả"
+                        text: card.wipeArmed ? AutoTranslateService.t("Bấm lần nữa để xóa") : AutoTranslateService.t("Xóa tất cả")
                         color: card.wipeArmed ? card.theme.primary.background : card.theme.primary.foreground
                         font { family: Settings.appearance.font; pixelSize: ScalerService.s(12); weight: Font.Medium }
                     }
@@ -245,7 +245,7 @@ FocusScope {
                         anchors.fill: parent
                         verticalAlignment: Text.AlignVCenter
                         visible: search.text === ""
-                        text: "Tìm trong lịch sử…"
+                        text: AutoTranslateService.t("Tìm trong lịch sử…")
                         color: card.theme.primary.dim_foreground
                         font: search.font
                     }
@@ -334,7 +334,7 @@ FocusScope {
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.WordWrap
                     visible: card.shown.length === 0
-                    text: card.missing ? "Chưa cài cliphist.\nCài: sudo pacman -S cliphist wl-clipboard"
+                    text: card.missing ? AutoTranslateService.t("Chưa cài cliphist.\nCài: sudo pacman -S cliphist wl-clipboard")
                         : !card.loaded ? "Đang tải…"
                         : card.query !== "" ? "Không có mục nào khớp."
                         : "Chưa có gì.\nSao chép chữ hoặc ảnh, chúng sẽ hiện ở đây."
@@ -346,7 +346,7 @@ FocusScope {
             Text {
                 Layout.fillWidth: true
                 horizontalAlignment: Text.AlignHCenter
-                text: "↑ ↓ chọn   ·   Enter / bấm để chép   ·   Shift+Del xóa mục   ·   Esc đóng"
+                text: AutoTranslateService.t("↑ ↓ chọn   ·   Enter / bấm để chép   ·   Shift+Del xóa mục   ·   Esc đóng")
                 color: card.theme.primary.dim_foreground
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(10) }
             }

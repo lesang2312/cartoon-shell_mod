@@ -112,13 +112,13 @@ Item {
                     spacing: 0
                     Layout.fillWidth: true
                     Text {
-                        text: "Desk tools"
+                        text: AutoTranslateService.t("Desk tools")
                         color: theme.button.text
                         font.pixelSize: ScalerService.s(16)
                         font.bold: true
                     }
                     Text {
-                        text: "Notes & little tasks · auto saved"
+                        text: AutoTranslateService.t("Notes & little tasks · auto saved")
                         color: theme.primary.dim_foreground
                         font.pixelSize: ScalerService.s(10)
                     }
@@ -175,7 +175,7 @@ Item {
             }
 
             Text {
-                text: "QUICK NOTE"
+                text: AutoTranslateService.t("QUICK NOTE")
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(9)
                 font.bold: true
@@ -211,7 +211,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: ScalerService.s(4)
                 Text {
-                    text: "TODAY'S TASKS"
+                    text: AutoTranslateService.t("TODAY'S TASKS")
                     color: theme.primary.dim_foreground
                     font.pixelSize: ScalerService.s(9)
                     font.bold: true

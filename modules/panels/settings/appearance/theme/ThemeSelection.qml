@@ -24,7 +24,7 @@ RowLayout {
         Com.ThemeCard {
             type: "light"
             isSelected: theme.type === "light"
-            label: lang.appearance?.theme_light || "Sáng"
+            label: lang.appearance?.theme_light || AutoTranslateService.t("Sáng")
             onClicked: {
                 // Set theme to matugen and mode to light
                 Settings.appearance.theme = "matugen";
@@ -37,7 +37,7 @@ RowLayout {
         Com.ThemeCard {
             type: "dark"
             isSelected: theme.type === "dark"
-            label: lang.appearance?.theme_dark || "Tối"
+            label: lang.appearance?.theme_dark || AutoTranslateService.t("Tối")
             onClicked: {
                 Settings.appearance.theme = "matugen";
                 Settings.appearance.dynamic = true;

@@ -43,28 +43,28 @@ Item {
 
       Com.FileItem {
         icon: "filebrowser/documents.png"
-        label: "Documents"
+        label: AutoTranslateService.t("Documents")
         itemPath: Directories.documents
         animationProgress: root.animationProgress
         revealThreshold: 1
       }
       Com.FileItem {
         icon: "filebrowser/downloads.png"
-        label: "Downloads"
+        label: AutoTranslateService.t("Downloads")
         itemPath: Directories.downloads
         animationProgress: root.animationProgress
         revealThreshold: 1.1
       }
       Com.FileItem {
         icon: "filebrowser/music.png"
-        label: "Musics"
+        label: AutoTranslateService.t("Musics")
         itemPath: Directories.music
         animationProgress: root.animationProgress
         revealThreshold: 1.2
       }
       Com.FileItem {
         icon: "filebrowser/pictures.png"
-        label: "Pictures"
+        label: AutoTranslateService.t("Pictures")
         itemPath: Directories.pictures
         animationProgress: root.animationProgress
         revealThreshold: 1.3

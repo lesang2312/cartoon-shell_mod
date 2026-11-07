@@ -20,7 +20,7 @@ Item {
     spacing: ScalerService.s(12)
 
     Text {
-      text: lang.appearance?.clock_style_label || "Kiểu đồng hồ:"
+      text: lang.appearance?.clock_style_label || AutoTranslateService.t("Kiểu đồng hồ:")
       color: theme.primary.foreground
       font.family: "ComicShannsMono Nerd Font"
       font.pixelSize: ScalerService.s(16)

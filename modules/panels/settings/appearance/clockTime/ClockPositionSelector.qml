@@ -21,7 +21,7 @@ Item {
 
       Text {
         id: label
-        text: lang.appearance?.clock_position_label || "Vị trí đồng hồ:"
+        text: lang.appearance?.clock_position_label || AutoTranslateService.t("Vị trí đồng hồ:")
         color: theme.primary.foreground
         font {
           family: "ComicShannsMono Nerd Font"

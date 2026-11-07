@@ -12,7 +12,7 @@ import "./" as G
 //  - Tắt màn hình khi rảnh
 G.SettingPage {
     id: page
-    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.session) || "Session"
+    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.session) || AutoTranslateService.t("Session")
 
     readonly property var methodDesc: ({
         "auto": "Thoát compositor đúng cách; nếu sau 10 giây phiên vẫn còn (màn hình đen, kẹt con trỏ) thì tự ép đóng phiên đó qua logind. Khuyên dùng.",
@@ -22,11 +22,11 @@ G.SettingPage {
     })
 
     G.SettingSection {
-        title: "ĐĂNG XUẤT"
+        title: AutoTranslateService.t("ĐĂNG XUẤT")
         appearAt: 0.3
 
         G.SettingChoice {
-            title: "Cách đăng xuất"
+            title: AutoTranslateService.t("Cách đăng xuất")
             desc: page.methodDesc[Settings.behavior.logoutMethod] || ""
             current: Settings.behavior.logoutMethod
             options: [
@@ -64,7 +64,7 @@ G.SettingPage {
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter
                     visible: cmd.text === "" && !cmd.activeFocus
-                    text: "vd: hyprctl dispatch exit"
+                    text: AutoTranslateService.t("vd: hyprctl dispatch exit")
                     color: page.theme.primary.dim_foreground
                     font: cmd.font
                 }
@@ -75,19 +75,19 @@ G.SettingPage {
             Layout.fillWidth: true
             visible: Settings.behavior.logoutMethod === "custom" && Settings.behavior.logoutCustom.trim() === ""
             wrapMode: Text.WordWrap
-            text: "Chưa nhập lệnh: đang dùng chế độ Tự động."
+            text: AutoTranslateService.t("Chưa nhập lệnh: đang dùng chế độ Tự động.")
             color: page.theme.normal.yellow
             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
         }
     }
 
     G.SettingSection {
-        title: "TẮT MÀN HÌNH KHI RẢNH"
+        title: AutoTranslateService.t("TẮT MÀN HÌNH KHI RẢNH")
         appearAt: 0.5
 
         G.SettingChoice {
-            title: "Tắt màn hình sau"
-            desc: "Chỉ tắt màn hình (máy vẫn chạy, nhạc vẫn phát); động chuột hoặc bàn phím thì bật lại. Nên đặt ngắn hơn thời gian tự khóa."
+            title: AutoTranslateService.t("Tắt màn hình sau")
+            desc: AutoTranslateService.t("Chỉ tắt màn hình (máy vẫn chạy, nhạc vẫn phát); động chuột hoặc bàn phím thì bật lại. Nên đặt ngắn hơn thời gian tự khóa.")
             dimmed: Settings.behavior.keepAwake
             current: Settings.behavior.monitorOffAfterMin
             options: [
@@ -101,7 +101,7 @@ G.SettingPage {
             Layout.fillWidth: true
             visible: Settings.behavior.keepAwake
             wrapMode: Text.WordWrap
-            text: "Đang tạm dừng vì \"Giữ máy thức\" (Behavior) đang bật."
+            text: AutoTranslateService.t("Đang tạm dừng vì \"Giữ máy thức\" (Behavior) đang bật.")
             color: page.theme.normal.yellow
             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
         }

@@ -120,7 +120,7 @@ PanelWindow {
       spacing: ScalerService.s(20)
 
       Text {
-        text: lang?.confirm?.title || "Xác nhận"
+        text: lang?.confirm?.title || AutoTranslateService.t("Xác nhận")
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(24)
         font.bold: true
@@ -152,7 +152,7 @@ PanelWindow {
 
           Text {
             anchors.centerIn: parent
-            text: lang?.confirm?.no || "Không"
+            text: lang?.confirm?.no || AutoTranslateService.t("Không")
             color: theme.primary.foreground
             font.pixelSize: ScalerService.s(18)
             font.family: "ComicShannsMono Nerd Font"
@@ -177,7 +177,7 @@ PanelWindow {
 
           Text {
             anchors.centerIn: parent
-            text: lang?.confirm?.yes || "Có"
+            text: lang?.confirm?.yes || AutoTranslateService.t("Có")
             color: mouseAreaYes.containsMouse ? "white" : theme.primary.foreground
             font.pixelSize: ScalerService.s(18)
             font.family: "ComicShannsMono Nerd Font"

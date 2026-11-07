@@ -49,7 +49,8 @@ Text {
     }
   }
 
-  text: name
+  property bool translatable: true   // false: giữ nguyên chữ (tên ngôn ngữ, tên riêng...)
+  text: (!translatable || fontFamily.indexOf("Symbols") >= 0) ? name : AutoTranslateService.t(name)
   color: textColor
 
   font.family: fontFamily

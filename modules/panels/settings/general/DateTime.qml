@@ -373,7 +373,7 @@ Item {
                                 id: ntpChip
                                 anchors.verticalCenter: parent.verticalCenter
                                 x: ScalerService.s(24)
-                                text: root.ntpSynced ? "Đã đồng bộ" : (root.ntpEnabled ? "Đang đồng bộ…" : "Đồng bộ tắt")
+                                text: root.ntpSynced ? AutoTranslateService.t("Đã đồng bộ") : (root.ntpEnabled ? "Đang đồng bộ…" : "Đồng bộ tắt")
                                 color: theme.primary.foreground
                                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(11); weight: Font.Medium }
                             }
@@ -402,12 +402,12 @@ Item {
                     ColumnLayout {
                         spacing: ScalerService.s(2)
                         Text {
-                            text: "Định dạng giờ"
+                            text: AutoTranslateService.t("Định dạng giờ")
                             color: theme.primary.foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(15); bold: true }
                         }
                         Text {
-                            text: "Áp dụng cho thanh bar và đồng hồ"
+                            text: AutoTranslateService.t("Áp dụng cho thanh bar và đồng hồ")
                             color: theme.primary.dim_foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                         }
@@ -499,12 +499,12 @@ Item {
                     ColumnLayout {
                         spacing: ScalerService.s(2)
                         Text {
-                            text: "Đồng bộ giờ tự động"
+                            text: AutoTranslateService.t("Đồng bộ giờ tự động")
                             color: theme.primary.foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(15); bold: true }
                         }
                         Text {
-                            text: "Lấy giờ chính xác từ máy chủ thời gian (NTP)"
+                            text: AutoTranslateService.t("Lấy giờ chính xác từ máy chủ thời gian (NTP)")
                             color: theme.primary.dim_foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                         }
@@ -540,19 +540,19 @@ Item {
                         ColumnLayout {
                             spacing: ScalerService.s(2)
                             Text {
-                                text: "Múi giờ"
+                                text: AutoTranslateService.t("Múi giờ")
                                 color: theme.primary.foreground
                                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(15); bold: true }
                             }
                             Text {
-                                text: "Hiện tại: " + (root.timezone || "…")
+                                text: AutoTranslateService.t("Hiện tại: ") + (root.timezone || "…")
                                 color: root.accent
                                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(11); weight: Font.Medium }
                             }
                         }
                         Item { Layout.fillWidth: true }
                         Text {
-                            text: root.zones.length + " vùng"
+                            text: root.zones.length + AutoTranslateService.t(" vùng")
                             color: theme.primary.dim_foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                         }
@@ -653,7 +653,7 @@ Item {
                             Text {
                                 visible: list.count === 0
                                 anchors.centerIn: parent
-                                text: root.allZones.length === 0 ? "Đang tải danh sách…" : "Không tìm thấy múi giờ phù hợp"
+                                text: root.allZones.length === 0 ? AutoTranslateService.t("Đang tải danh sách…") : AutoTranslateService.t("Không tìm thấy múi giờ phù hợp")
                                 color: theme.primary.dim_foreground
                                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(12) }
                             }
@@ -748,14 +748,14 @@ Item {
             spacing: ScalerService.s(8)
 
             Text {
-                text: "\uD83D\uDD12  Cần quyền quản trị"
+                text: AutoTranslateService.t("\uD83D\uDD12  Cần quyền quản trị")
                 color: root.accent
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(14); bold: true }
             }
             Text {
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
-                text: root.passWrong ? "\u26A0 Mật khẩu không đúng. Hãy nhập lại." : "Nhập mật khẩu sudo để áp dụng. Mật khẩu chỉ dùng một lần, không được lưu."
+                text: root.passWrong ? AutoTranslateService.t("\u26A0 Mật khẩu không đúng. Hãy nhập lại.") : AutoTranslateService.t("Nhập mật khẩu sudo để áp dụng. Mật khẩu chỉ dùng một lần, không được lưu.")
                 color: root.passWrong ? theme.normal.red : theme.primary.dim_foreground
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
             }

@@ -24,7 +24,7 @@ ColumnLayout {
     }
 
     CustomText {
-        text: "Preset Themes"
+        text: AutoTranslateService.t("Preset Themes")
         color: theme.primary ? theme.primary.foreground : "#d8dee9"
         opacity: root.animationProgress > 0.1 ? 1 : 0
         size: "small"

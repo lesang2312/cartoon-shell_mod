@@ -270,14 +270,14 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                text: root.player && root.player.trackTitle ? root.player.trackTitle : "No song playing"
+                text: root.player && root.player.trackTitle ? root.player.trackTitle : AutoTranslateService.t("No song playing")
                 elide: Text.ElideRight
                 color: theme.primary.foreground
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(root.compact ? 14 : 20); bold: true }
             }
             Text {
                 Layout.fillWidth: true
-                text: root.player ? (root.player.trackArtist ? root.player.trackArtist : "Unknown Artist") : "Play something to get started"
+                text: root.player ? (root.player.trackArtist ? root.player.trackArtist : "Unknown Artist") : AutoTranslateService.t("Play something to get started")
                 elide: Text.ElideRight
                 color: theme.primary.dim_foreground
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(root.compact ? 9 : 13); weight: Font.DemiBold }
@@ -302,7 +302,7 @@ Rectangle {
                             muted: root.sink && root.sink.audio ? root.sink.audio.muted : false
                         }
                         Text {
-                            text: root.sink ? (root.sink.nickname || root.sink.description || root.sink.name) : "No device"
+                            text: root.sink ? (root.sink.nickname || root.sink.description || root.sink.name) : AutoTranslateService.t("No device")
                             color: theme.primary.foreground
                             elide: Text.ElideRight
                             Layout.maximumWidth: ScalerService.s(root.compact ? 96 : 170)

@@ -125,14 +125,14 @@ Item {
                     }
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: displayedImage.status === Image.Error ? "Không mở được ảnh này" : "Chạm ‘Chọn ảnh’ để trưng bày"
+                        text: displayedImage.status === Image.Error ? AutoTranslateService.t("Không mở được ảnh này") : AutoTranslateService.t("Chạm ‘Chọn ảnh’ để trưng bày")
                         color: "#E4EAF8"
                         font.pixelSize: ScalerService.s(10)
                     }
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
                         visible: root.imageSource === ""
-                        text: "PNG · JPG · WEBP"
+                        text: AutoTranslateService.t("PNG · JPG · WEBP")
                         color: "#AAB8D4"
                         font.pixelSize: ScalerService.s(9)
                     }
@@ -143,7 +143,7 @@ Item {
                 Layout.fillWidth: true
                 Text {
                     Layout.fillWidth: true
-                    text: root.imageSource === "" ? "Chưa chọn ảnh" : "Ảnh được lưu tự động"
+                    text: root.imageSource === "" ? AutoTranslateService.t("Chưa chọn ảnh") : AutoTranslateService.t("Ảnh được lưu tự động")
                     color: "#D0D9EE"
                     font.pixelSize: ScalerService.s(9)
                     elide: Text.ElideMiddle

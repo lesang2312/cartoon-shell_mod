@@ -726,7 +726,7 @@ Item {
 
     ColorDialog {
         id: fgColorDialog
-        title: "Choose Kitty Text Color"
+        title: AutoTranslateService.t("Choose Kitty Text Color")
         onAccepted: KittyOpacityService.applyCustomForegroundColor(root.hexOf(selectedColor))
     }
 }

@@ -99,7 +99,7 @@ Item {
                         spacing: ScalerService.s(4)
                         Text { text: "♡"; color: theme.normal.red; font.pixelSize: ScalerService.s(16) }
                         Text {
-                            text: "Daily quest"
+                            text: AutoTranslateService.t("Daily quest")
                             color: theme.button.text
                             font.pixelSize: ScalerService.s(13)
                             font.bold: true
@@ -206,7 +206,7 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
                     }
                     Text {
-                        text: root.focusFinished ? "Yay! break time ♡" : (root.timerRunning ? "You got this!" : "A little focus time")
+                        text: root.focusFinished ? AutoTranslateService.t("Yay! break time ♡") : (root.timerRunning ? "You got this!" : "A little focus time")
                         color: theme.primary.dim_foreground
                         font.pixelSize: ScalerService.s(10)
                         Layout.alignment: Qt.AlignHCenter

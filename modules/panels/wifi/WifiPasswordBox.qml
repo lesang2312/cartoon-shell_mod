@@ -63,7 +63,7 @@ Rectangle {
 
         Text {
           anchors.centerIn: parent
-          text: passwordBox.showPassword ? networkData.saved_password : "••••••••"
+          text: passwordBox.showPassword ? networkData.saved_password : AutoTranslateService.t("••••••••")
           font.family: "ComicShannsMono Nerd Font"
           color: theme.primary.foreground
           font.pixelSize: ScalerService.s(14)

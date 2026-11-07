@@ -62,13 +62,13 @@ Item {
                     Layout.fillWidth: true
                     spacing: 0
                     Text {
-                        text: "Activity Monitor"
+                        text: AutoTranslateService.t("Activity Monitor")
                         color: "#F5F7FF"
                         font.pixelSize: ScalerService.s(16)
                         font.bold: true
                     }
                     Text {
-                        text: "CPU và RAM đã dùng · cập nhật mỗi 2 giây"
+                        text: AutoTranslateService.t("CPU và RAM đã dùng · cập nhật mỗi 2 giây")
                         color: "#CCD5EB"
                         font.pixelSize: ScalerService.s(10)
                     }

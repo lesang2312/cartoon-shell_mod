@@ -13,7 +13,7 @@ import "./" as G
 //  - Ẩn thông báo mức thấp, âm báo
 G.SettingPage {
     id: page
-    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.notifications) || "Notifications"
+    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.notifications) || AutoTranslateService.t("Notifications")
 
     function csv(str) {
         return (str || "").split(",").map(x => x.trim()).filter(x => x !== "");
@@ -39,11 +39,11 @@ G.SettingPage {
 
     // ============ Theo giờ ============
     G.SettingSection {
-        title: "KHÔNG LÀM PHIỀN THEO GIỜ"
+        title: AutoTranslateService.t("KHÔNG LÀM PHIỀN THEO GIỜ")
         appearAt: 0.3
 
         G.SettingRow {
-            title: "Tự bật theo lịch"
+            title: AutoTranslateService.t("Tự bật theo lịch")
             desc: Settings.behavior.dndSchedule
                 ? "Im lặng từ " + page.hh(Settings.behavior.dndFromHour) + " đến " + page.hh(Settings.behavior.dndToHour) + " mỗi ngày. Thông báo khẩn cấp vẫn hiện."
                 : "Tự ẩn popup vào ban đêm mà không phải nhớ bật tay"
@@ -54,7 +54,7 @@ G.SettingPage {
         }
 
         G.SettingChoice {
-            title: "Bắt đầu lúc"
+            title: AutoTranslateService.t("Bắt đầu lúc")
             dimmed: !Settings.behavior.dndSchedule
             current: Settings.behavior.dndFromHour
             options: [18, 19, 20, 21, 22, 23, 0].map(h => ({ v: h, l: page.hh(h) }))
@@ -62,7 +62,7 @@ G.SettingPage {
         }
 
         G.SettingChoice {
-            title: "Kết thúc lúc"
+            title: AutoTranslateService.t("Kết thúc lúc")
             dimmed: !Settings.behavior.dndSchedule
             current: Settings.behavior.dndToHour
             options: [5, 6, 7, 8, 9, 10].map(h => ({ v: h, l: page.hh(h) }))
@@ -72,7 +72,7 @@ G.SettingPage {
 
     // ============ Theo ứng dụng ============
     G.SettingSection {
-        title: "THEO TỪNG ỨNG DỤNG"
+        title: AutoTranslateService.t("THEO TỪNG ỨNG DỤNG")
         appearAt: 0.5
 
         Text {
@@ -91,7 +91,7 @@ G.SettingPage {
                 required property string modelData
                 readonly property bool muted: page.csv(Settings.behavior.notifMutedApps).indexOf(modelData) >= 0
                 title: modelData
-                desc: muted ? "Đã tắt popup" : "Hiện popup"
+                desc: muted ? AutoTranslateService.t("Đã tắt popup") : AutoTranslateService.t("Hiện popup")
                 CustomToggleSwitch {
                     adapter: !parent.parent.muted
                     onClicked: page.setMuted(modelData, !parent.parent.muted ? true : false)
@@ -102,11 +102,11 @@ G.SettingPage {
         G.SettingDivider {}
 
         G.SettingRow {
-            title: "Gửi thông báo thử"
-            desc: "Hiện một popup mẫu và thêm \"Cartoon Shell\" vào danh sách trên"
+            title: AutoTranslateService.t("Gửi thông báo thử")
+            desc: AutoTranslateService.t("Hiện một popup mẫu và thêm \"Cartoon Shell\" vào danh sách trên")
             G.SettingButton {
                 icon: ""
-                text: "Gửi thử"
+                text: AutoTranslateService.t("Gửi thử")
                 onActivated: Quickshell.execDetached(["notify-send", "-a", "Cartoon Shell", "Xin chào! 👋", "Đây là thông báo thử từ Cartoon Shell."])
             }
         }
@@ -114,12 +114,12 @@ G.SettingPage {
 
     // ============ Lọc & âm báo ============
     G.SettingSection {
-        title: "LỌC & ÂM BÁO"
+        title: AutoTranslateService.t("LỌC & ÂM BÁO")
         appearAt: 0.7
 
         G.SettingRow {
-            title: "Ẩn thông báo mức thấp"
-            desc: "Không hiện popup cho thông báo ưu tiên thấp (tin tham khảo, tiến trình nền…)"
+            title: AutoTranslateService.t("Ẩn thông báo mức thấp")
+            desc: AutoTranslateService.t("Không hiện popup cho thông báo ưu tiên thấp (tin tham khảo, tiến trình nền…)")
             CustomToggleSwitch {
                 adapter: Settings.behavior.notifHideLow
                 onClicked: Settings.behavior.notifHideLow = !Settings.behavior.notifHideLow
@@ -129,8 +129,8 @@ G.SettingPage {
         G.SettingDivider {}
 
         G.SettingRow {
-            title: "Phát âm khi có thông báo"
-            desc: "Dùng âm lượng hiệu ứng ở Behavior; im nếu \"Âm thanh giao diện\" đang tắt"
+            title: AutoTranslateService.t("Phát âm khi có thông báo")
+            desc: AutoTranslateService.t("Dùng âm lượng hiệu ứng ở Behavior; im nếu \"Âm thanh giao diện\" đang tắt")
             CustomToggleSwitch {
                 adapter: Settings.behavior.notifSound
                 onClicked: Settings.behavior.notifSound = !Settings.behavior.notifSound

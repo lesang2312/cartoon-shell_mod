@@ -12,7 +12,7 @@ RowLayout {
 
     Layout.fillWidth: true
     Text {
-        text: name
+        text: AutoTranslateService.t(name)
         color: theme.primary.foreground
         font {
             family: fontFamily

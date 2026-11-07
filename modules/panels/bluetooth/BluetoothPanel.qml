@@ -155,7 +155,7 @@ PanelWindow {
                     anchors.margins: ScalerService.s(8)
 
                     Text {
-                        text: "⚠️ " + pairErrorMessage
+                        text: AutoTranslateService.t("⚠️ ") + pairErrorMessage
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(12)
                         Layout.fillWidth: true
@@ -208,7 +208,7 @@ PanelWindow {
                     }
 
                     Text {
-                        text: lang?.bluetooth?.disabled || "Bluetooth đã tắt"
+                        text: lang?.bluetooth?.disabled || AutoTranslateService.t("Bluetooth đã tắt")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(16)
                         font.weight: Font.Medium
@@ -216,7 +216,7 @@ PanelWindow {
                     }
 
                     Text {
-                        text: lang?.bluetooth?.turn_on || "Bật Bluetooth để kết nối với thiết bị"
+                        text: lang?.bluetooth?.turn_on || AutoTranslateService.t("Bật Bluetooth để kết nối với thiết bị")
                         color: theme.primary.dim_foreground
                         font.pixelSize: ScalerService.s(12)
                         anchors.horizontalCenter: parent.horizontalCenter

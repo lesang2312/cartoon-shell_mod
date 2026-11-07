@@ -731,7 +731,7 @@ Item {
             Label {
               id: errorLabel
               anchors.centerIn: parent
-              text: "✕ Authentication failed. Please try again."
+              text: AutoTranslateService.t("✕ Authentication failed. Please try again.")
               color: "white"
               font.pixelSize: ScalerService.s(11)
               font.weight: Font.Medium
@@ -740,7 +740,7 @@ Item {
 
           // Hint text
           Label {
-            text: "Press ESC to cancel"
+            text: AutoTranslateService.t("Press ESC to cancel")
             color: Qt.alpha(theme.button.text, 0.4)
             font.pixelSize: ScalerService.s(10)
             Layout.alignment: Qt.AlignHCenter

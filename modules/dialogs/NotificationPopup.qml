@@ -175,7 +175,7 @@ PanelWindow {
             }
 
             Text {
-              text: model.appName || "Unknown App"
+              text: model.appName || AutoTranslateService.t("Unknown App")
               font.bold: true
               color: theme.button.text
               elide: Text.ElideRight
@@ -237,7 +237,7 @@ PanelWindow {
           Text {
             id: summaryText
             width: parent.width
-            text: Settings.behavior.privacyNotifDetail === "none" ? "Thông báo mới" : model.summary
+            text: Settings.behavior.privacyNotifDetail === "none" ? AutoTranslateService.t("Thông báo mới") : model.summary
             font.bold: true
             font.pixelSize: ScalerService.s(14)
             wrapMode: Text.WordWrap

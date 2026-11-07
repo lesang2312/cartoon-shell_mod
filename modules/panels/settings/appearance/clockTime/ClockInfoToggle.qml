@@ -12,7 +12,7 @@ Item {
     spacing: ScalerService.s(10)
 
     Text {
-      text: lang.appearance?.clock_info_label || "Hiện pin, thời tiết, wifi:"
+      text: lang.appearance?.clock_info_label || AutoTranslateService.t("Hiện pin, thời tiết, wifi:")
       color: theme.primary.foreground
       font.family: "ComicShannsMono Nerd Font"
       font.pixelSize: ScalerService.s(16)

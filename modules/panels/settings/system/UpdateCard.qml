@@ -115,7 +115,7 @@ Rectangle {
     RowLayout {
       Layout.fillWidth: true
       spacing: ScalerService.s(20)
-      visible: UpdateService.remoteCommit !== ""
+      visible: UpdateService.remoteCommit !== "" || UpdateService.remoteVersion !== ""
 
       CustomText {
         name: root.tr("latest")
@@ -124,7 +124,7 @@ Rectangle {
         Layout.preferredWidth: ScalerService.s(120)
       }
       CustomText {
-        name: UpdateService.shortRemote + (UpdateService.message !== "" ? "  ·  " + UpdateService.message : "")
+        name: [UpdateService.remoteVersion !== "" ? "v" + UpdateService.remoteVersion : "", UpdateService.shortRemote, UpdateService.message].filter(x => x !== "").join("  ·  ")
         size: "xs"
         isBold: true
         textColor: root.st === "available" ? theme.normal.yellow : theme.primary.foreground

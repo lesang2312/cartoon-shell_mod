@@ -124,7 +124,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: ScalerService.s(10)
                 Text {
-                    text: lang?.effects?.title || "Hyprland Effects"
+                    text: lang?.effects?.title || AutoTranslateService.t("Hyprland Effects")
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(24)
                     font.bold: true
@@ -143,7 +143,7 @@ Item {
 
             Text {
                 Layout.fillWidth: true
-                text: lang?.effects?.subtitle || "Hover to preview animation. Click to apply."
+                text: lang?.effects?.subtitle || AutoTranslateService.t("Hover to preview animation. Click to apply.")
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(13)
                 font.family: "ComicShannsMono Nerd Font"
@@ -413,7 +413,7 @@ Item {
                                 color: effectCard.isCurrent ? theme.normal.green : theme.normal.blue
                                 Text {
                                     anchors.centerIn: parent
-                                    text: effectCard.isCurrent ? "✓ Applied" : "Apply"
+                                    text: effectCard.isCurrent ? AutoTranslateService.t("✓ Applied") : AutoTranslateService.t("Apply")
                                     color: theme.primary.background
                                     font.pixelSize: ScalerService.s(12)
                                     font.bold: true

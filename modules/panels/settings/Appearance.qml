@@ -69,7 +69,7 @@ Item {
                     anchors.margins: ScalerService.s(20)
 
                     Text {
-                        text: lang?.general?.date_time || "Clock"
+                        text: lang?.general?.date_time || AutoTranslateService.t("Clock")
                         color: theme.primary.foreground
                         font {
                             family: "ComicShannsMono Nerd Font"
@@ -88,7 +88,7 @@ Item {
 
                     // Nội dung Date & Time ở đây
                     Text {
-                        text: "Clock settings content"
+                        text: AutoTranslateService.t("Clock settings content")
                         color: theme.primary.foreground
                         Layout.alignment: Qt.AlignLeft
                         font.pixelSize: ScalerService.s(14)

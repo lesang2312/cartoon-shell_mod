@@ -93,7 +93,7 @@ Item {
         spacing: 0
 
         CustomText {
-          name: root.noticeActive ? (ReminderService.activeNotice.time + "  ·  " + I18nService.tr("notice_label")) : ""
+          name: root.noticeActive ? (ReminderService.formatTime12(ReminderService.activeNotice.time) + "  ·  " + I18nService.tr("notice_label")) : ""
           isBold: true
           size: "small"
         }

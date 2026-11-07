@@ -14,7 +14,7 @@ Item {
         spacing: ScalerService.s(10)
 
         Text {
-            text: lang.appearance?.clock_panel_label || "Bảng đồng hồ:"
+            text: lang.appearance?.clock_panel_label || AutoTranslateService.t("Bảng đồng hồ:")
             color: theme.primary.foreground
             font.family: "ComicShannsMono Nerd Font"
             font.pixelSize: ScalerService.s(16)

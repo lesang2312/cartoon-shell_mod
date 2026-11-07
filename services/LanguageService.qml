@@ -107,8 +107,14 @@ Singleton {
       notify_title: "Cartoon Shell has a new update", notify_body: "Open Settings → System to update.",
       backup: "Backup", err_network: "Could not reach GitHub.", err_git_conflict: "Local changes conflict with the update. Run git pull/stash yourself.",
       err_download: "Downloading the update failed.", err_backup: "Could not create a backup, aborted to stay safe.",
-      err_generic: "Update failed.", step_fetch: "Fetching…", step_merge: "Merging changes…", step_backup: "Backing up…",
+      err_generic: "Update failed.", err_stale_remote: "The repository changed after the check. Check for updates again.",
+      err_local_changes: "This Git folder has local changes. Save, commit, or stash them before updating.", step_fetch: "Fetching…", step_merge: "Merging changes…", step_backup: "Backing up…",
       step_download: "Downloading…", step_extract: "Extracting…", step_install: "Installing…"
+    },
+    autotr: {
+      title: "Auto-translate interface", desc: "Translates all text into the selected language, even strings missing from the bundled translations. Results are cached on this device.",
+      translating: "Translating…", cached: "Translated strings", translate_all: "Translate everything now", clear: "Clear translation cache",
+      err_network: "Could not reach the translation service. Will retry automatically.", err_python: "python3 is required for auto-translate.", err_generic: "Translation failed."
     },
     shortcuts: {
       title: "Hyprland Shortcuts", help: "Select a shortcut to edit it. Press a key combination; Esc cancels.",
@@ -134,8 +140,15 @@ Singleton {
       notify_title: "Cartoon Shell có bản cập nhật mới", notify_body: "Vào Cài đặt → Hệ thống để cập nhật.",
       backup: "Bản sao lưu", err_network: "Không kết nối được tới GitHub.", err_git_conflict: "Bạn có thay đổi cục bộ xung đột với bản mới. Hãy tự git pull/stash.",
       err_download: "Tải bản cập nhật thất bại.", err_backup: "Không tạo được bản sao lưu, đã hủy để an toàn.",
-      err_generic: "Cập nhật thất bại.", step_fetch: "Đang lấy dữ liệu…", step_merge: "Đang gộp thay đổi…", step_backup: "Đang sao lưu…",
+      err_generic: "Cập nhật thất bại.", err_stale_remote: "Repo vừa thay đổi sau lần kiểm tra. Hãy kiểm tra cập nhật lại.",
+      err_local_changes: "Thư mục có thay đổi cục bộ. Hãy sao lưu/commit hoặc stash các thay đổi rồi cập nhật lại.",
+      step_fetch: "Đang lấy dữ liệu…", step_merge: "Đang gộp thay đổi…", step_backup: "Đang sao lưu…",
       step_download: "Đang tải về…", step_extract: "Đang giải nén…", step_install: "Đang cài đặt…"
+    },
+    autotr: {
+      title: "Tự động dịch giao diện", desc: "Dịch mọi chữ sang ngôn ngữ đang chọn, kể cả chữ chưa có trong bản dịch. Kết quả được lưu lại trên máy.",
+      translating: "Đang dịch…", cached: "Số chuỗi đã dịch", translate_all: "Dịch toàn bộ ngay", clear: "Xóa bộ nhớ dịch",
+      err_network: "Không kết nối được dịch vụ dịch. Sẽ tự thử lại sau.", err_python: "Cần cài python3 để dịch tự động.", err_generic: "Dịch thất bại."
     }
   })
 
@@ -150,7 +163,8 @@ Singleton {
       if (vi !== undefined) return vi;
     }
     const fallback = fallbackTranslations?.[section]?.[key];
-    return fallback !== undefined ? fallback : key;
+    // Chưa có bản dịch cho ngôn ngữ này: dịch tự động từ chuỗi gốc tiếng Anh
+    return fallback !== undefined ? AutoTranslateService.t(fallback) : key;
   }
 
   // ===============================

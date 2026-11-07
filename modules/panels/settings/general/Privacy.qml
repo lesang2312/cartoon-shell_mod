@@ -13,7 +13,7 @@ import "./" as G
 //  - Dọn dấu vết: clipboard, danh sách tệp gần đây
 G.SettingPage {
     id: page
-    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.privacy) || "Privacy"
+    title: (typeof lang !== "undefined" && lang && lang.general && lang.general.privacy) || AutoTranslateService.t("Privacy")
 
     property bool camActive: false
     property bool micActive: false
@@ -49,7 +49,7 @@ G.SettingPage {
 
     // ============ Thiết bị đang dùng ============
     G.SettingSection {
-        title: "THIẾT BỊ ĐANG ĐƯỢC DÙNG"
+        title: AutoTranslateService.t("THIẾT BỊ ĐANG ĐƯỢC DÙNG")
         appearAt: 0.3
 
         Repeater {
@@ -84,7 +84,7 @@ G.SettingPage {
                         font { family: Settings.appearance.font; pixelSize: ScalerService.s(15); bold: true }
                     }
                     Text {
-                        text: !page.scanned ? "Đang kiểm tra…" : (parent.parent.modelData.on ? "Đang có ứng dụng sử dụng" : "Không ai đang dùng")
+                        text: !page.scanned ? AutoTranslateService.t("Đang kiểm tra…") : (parent.parent.modelData.on ? "Đang có ứng dụng sử dụng" : "Không ai đang dùng")
                         color: page.scanned && parent.parent.modelData.on ? page.theme.normal.red : page.theme.primary.dim_foreground
                         font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                     }
@@ -103,7 +103,7 @@ G.SettingPage {
         Text {
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
-            text: "Kết quả chỉ mang tính tham khảo (camera quét qua /dev/video*, micro qua PipeWire/PulseAudio)."
+            text: AutoTranslateService.t("Kết quả chỉ mang tính tham khảo (camera quét qua /dev/video*, micro qua PipeWire/PulseAudio).")
             color: page.theme.primary.dim_foreground
             font { family: Settings.appearance.font; pixelSize: ScalerService.s(11); italic: true }
         }
@@ -111,12 +111,12 @@ G.SettingPage {
 
     // ============ Thông báo ============
     G.SettingSection {
-        title: "NỘI DUNG THÔNG BÁO"
+        title: AutoTranslateService.t("NỘI DUNG THÔNG BÁO")
         appearAt: 0.5
 
         G.SettingChoice {
-            title: "Popup được phép lộ gì?"
-            desc: "Hữu ích khi chia sẻ màn hình hoặc làm việc ở nơi đông người"
+            title: AutoTranslateService.t("Popup được phép lộ gì?")
+            desc: AutoTranslateService.t("Hữu ích khi chia sẻ màn hình hoặc làm việc ở nơi đông người")
             current: Settings.behavior.privacyNotifDetail
             options: [
                 { v: "full", l: "Đầy đủ" },
@@ -129,18 +129,18 @@ G.SettingPage {
 
     // ============ Dọn dấu vết ============
     G.SettingSection {
-        title: "DỌN DẤU VẾT"
+        title: AutoTranslateService.t("DỌN DẤU VẾT")
         appearAt: 0.7
 
         G.SettingRow {
-            title: "Xóa clipboard"
-            desc: "Xóa nội dung đang sao chép và lịch sử cliphist (nếu có cài)"
+            title: AutoTranslateService.t("Xóa clipboard")
+            desc: AutoTranslateService.t("Xóa nội dung đang sao chép và lịch sử cliphist (nếu có cài)")
             G.SettingButton {
                 id: bClip
                 danger: true
                 confirm: true
                 icon: ""
-                text: "Xóa"
+                text: AutoTranslateService.t("Xóa")
                 onActivated: {
                     page.clean("command -v cliphist >/dev/null && cliphist wipe; command -v wl-copy >/dev/null && wl-copy --clear; true");
                     bClip.flash("Đã xóa ✓");
@@ -151,14 +151,14 @@ G.SettingPage {
         G.SettingDivider {}
 
         G.SettingRow {
-            title: "Xóa danh sách tệp gần đây"
-            desc: "Xóa ~/.local/share/recently-used.xbel mà các ứng dụng GTK dùng để nhớ tệp vừa mở"
+            title: AutoTranslateService.t("Xóa danh sách tệp gần đây")
+            desc: AutoTranslateService.t("Xóa ~/.local/share/recently-used.xbel mà các ứng dụng GTK dùng để nhớ tệp vừa mở")
             G.SettingButton {
                 id: bRecent
                 danger: true
                 confirm: true
                 icon: ""
-                text: "Xóa"
+                text: AutoTranslateService.t("Xóa")
                 onActivated: {
                     page.clean('rm -f "$HOME/.local/share/recently-used.xbel"');
                     bRecent.flash("Đã xóa ✓");

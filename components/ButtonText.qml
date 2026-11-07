@@ -53,7 +53,7 @@ Rectangle {
         }
 
         // Bind to root properties
-        text: root.name
+        text: root.fontFamily.indexOf("Symbols") >= 0 ? root.name : AutoTranslateService.t(root.name)
         color: root.hovered ? Qt.lighter(root.textColor, 1.2) : root.textColor
 
         // Smooth animation for color only

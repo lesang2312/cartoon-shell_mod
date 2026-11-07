@@ -282,7 +282,7 @@ Item {
           }
           
           Text {
-            text: "Loading system information..."
+            text: AutoTranslateService.t("Loading system information...")
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(14)
             anchors.horizontalCenter: parent.horizontalCenter
@@ -298,46 +298,46 @@ Item {
         
         // Section: System
         Com.InfoSection {
-          title: "System"
+          title: AutoTranslateService.t("System")
           
           Com.InfoRow {
-            label: "Operating System"
+            label: AutoTranslateService.t("Operating System")
             value: root.systemInfo.os || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Kernel"
+            label: AutoTranslateService.t("Kernel")
             value: root.systemInfo.kernel || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Architecture"
+            label: AutoTranslateService.t("Architecture")
             value: root.systemInfo.architecture || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Uptime"
+            label: AutoTranslateService.t("Uptime")
             value: root.systemInfo.uptime || "0m"
           }
         }
         
         // Section: Hardware
         Com.InfoSection {
-          title: "Hardware"
+          title: AutoTranslateService.t("Hardware")
           
           Com.InfoRow {
-            label: "CPU"
+            label: AutoTranslateService.t("CPU")
             value: root.systemInfo.cpu || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Cores"
+            label: AutoTranslateService.t("Cores")
             value: root.systemInfo.cpuCores || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
           
           Com.InfoRow {
-            label: "Base Frequency"
+            label: AutoTranslateService.t("Base Frequency")
             value: root.systemInfo.cpuFreq || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
@@ -345,13 +345,13 @@ Item {
         
         // Section: Graphics
         Com.InfoSection {
-          title: "Graphics"
+          title: AutoTranslateService.t("Graphics")
           
           Repeater {
             model: root.systemInfo.gpu || []
             
             Com.InfoRow {
-              label: index === 0 ? "GPU" : ""
+              label: index === 0 ? AutoTranslateService.t("GPU") : ""
               value: modelData || "Unknown"
               labelVisible: index === 0
             }
@@ -360,10 +360,10 @@ Item {
         
         // Section: Memory
         Com.InfoSection {
-          title: "Memory"
+          title: AutoTranslateService.t("Memory")
           
           Com.InfoRow {
-            label: "RAM"
+            label: AutoTranslateService.t("RAM")
             value: root.systemInfo.memory ? 
               root.systemInfo.memory.usedFormatted + " / " + root.systemInfo.memory.totalFormatted : "Unknown"
             valueColor: {
@@ -395,7 +395,7 @@ Item {
           }
           
           Com.InfoRow {
-            label: "Used"
+            label: AutoTranslateService.t("Used")
             value: root.systemInfo.memory ? root.systemInfo.memory.usedFormatted : "Unknown"
             valueColor: theme.primary.dim_foreground
           }
@@ -403,20 +403,20 @@ Item {
         
         // Section: Storage
         Com.InfoSection {
-          title: "Storage"
+          title: AutoTranslateService.t("Storage")
           
           Com.InfoRow {
-            label: "Filesystem"
+            label: AutoTranslateService.t("Filesystem")
             value: root.systemInfo.disk?.filesystem || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Mount Point"
+            label: AutoTranslateService.t("Mount Point")
             value: root.systemInfo.disk?.mountpoint || "/"
           }
           
           Com.InfoRow {
-            label: "Usage"
+            label: AutoTranslateService.t("Usage")
             value: root.systemInfo.disk ? 
               root.systemInfo.disk.usedFormatted + " / " + root.systemInfo.disk.totalFormatted : "Unknown"
             valueColor: {
@@ -448,7 +448,7 @@ Item {
           }
           
           Com.InfoRow {
-            label: "Available"
+            label: AutoTranslateService.t("Available")
             value: root.systemInfo.disk?.availableFormatted || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
@@ -456,10 +456,10 @@ Item {
         
         // Section: Battery
         Com.InfoSection {
-          title: "Battery"
+          title: AutoTranslateService.t("Battery")
           
           Com.InfoRow {
-            label: "Health"
+            label: AutoTranslateService.t("Health")
             value: (root.systemInfo.battery?.capacity || 0) + "%"
             valueColor: {
               var p = root.systemInfo.battery?.capacity || 0;
@@ -470,13 +470,13 @@ Item {
           }
           
           Com.InfoRow {
-            label: "Cycles"
+            label: AutoTranslateService.t("Cycles")
             value: (root.systemInfo.battery?.cycleCount || 0) + " cycles"
             valueColor: theme.primary.dim_foreground
           }
           
           Com.InfoRow {
-            label: "Status"
+            label: AutoTranslateService.t("Status")
             value: root.systemInfo.battery?.status || "Unknown"
             valueColor: root.systemInfo.battery?.status === "AC Connected" ? 
               theme.normal.green : theme.normal.yellow
@@ -485,20 +485,20 @@ Item {
         
         // Section: Display
         Com.InfoSection {
-          title: "Display"
+          title: AutoTranslateService.t("Display")
           
           Com.InfoRow {
-            label: "Type"
+            label: AutoTranslateService.t("Type")
             value: root.systemInfo.display?.type || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Resolution"
+            label: AutoTranslateService.t("Resolution")
             value: root.systemInfo.display?.resolution || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Refresh Rate"
+            label: AutoTranslateService.t("Refresh Rate")
             value: root.systemInfo.display?.refreshRate || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
@@ -506,15 +506,15 @@ Item {
         
         // Section: Network
         Com.InfoSection {
-          title: "Network"
+          title: AutoTranslateService.t("Network")
           
           Com.InfoRow {
-            label: "Interface"
+            label: AutoTranslateService.t("Interface")
             value: root.systemInfo.network?.interface || "Unknown"
           }
           
           Com.InfoRow {
-            label: "IPv4"
+            label: AutoTranslateService.t("IPv4")
             value: root.systemInfo.network?.ip || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
@@ -522,36 +522,36 @@ Item {
         
         // Section: Software
         Com.InfoSection {
-          title: "Software"
+          title: AutoTranslateService.t("Software")
           
           Com.InfoRow {
-            label: "WM"
+            label: AutoTranslateService.t("WM")
             value: root.systemInfo.wm || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Shell"
+            label: AutoTranslateService.t("Shell")
             value: root.systemInfo.shell || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Terminal"
+            label: AutoTranslateService.t("Terminal")
             value: root.systemInfo.terminal || "Unknown"
           }
           
           Com.InfoRow {
-            label: "Terminal Font"
+            label: AutoTranslateService.t("Terminal Font")
             value: root.systemInfo.font || "Unknown"
             valueColor: theme.primary.dim_foreground
           }
           
           Com.InfoRow {
-            label: "Packages"
+            label: AutoTranslateService.t("Packages")
             value: (root.systemInfo.packages || 0) + " packages"
           }
           
           Com.InfoRow {
-            label: "Cursor Theme"
+            label: AutoTranslateService.t("Cursor Theme")
             value: root.systemInfo.cursor || "Unknown"
             valueColor: theme.primary.dim_foreground
           }

@@ -11,10 +11,11 @@ import qs.commons
 Singleton {
   id: root
 
-  // idle | checking | uptodate | baseline | available | updating | done | error
+  // idle | checking | uptodate | available | updating | done | error
   property string state: "idle"
   property string localCommit: ""
   property string remoteCommit: ""
+  property string remoteBranch: ""
   property string message: ""        // dòng đầu commit message mới nhất (nếu lấy được)
   property string errorCode: ""
   property string stepKey: ""        // step_fetch, step_download, ...
@@ -27,12 +28,15 @@ Singleton {
   readonly property string shortLocal: localCommit !== "" ? localCommit.substring(0, 7) : ""
   readonly property string shortRemote: remoteCommit !== "" ? remoteCommit.substring(0, 7) : ""
 
-  // Số phiên bản đọc từ file VERSION ở gốc shell (hiển thị cho đẹp; việc so sánh vẫn dựa vào commit)
+  // VERSION chỉ để hiển thị; việc xác định cập nhật luôn dựa trên commit SHA.
   property string version: ""
+  property string remoteVersion: ""
   FileView {
+    id: versionFile
     path: Quickshell.shellPath("VERSION")
+    watchChanges: true
     printErrors: false
-    onLoaded: root.version = text().trim()
+    onLoaded: root.version = text().trim().split("\n")[0].trim().replace(/^[vV]/, "")
   }
 
   property bool _manual: false
@@ -51,17 +55,26 @@ Singleton {
     if (busy) return;
     root._manual = manual === true;
     root.errorCode = "";
+    root.message = "";
+    root.remoteCommit = "";
+    root.remoteBranch = "";
+    root.remoteVersion = "";
     root.state = "checking";
     checkProc.running = true;
   }
 
   function apply() {
     if (busy || state !== "available") return;
+    if (!/^[0-9a-f]{40}$/.test(root.remoteCommit) || root.remoteBranch === "") {
+      root.errorCode = "stale_remote";
+      root.state = "error";
+      return;
+    }
     root.errorCode = "";
     root.stepKey = "";
     root.backupPath = "";
     root.state = "updating";
-    applyProc.command = ["bash", root.script, "apply", Quickshell.shellDir, root.remoteCommit];
+    applyProc.command = ["bash", root.script, "apply", Quickshell.shellDir, root.remoteCommit, root.remoteBranch];
     applyProc.running = true;
   }
 
@@ -101,18 +114,25 @@ Singleton {
       root.lastCheck = Date.now();
       if (r.local !== undefined) root.localCommit = r.local;
       if (r.remote !== undefined) root.remoteCommit = r.remote;
+      if (r.remote_branch !== undefined) root.remoteBranch = r.remote_branch;
+      if (r.local_version !== undefined) root.version = r.local_version;
+      root.remoteVersion = r.remote_version || "";
       root.message = r.message || "";
 
-      if (r.status === "available") {
+      // A non-zero process result is never presented as a successful check,
+      // even if partial output was printed before the failure.
+      if (exitCode !== 0 || !r.status) {
+        root.errorCode = r.error || "network";
+        root.state = "error";
+      } else if (r.status === "available") {
         root.state = "available";
         // Chỉ báo 1 lần cho mỗi commit; kiểm tra thủ công thì giao diện đã hiện sẵn
         if (!root._manual && Settings.behavior.updateLastNotified !== root.remoteCommit) {
           Settings.behavior.updateLastNotified = root.remoteCommit;
           root._notify();
         }
-      } else if (r.status === "uptodate" || r.status === "baseline") {
-        if (r.status === "baseline") root.localCommit = root.remoteCommit;
-        root.state = r.status;
+      } else if (r.status === "uptodate") {
+        root.state = "uptodate";
       } else {
         root.errorCode = r.error || "network";
         root.state = "error";
@@ -137,13 +157,13 @@ Singleton {
       }
     }
     onExited: exitCode => {
-      if (root.state === "updating") {
+      if (exitCode !== 0 || root.state !== "done") {
         root.errorCode = root.errorCode || "generic";
         root.state = "error";
+        return;
       }
-      if (root.state === "done") {
-        root.localCommit = root.remoteCommit;
-      }
+      root.localCommit = root.remoteCommit;
+      if (root.remoteVersion !== "") root.version = root.remoteVersion;
     }
   }
 

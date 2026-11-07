@@ -98,7 +98,7 @@ Item {
                     CustomText {
                         id: textCondition
 
-                        name: WeatherService.dataModel.current.condition.text.slice(0, 15) || "..."
+                        name: AutoTranslateService.t(WeatherService.dataModel.current.condition.text || "").slice(0, 20) || "..."
                         elide: Text.ElideRight
                         maximumLineCount: 1
                         opacity: root.animationProgress > 0.8 ? 1 : 0

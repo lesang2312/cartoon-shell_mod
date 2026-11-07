@@ -12,7 +12,7 @@ ColumnLayout {
     Layout.fillWidth: true
 
     CustomText {
-        text: root.lang?.appearance?.panel_position || "Panel Position"
+        text: root.lang?.appearance?.panel_position || AutoTranslateService.t("Panel Position")
         isBold: true
     }
 
@@ -27,25 +27,25 @@ ColumnLayout {
             model: [
                 {
                     id: "top",
-                    label: root.lang?.appearance?.top || "Top",
+                    label: root.lang?.appearance?.top || AutoTranslateService.t("Top"),
                     isHorizontal: true,
                     barPosition: "top"
                 },
                 {
                     id: "bottom",
-                    label: root.lang?.appearance?.bottom || "Bottom",
+                    label: root.lang?.appearance?.bottom || AutoTranslateService.t("Bottom"),
                     isHorizontal: true,
                     barPosition: "bottom"
                 },
                 {
                     id: "left",
-                    label: root.lang?.appearance?.left || "Left",
+                    label: root.lang?.appearance?.left || AutoTranslateService.t("Left"),
                     isHorizontal: false,
                     barPosition: "left"
                 },
                 {
                     id: "right",
-                    label: root.lang?.appearance?.right || "Right",
+                    label: root.lang?.appearance?.right || AutoTranslateService.t("Right"),
                     isHorizontal: false,
                     barPosition: "right"
                 }

@@ -566,7 +566,8 @@ QtObject {
     // params (tuỳ chọn): object thay thế placeholder dạng {key} trong chuỗi.
     function tr(key, params) {
         var lang = root.currentLang();
-        var str = (root.translations[lang] && root.translations[lang][key]) || root.translations.en[key] || key;
+        var own = root.translations[lang] && root.translations[lang][key];
+        var str = own || AutoTranslateService.t(root.translations.en[key] || key);
         if (params) {
             for (var p in params) {
                 str = str.split("{" + p + "}").join(params[p]);

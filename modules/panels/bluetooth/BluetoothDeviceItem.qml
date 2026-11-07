@@ -51,7 +51,7 @@ Rectangle {
 
         Text {
             anchors.centerIn: parent
-            text: lang?.bluetooth?.pairing || "Đang ghép nối..."
+            text: lang?.bluetooth?.pairing || AutoTranslateService.t("Đang ghép nối...")
             color: theme.primary.foreground
             font.pixelSize: ScalerService.s(14)
             font.weight: Font.Bold
@@ -84,7 +84,7 @@ Rectangle {
             spacing: ScalerService.s(2)
 
             Text {
-                text: modelData?.name || lang?.bluetooth?.no_devices || "Unknown Device"
+                text: modelData?.name || lang?.bluetooth?.no_devices || AutoTranslateService.t("Unknown Device")
                 color: theme.primary.foreground
                 font.pixelSize: ScalerService.s(16)
                 font.family: "ComicShannsMono Nerd Font"

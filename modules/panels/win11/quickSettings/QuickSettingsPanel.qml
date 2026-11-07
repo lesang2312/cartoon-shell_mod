@@ -124,7 +124,7 @@ PanelWindow {
 
                         QuickSettingsComponents.QuickTile {
                             icon: QuickSettingsService.wifiEnabled && !QuickSettingsService.airplane ? NetworkService.wifi_icon_text_1 : "wifi_off"
-                            title: "Wi-Fi"
+                            title: AutoTranslateService.t("Wi-Fi")
                             subtitle: root.wifiSubtitle
                             checked: QuickSettingsService.wifiEnabled && !QuickSettingsService.airplane
                             hasDetail: true
@@ -133,7 +133,7 @@ PanelWindow {
                         }
                         QuickSettingsComponents.QuickTile {
                             icon: root.btAdapter && root.btAdapter.enabled ? "bluetooth" : "bluetooth_disabled"
-                            title: "Bluetooth"
+                            title: AutoTranslateService.t("Bluetooth")
                             subtitle: root.btSubtitle
                             checked: root.btAdapter ? root.btAdapter.enabled : false
                             available: root.btAdapter !== null && root.btAdapter !== undefined
@@ -143,31 +143,31 @@ PanelWindow {
                         }
                         QuickSettingsComponents.QuickTile {
                             icon: "flight"
-                            title: "Airplane mode"
-                            subtitle: QuickSettingsService.airplane ? "On" : "Off"
+                            title: AutoTranslateService.t("Airplane mode")
+                            subtitle: QuickSettingsService.airplane ? AutoTranslateService.t("On") : AutoTranslateService.t("Off")
                             checked: QuickSettingsService.airplane
                             onToggled: QuickSettingsService.toggleAirplane()
                         }
                         QuickSettingsComponents.QuickTile {
                             icon: "battery_saver"
-                            title: "Battery saver"
-                            subtitle: !QuickSettingsService.hasPowerProfiles ? "Unavailable" : (QuickSettingsService.batterySaver ? "On" : "Off")
+                            title: AutoTranslateService.t("Battery saver")
+                            subtitle: !QuickSettingsService.hasPowerProfiles ? AutoTranslateService.t("Unavailable") : (QuickSettingsService.batterySaver ? "On" : "Off")
                             checked: QuickSettingsService.batterySaver
                             available: QuickSettingsService.hasPowerProfiles
                             onToggled: QuickSettingsService.toggleBatterySaver()
                         }
                         QuickSettingsComponents.QuickTile {
                             icon: "nightlight"
-                            title: "Night light"
-                            subtitle: !QuickSettingsService.hasNightLight ? "Unavailable" : (QuickSettingsService.nightLight ? "On" : "Off")
+                            title: AutoTranslateService.t("Night light")
+                            subtitle: !QuickSettingsService.hasNightLight ? AutoTranslateService.t("Unavailable") : (QuickSettingsService.nightLight ? "On" : "Off")
                             checked: QuickSettingsService.nightLight
                             available: QuickSettingsService.hasNightLight
                             onToggled: QuickSettingsService.toggleNightLight()
                         }
                         QuickSettingsComponents.QuickTile {
                             icon: "dashboard"
-                            title: "Dashboard"
-                            subtitle: "Open"
+                            title: AutoTranslateService.t("Dashboard")
+                            subtitle: AutoTranslateService.t("Open")
                             onToggled: VisibleService.openPanel("dashboard")
                         }
                     }

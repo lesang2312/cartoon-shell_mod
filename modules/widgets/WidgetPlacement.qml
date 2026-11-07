@@ -62,7 +62,7 @@ Item {
         Text {
             anchors.centerIn: parent
             width: parent.width - ScalerService.s(24)
-            text: "Không tải được widget\n" + root.widgetId
+            text: AutoTranslateService.t("Không tải được widget\n") + root.widgetId
             horizontalAlignment: Text.AlignHCenter
             color: "#FFFFFF"
             wrapMode: Text.Wrap
@@ -136,7 +136,7 @@ Item {
 
         Text {
             anchors.centerIn: parent
-            text: "⠿  Kéo widget"
+            text: AutoTranslateService.t("⠿  Kéo widget")
             color: "#ffffff"
             font.pixelSize: ScalerService.s(11)
             font.bold: true

@@ -336,7 +336,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: ScalerService.s(10)
                 Text {
-                    text: lang?.dashboard?.title || "Hyprland Layouts"
+                    text: lang?.dashboard?.title || AutoTranslateService.t("Hyprland Layouts")
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(24)
                     font.bold: true
@@ -353,7 +353,7 @@ Item {
 
             Text {
                 Layout.fillWidth: true
-                text: lang?.dashboard?.subtitle || "Hover to preview layout. Click to apply."
+                text: lang?.dashboard?.subtitle || AutoTranslateService.t("Hover to preview layout. Click to apply.")
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(13)
                 font.family: "ComicShannsMono Nerd Font"
@@ -488,7 +488,7 @@ Item {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: layoutCard.isCurrent ? "✓ Applied" : (dashboardSettings.applyInProgress ? "Applying..." : "Apply")
+                                    text: layoutCard.isCurrent ? AutoTranslateService.t("✓ Applied") : (dashboardSettings.applyInProgress ? "Applying..." : "Apply")
                                     color: theme.primary.background
                                     font.pixelSize: ScalerService.s(12)
                                     font.bold: true

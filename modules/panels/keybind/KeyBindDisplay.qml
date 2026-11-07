@@ -53,7 +53,7 @@ Item {
       }
 
       Text {
-        text: "💡 View only · Remove shortcuts here · Edit keys in Settings → Shortcuts · 🔒 = locked"
+        text: AutoTranslateService.t("💡 View only · Remove shortcuts here · Edit keys in Settings → Shortcuts · 🔒 = locked")
         color: "#FFFFFF"; opacity: 0.94
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(13) }
         Layout.fillWidth: true; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter
@@ -115,14 +115,14 @@ Item {
       spacing: ScalerService.s(15); width: ScalerService.s(340)
 
       Text {
-        text: "⚠️ Shortcut Conflict"
+        text: AutoTranslateService.t("⚠️ Shortcut Conflict")
         color: "#ff4444"
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(18); bold: true }
         Layout.alignment: Qt.AlignHCenter
       }
 
       Text {
-        text: "The key combination \"" + conflictDialog.newKey + "\" is already assigned.\nDo you want to overwrite it?"
+        text: AutoTranslateService.t("The key combination \"") + conflictDialog.newKey + AutoTranslateService.t("\" is already assigned.\nDo you want to overwrite it?")
         color: theme.primary.foreground
         font { family: "ComicShannsMono Nerd Font"; pixelSize: ScalerService.s(14) }
         wrapMode: Text.WordWrap; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter

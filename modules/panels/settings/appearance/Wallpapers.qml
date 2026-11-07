@@ -377,7 +377,7 @@ Item {
             // Empty State
             Text {
                 visible: folderModel.count === 0 && folderModel.status === FolderListModel.Ready
-                text: "No images or directories found in the current location."
+                text: AutoTranslateService.t("No images or directories found in the current location.")
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(13)
                 Layout.alignment: Qt.AlignCenter
@@ -418,7 +418,7 @@ Item {
                 spacing: ScalerService.s(10)
 
                 Text {
-                    text: "🛈 File Details"
+                    text: AutoTranslateService.t("🛈 File Details")
                     color: theme.normal.blue
                     font.pixelSize: ScalerService.s(16)
                     font.bold: true
@@ -443,31 +443,31 @@ Item {
                     spacing: ScalerService.s(4)
 
                     Text {
-                        text: "File Name: " + (root.selectedItem ? root.selectedItem.name : "")
+                        text: AutoTranslateService.t("File Name: ") + (root.selectedItem ? root.selectedItem.name : "")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(12)
                         elide: Text.ElideMiddle
                         Layout.fillWidth: true
                     }
                     Text {
-                        text: "Path: " + (root.selectedItem ? root.selectedItem.path : "")
+                        text: AutoTranslateService.t("Path: ") + (root.selectedItem ? root.selectedItem.path : "")
                         color: theme.primary.dim_foreground
                         font.pixelSize: ScalerService.s(11)
                         elide: Text.ElideMiddle
                         Layout.fillWidth: true
                     }
                     Text {
-                        text: "File Size: " + (root.selectedItem ? formatBytes(root.selectedItem.size) : "")
+                        text: AutoTranslateService.t("File Size: ") + (root.selectedItem ? formatBytes(root.selectedItem.size) : "")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(12)
                     }
                     Text {
-                        text: "Resolution: " + (root.selectedItem && root.selectedItem.width ? root.selectedItem.width + " x " + root.selectedItem.height + " px" : "N/A")
+                        text: AutoTranslateService.t("Resolution: ") + (root.selectedItem && root.selectedItem.width ? root.selectedItem.width + " x " + root.selectedItem.height + " px" : "N/A")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(12)
                     }
                     Text {
-                        text: "Last Modified: " + (root.selectedItem && root.selectedItem.modified ? root.selectedItem.modified.toLocaleString() : "N/A")
+                        text: AutoTranslateService.t("Last Modified: ") + (root.selectedItem && root.selectedItem.modified ? root.selectedItem.modified.toLocaleString() : "N/A")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(12)
                     }
@@ -487,7 +487,7 @@ Item {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Close"
+                        text: AutoTranslateService.t("Close")
                         color: theme.primary.foreground
                     }
 
@@ -528,14 +528,14 @@ Item {
                 spacing: ScalerService.s(12)
 
                 Text {
-                    text: "⚠️ Confirm Deletion"
+                    text: AutoTranslateService.t("⚠️ Confirm Deletion")
                     color: theme.normal.red
                     font.pixelSize: ScalerService.s(15)
                     font.bold: true
                 }
 
                 Text {
-                    text: "Are you sure you want to delete: " + (root.selectedItem ? root.selectedItem.name : "") + "?"
+                    text: AutoTranslateService.t("Are you sure you want to delete: ") + (root.selectedItem ? root.selectedItem.name : "") + "?"
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(12)
                     wrapMode: Text.Wrap
@@ -554,7 +554,7 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "Cancel"
+                            text: AutoTranslateService.t("Cancel")
                             color: theme.primary.foreground
                         }
 
@@ -572,7 +572,7 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "Delete"
+                            text: AutoTranslateService.t("Delete")
                             color: theme.primary.background
                             font.bold: true
                         }

@@ -13,7 +13,8 @@ Item {
 
   property int hours24: 8
   property int minutes: 0
-  property bool isPM: hours24 >= 12
+  // AM/PM luôn được suy ra từ giờ 24h để không thể lệch trạng thái.
+  readonly property bool isPM: hours24 >= 12
   property string mode: "hour" // "hour" | "minute"
 
   // Góc hiện tại (độ) của kim, 0 = 12 giờ / phút 00, tăng theo chiều kim đồng hồ
@@ -30,9 +31,6 @@ Item {
     if (m) {
       root.hours24 = parseInt(m[1], 10);
       root.minutes = parseInt(m[2], 10);
-      // isPM ban đầu là 1 binding, nhưng setPM() gán tay nên binding có thể đã bị phá
-      // từ trước. Gán lại tường minh ở đây để không bị lệch AM/PM khi mở lại dialog.
-      root.isPM = root.hours24 >= 12;
     }
     root.mode = "hour";
   }
@@ -42,17 +40,20 @@ Item {
     return h === 0 ? 12 : h;
   }
 
+  function toHour24(h12, pm) {
+    // 12 AM = 00:xx; 12 PM = 12:xx; các giờ còn lại cộng 12 khi là PM.
+    var hour = Math.max(1, Math.min(12, Math.round(Number(h12) || 12)));
+    return pm ? (hour === 12 ? 12 : hour + 12)
+              : (hour === 12 ? 0 : hour);
+  }
+
   function setHour12(h12) {
-    if (root.isPM)
-      root.hours24 = (h12 === 12) ? 12 : h12 + 12;
-    else
-      root.hours24 = (h12 === 12) ? 0 : h12;
+    root.hours24 = toHour24(h12, root.isPM);
   }
 
   function setPM(pm) {
-    var h12 = hour12();
-    root.isPM = pm;
-    setHour12(h12);
+    // Chỉ đổi giờ 24h; isPM tự cập nhật theo hours24, không giữ state thứ hai.
+    root.hours24 = toHour24(root.hour12(), pm === true);
   }
 
   function pad2(n) {

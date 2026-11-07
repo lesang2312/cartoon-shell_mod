@@ -42,6 +42,22 @@ QtObject {
     return Qt.formatDate(d, "yyyy-MM-dd");
   }
 
+  // Dữ liệu nhắc lịch luôn lưu theo 24h (HH:mm) để so sánh/báo giờ chính xác.
+  // Chỉ chuyển sang 12h ở lớp hiển thị, tránh nhầm 12 AM với 12 PM.
+  function formatTime12(timeValue) {
+    const match = /^(\d{2}):([0-5]\d)$/.exec(String(timeValue || ""));
+    if (!match)
+      return String(timeValue || "");
+
+    const hour24 = Number(match[1]);
+    if (hour24 < 0 || hour24 > 23)
+      return String(timeValue);
+
+    const hour12 = hour24 % 12 || 12;
+    const suffix = hour24 >= 12 ? "PM" : "AM";
+    return (hour12 < 10 ? "0" : "") + hour12 + ":" + match[2] + " " + suffix;
+  }
+
   function getRemindersForDate(d) {
     const list = root.reminders[dateKey(d)];
     if (!list)

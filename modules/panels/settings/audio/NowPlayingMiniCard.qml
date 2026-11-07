@@ -187,7 +187,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    text: root.player?.trackTitle || "No song playing"
+                    text: root.player?.trackTitle || AutoTranslateService.t("No song playing")
                     color: theme.primary.foreground
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(root.archBar ? 9 : (root.height < ScalerService.s(42) ? 10 : 11)); bold: true }
                     elide: Text.ElideRight
@@ -206,7 +206,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: ScalerService.s(10)
                 visible: !root.archBar && root.height >= ScalerService.s(48)
-                text: root.player?.trackArtist || "Unknown Artist"
+                text: root.player?.trackArtist || AutoTranslateService.t("Unknown Artist")
                 color: theme.primary.dim_foreground
                 font { family: Settings.appearance.font; pixelSize: ScalerService.s(8) }
                 elide: Text.ElideRight
@@ -257,7 +257,7 @@ Item {
 
         Text {
             Layout.fillWidth: true
-            text: root.player?.trackTitle || "No song playing"
+            text: root.player?.trackTitle || AutoTranslateService.t("No song playing")
             color: theme.primary.foreground
             horizontalAlignment: Text.AlignHCenter
             font { family: Settings.appearance.font; pixelSize: ScalerService.s(root.archBar ? 8 : 9); bold: true }
@@ -275,7 +275,7 @@ Item {
 
         Text {
             Layout.fillWidth: true
-            text: root.player?.trackArtist || "Unknown Artist"
+            text: root.player?.trackArtist || AutoTranslateService.t("Unknown Artist")
             color: theme.primary.dim_foreground
             horizontalAlignment: Text.AlignHCenter
             font { family: Settings.appearance.font; pixelSize: ScalerService.s(8) }

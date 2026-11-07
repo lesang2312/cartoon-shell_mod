@@ -219,12 +219,12 @@ Item {
 
             // ============ Âm thanh ============
             Section {
-                title: "ÂM THANH"
+                title: AutoTranslateService.t("ÂM THANH")
                 appearAt: 0.3
 
                 SettingRow {
-                    title: "Âm thanh giao diện"
-                    desc: "Tiếng khi rê chuột và bấm nút trong các panel"
+                    title: AutoTranslateService.t("Âm thanh giao diện")
+                    desc: AutoTranslateService.t("Tiếng khi rê chuột và bấm nút trong các panel")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.soundEffects
                         onClicked: Settings.behavior.soundEffects = !Settings.behavior.soundEffects
@@ -234,8 +234,8 @@ Item {
                 Divider {}
 
                 SettingRow {
-                    title: "Âm lượng hiệu ứng"
-                    desc: "Độc lập với âm lượng hệ thống"
+                    title: AutoTranslateService.t("Âm lượng hiệu ứng")
+                    desc: AutoTranslateService.t("Độc lập với âm lượng hệ thống")
                     dimmed: !Settings.behavior.soundEffects
 
                     CustomSlider {
@@ -270,7 +270,7 @@ Item {
                         Text {
                             id: testText
                             anchors.centerIn: parent
-                            text: "♪  Thử"
+                            text: AutoTranslateService.t("♪  Thử")
                             color: theme.primary.foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(12); weight: Font.Medium }
                         }
@@ -288,12 +288,12 @@ Item {
 
             // ============ An toàn ============
             Section {
-                title: "AN TOÀN"
+                title: AutoTranslateService.t("AN TOÀN")
                 appearAt: 0.5
 
                 SettingRow {
-                    title: "Hỏi xác nhận thao tác nguồn"
-                    desc: "Hiện hộp thoại trước khi ngủ, khóa màn hình, đăng xuất, khởi động lại hoặc tắt máy. Tắt đi thì thực hiện ngay khi bấm."
+                    title: AutoTranslateService.t("Hỏi xác nhận thao tác nguồn")
+                    desc: AutoTranslateService.t("Hiện hộp thoại trước khi ngủ, khóa màn hình, đăng xuất, khởi động lại hoặc tắt máy. Tắt đi thì thực hiện ngay khi bấm.")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.confirmPowerActions
                         onClicked: Settings.behavior.confirmPowerActions = !Settings.behavior.confirmPowerActions
@@ -319,7 +319,7 @@ Item {
                         anchors.margins: ScalerService.s(10)
                         wrapMode: Text.WordWrap
                         verticalAlignment: Text.AlignVCenter
-                        text: "⚠  Bấm nhầm \"Tắt máy\" hoặc \"Đăng xuất\" sẽ làm mất công việc chưa lưu."
+                        text: AutoTranslateService.t("⚠  Bấm nhầm \"Tắt máy\" hoặc \"Đăng xuất\" sẽ làm mất công việc chưa lưu.")
                         color: theme.normal.red
                         font { family: Settings.appearance.font; pixelSize: ScalerService.s(11) }
                     }
@@ -328,12 +328,12 @@ Item {
 
             // ============ Hiệu năng ============
             Section {
-                title: "HIỆU NĂNG"
+                title: AutoTranslateService.t("HIỆU NĂNG")
                 appearAt: 0.7
 
                 SettingRow {
-                    title: "Giảm chuyển động"
-                    desc: "Tắt animation chạy nền (đĩa nhạc quay, sóng thanh tiến trình, hiệu ứng dâng của EQ). Giúp máy mát và êm quạt hơn."
+                    title: AutoTranslateService.t("Giảm chuyển động")
+                    desc: AutoTranslateService.t("Tắt animation chạy nền (đĩa nhạc quay, sóng thanh tiến trình, hiệu ứng dâng của EQ). Giúp máy mát và êm quạt hơn.")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.reduceMotion
                         onClicked: Settings.behavior.reduceMotion = !Settings.behavior.reduceMotion
@@ -343,12 +343,12 @@ Item {
 
             // ============ Tự động khi rảnh ============
             Section {
-                title: "KHI KHÔNG THAO TÁC"
+                title: AutoTranslateService.t("KHI KHÔNG THAO TÁC")
                 appearAt: 0.8
 
                 SettingRow {
-                    title: "Giữ máy thức"
-                    desc: "Tạm dừng tự khóa và tự ngủ, hợp khi xem phim hoặc thuyết trình"
+                    title: AutoTranslateService.t("Giữ máy thức")
+                    desc: AutoTranslateService.t("Tạm dừng tự khóa và tự ngủ, hợp khi xem phim hoặc thuyết trình")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.keepAwake
                         onClicked: Settings.behavior.keepAwake = !Settings.behavior.keepAwake
@@ -358,8 +358,8 @@ Item {
                 Divider {}
 
                 ChoiceRow {
-                    title: "Tự khóa màn hình"
-                    desc: "Khóa sau khoảng thời gian không dùng chuột hoặc bàn phím"
+                    title: AutoTranslateService.t("Tự khóa màn hình")
+                    desc: AutoTranslateService.t("Khóa sau khoảng thời gian không dùng chuột hoặc bàn phím")
                     dimmed: Settings.behavior.keepAwake
                     current: Settings.behavior.lockAfterMin
                     options: [
@@ -372,8 +372,8 @@ Item {
                 Divider {}
 
                 ChoiceRow {
-                    title: "Tự chuyển sang chế độ ngủ"
-                    desc: "Khóa màn hình rồi ngủ khi không dùng. Nên đặt lâu hơn thời gian tự khóa."
+                    title: AutoTranslateService.t("Tự chuyển sang chế độ ngủ")
+                    desc: AutoTranslateService.t("Khóa màn hình rồi ngủ khi không dùng. Nên đặt lâu hơn thời gian tự khóa.")
                     dimmed: Settings.behavior.keepAwake
                     current: Settings.behavior.suspendAfterMin
                     options: [
@@ -386,12 +386,12 @@ Item {
 
             // ============ Góc nóng ============
             Section {
-                title: "GÓC NÓNG"
+                title: AutoTranslateService.t("GÓC NÓNG")
                 appearAt: 0.9
 
                 SettingRow {
-                    title: "Rê chuột vào góc để mở launcher"
-                    desc: "Giữ con trỏ trong góc khoảng 0,2 giây (tránh chạm nhầm). Rê lại để đóng."
+                    title: AutoTranslateService.t("Rê chuột vào góc để mở launcher")
+                    desc: AutoTranslateService.t("Giữ con trỏ trong góc khoảng 0,2 giây (tránh chạm nhầm). Rê lại để đóng.")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.hotCorner
                         onClicked: Settings.behavior.hotCorner = !Settings.behavior.hotCorner
@@ -470,12 +470,12 @@ Item {
 
             // ============ Clipboard ============
             Section {
-                title: "CLIPBOARD"
+                title: AutoTranslateService.t("CLIPBOARD")
                 appearAt: 0.93
 
                 SettingRow {
-                    title: "Lịch sử clipboard kiểu Windows"
-                    desc: "Lưu các thứ bạn đã sao chép (chữ và ảnh) và mở bảng chọn nhanh bằng phím tắt để dán lại. Cần cài cliphist và wl-clipboard."
+                    title: AutoTranslateService.t("Lịch sử clipboard kiểu Windows")
+                    desc: AutoTranslateService.t("Lưu các thứ bạn đã sao chép (chữ và ảnh) và mở bảng chọn nhanh bằng phím tắt để dán lại. Cần cài cliphist và wl-clipboard.")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.clipboardEnabled
                         onClicked: Settings.behavior.clipboardEnabled = !Settings.behavior.clipboardEnabled
@@ -485,8 +485,8 @@ Item {
                 Divider {}
 
                 ChoiceRow {
-                    title: "Phím tắt mở bảng"
-                    desc: "Ctrl+Shift+Z là phím làm lại (redo) trong một số ứng dụng như LibreOffice; chọn Super+V nếu bị trùng."
+                    title: AutoTranslateService.t("Phím tắt mở bảng")
+                    desc: AutoTranslateService.t("Ctrl+Shift+Z là phím làm lại (redo) trong một số ứng dụng như LibreOffice; chọn Super+V nếu bị trùng.")
                     dimmed: !Settings.behavior.clipboardEnabled
                     current: Settings.behavior.clipboardShortcut
                     options: [{ v: "ctrl-shift-z", l: "Ctrl + Shift + Z" }, { v: "super-v", l: "Super + V" }]
@@ -494,8 +494,8 @@ Item {
                 }
 
                 SettingRow {
-                    title: "Mở thử bảng ngay"
-                    desc: "Mở không cần phím tắt — nếu bảng hiện mà phím không ăn thì lỗi nằm ở việc đăng ký phím"
+                    title: AutoTranslateService.t("Mở thử bảng ngay")
+                    desc: AutoTranslateService.t("Mở không cần phím tắt — nếu bảng hiện mà phím không ăn thì lỗi nằm ở việc đăng ký phím")
                     dimmed: !Settings.behavior.clipboardEnabled
                     Rectangle {
                         width: openText.implicitWidth + ScalerService.s(22)
@@ -508,7 +508,7 @@ Item {
                         Text {
                             id: openText
                             anchors.centerIn: parent
-                            text: "Mở thử"
+                            text: AutoTranslateService.t("Mở thử")
                             color: theme.primary.foreground
                             font { family: Settings.appearance.font; pixelSize: ScalerService.s(12); weight: Font.Medium }
                         }
@@ -527,7 +527,7 @@ Item {
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                     visible: Settings.behavior.clipboardEnabled
-                    text: "Phím tắt được đăng ký tự động trên Hyprland và Sway. Niri: thêm vào config  " + (Settings.behavior.clipboardShortcut === "super-v" ? "Mod+V" : "Ctrl+Shift+Z") + " { spawn \"qs\" \"ipc\" \"call\" \"clipboard\" \"toggle\"; }"
+                    text: AutoTranslateService.t("Phím tắt được đăng ký tự động trên Hyprland và Sway. Niri: thêm vào config  ") + (Settings.behavior.clipboardShortcut === "super-v" ? "Mod+V" : "Ctrl+Shift+Z") + " { spawn \"qs\" \"ipc\" \"call\" \"clipboard\" \"toggle\"; }"
                     color: theme.primary.dim_foreground
                     font { family: Settings.appearance.font; pixelSize: ScalerService.s(11); italic: true }
                 }
@@ -535,12 +535,12 @@ Item {
 
             // ============ Thông báo & OSD ============
             Section {
-                title: "THÔNG BÁO & OSD"
+                title: AutoTranslateService.t("THÔNG BÁO & OSD")
                 appearAt: 0.95
 
                 SettingRow {
-                    title: "Không làm phiền"
-                    desc: "Ẩn popup thông báo. Thông báo khẩn cấp vẫn hiện."
+                    title: AutoTranslateService.t("Không làm phiền")
+                    desc: AutoTranslateService.t("Ẩn popup thông báo. Thông báo khẩn cấp vẫn hiện.")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.doNotDisturb
                         onClicked: Settings.behavior.doNotDisturb = !Settings.behavior.doNotDisturb
@@ -550,8 +550,8 @@ Item {
                 Divider {}
 
                 ChoiceRow {
-                    title: "Thời gian hiện thông báo"
-                    desc: "Áp dụng khi ứng dụng không tự chỉ định thời gian"
+                    title: AutoTranslateService.t("Thời gian hiện thông báo")
+                    desc: AutoTranslateService.t("Áp dụng khi ứng dụng không tự chỉ định thời gian")
                     dimmed: Settings.behavior.doNotDisturb
                     current: Settings.behavior.notifTimeoutSec
                     options: [{ v: 3, l: "3 giây" }, { v: 5, l: "5 giây" }, { v: 10, l: "10 giây" }, { v: 15, l: "15 giây" }, { v: 30, l: "30 giây" }]
@@ -559,8 +559,8 @@ Item {
                 }
 
                 ChoiceRow {
-                    title: "Số thông báo tối đa cùng lúc"
-                    desc: "Thông báo cũ nhất bị đẩy ra khi vượt quá"
+                    title: AutoTranslateService.t("Số thông báo tối đa cùng lúc")
+                    desc: AutoTranslateService.t("Thông báo cũ nhất bị đẩy ra khi vượt quá")
                     dimmed: Settings.behavior.doNotDisturb
                     current: Settings.behavior.notifMax
                     options: [{ v: 1, l: "1" }, { v: 2, l: "2" }, { v: 3, l: "3" }, { v: 4, l: "4" }, { v: 5, l: "5" }, { v: 6, l: "6" }]
@@ -568,8 +568,8 @@ Item {
                 }
 
                 ChoiceRow {
-                    title: "Vị trí thông báo"
-                    desc: "Góc trên màn hình nơi popup xuất hiện"
+                    title: AutoTranslateService.t("Vị trí thông báo")
+                    desc: AutoTranslateService.t("Góc trên màn hình nơi popup xuất hiện")
                     dimmed: Settings.behavior.doNotDisturb
                     current: Settings.behavior.notifPos
                     options: [{ v: "left", l: "Trên trái" }, { v: "top", l: "Trên giữa" }, { v: "right", l: "Trên phải" }]
@@ -579,8 +579,8 @@ Item {
                 Divider {}
 
                 SettingRow {
-                    title: "Hiện OSD âm lượng / độ sáng"
-                    desc: "Thanh hiển thị nhanh khi chỉnh âm lượng, độ sáng hoặc độ mờ terminal"
+                    title: AutoTranslateService.t("Hiện OSD âm lượng / độ sáng")
+                    desc: AutoTranslateService.t("Thanh hiển thị nhanh khi chỉnh âm lượng, độ sáng hoặc độ mờ terminal")
                     CustomToggleSwitch {
                         adapter: Settings.behavior.osdEnabled
                         onClicked: Settings.behavior.osdEnabled = !Settings.behavior.osdEnabled
@@ -588,7 +588,7 @@ Item {
                 }
 
                 ChoiceRow {
-                    title: "Thời gian hiện OSD"
+                    title: AutoTranslateService.t("Thời gian hiện OSD")
                     desc: ""
                     dimmed: !Settings.behavior.osdEnabled
                     current: Settings.behavior.osdDurationMs

@@ -220,7 +220,7 @@ Item {
                         Layout.fillWidth: true
                         spacing: 0
                         Text {
-                            text: "App Grid · " + (root.slotIndex + 1)
+                            text: AutoTranslateService.t("App Grid · ") + (root.slotIndex + 1)
                             color: theme.primary.foreground
                             font.pixelSize: ScalerService.s(20)
                             font.bold: true
@@ -239,7 +239,7 @@ Item {
 
                 // ---------- Bước 1: App / Web ----------
                 Text {
-                    text: "1 · Open an app or a website"
+                    text: AutoTranslateService.t("1 · Open an app or a website")
                     color: theme.primary.foreground
                     font.pixelSize: ScalerService.s(14)
                     font.bold: true
@@ -325,7 +325,7 @@ Item {
                                 Text {
                                     visible: parent.text === ""
                                     anchors.verticalCenter: parent.verticalCenter
-                                    text: "Search apps…"
+                                    text: AutoTranslateService.t("Search apps…")
                                     color: theme.primary.dim_foreground
                                     font: parent.font
                                 }
@@ -447,7 +447,7 @@ Item {
                         }
                         Text {
                             Layout.fillWidth: true
-                            text: "Tên và icon sẽ tự lấy theo tên miền (vd. youtube.com → Youtube). Bạn vẫn sửa tay được bên dưới."
+                            text: AutoTranslateService.t("Tên và icon sẽ tự lấy theo tên miền (vd. youtube.com → Youtube). Bạn vẫn sửa tay được bên dưới.")
                             color: theme.primary.dim_foreground
                             font.pixelSize: ScalerService.s(12)
                             font.family: root.fontName
@@ -464,7 +464,7 @@ Item {
                     Layout.fillWidth: true
                     spacing: ScalerService.s(8)
                     Text {
-                        text: "Name"
+                        text: AutoTranslateService.t("Name")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(14)
                         font.bold: true
@@ -508,7 +508,7 @@ Item {
                             Text {
                                 id: autoLabel
                                 anchors.centerIn: parent
-                                text: root.nameEdited ? "↺ Auto" : "Auto"
+                                text: root.nameEdited ? AutoTranslateService.t("↺ Auto") : AutoTranslateService.t("Auto")
                                 color: theme.primary.background
                                 font.pixelSize: ScalerService.s(11)
                                 font.bold: true
@@ -528,7 +528,7 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Text {
-                        text: "2 · Image"
+                        text: AutoTranslateService.t("2 · Image")
                         color: theme.primary.foreground
                         font.pixelSize: ScalerService.s(14)
                         font.bold: true
@@ -536,7 +536,7 @@ Item {
                     }
                     Text {
                         Layout.fillWidth: true
-                        text: "gợi ý từ ~/.config/quickshell/cartoon-shell/icons"
+                        text: AutoTranslateService.t("gợi ý từ ~/.config/quickshell/cartoon-shell/icons")
                         color: theme.primary.dim_foreground
                         font.pixelSize: ScalerService.s(11)
                         font.family: root.fontName
@@ -578,7 +578,7 @@ Item {
                                 }
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: "Auto"
+                                    text: AutoTranslateService.t("Auto")
                                     color: theme.primary.foreground
                                     font.pixelSize: ScalerService.s(10)
                                     font.family: root.fontName
@@ -609,7 +609,7 @@ Item {
                                 }
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: "Browse"
+                                    text: AutoTranslateService.t("Browse")
                                     color: theme.primary.foreground
                                     font.pixelSize: ScalerService.s(10)
                                     font.family: root.fontName
@@ -694,7 +694,7 @@ Item {
                         border.width: 1
                         Text {
                             anchors.centerIn: parent
-                            text: "🗑  Clear"
+                            text: AutoTranslateService.t("🗑  Clear")
                             color: theme.normal.red
                             font.pixelSize: ScalerService.s(13)
                             font.family: root.fontName
@@ -717,7 +717,7 @@ Item {
                         border.width: 1
                         Text {
                             anchors.centerIn: parent
-                            text: "Cancel"
+                            text: AutoTranslateService.t("Cancel")
                             color: theme.primary.foreground
                             font.pixelSize: ScalerService.s(13)
                             font.family: root.fontName
@@ -736,7 +736,7 @@ Item {
                         opacity: root.canSave ? 1 : 0.5
                         Text {
                             anchors.centerIn: parent
-                            text: "✓  Save"
+                            text: AutoTranslateService.t("✓  Save")
                             color: root.canSave ? theme.primary.background : theme.primary.dim_foreground
                             font.pixelSize: ScalerService.s(13)
                             font.bold: true

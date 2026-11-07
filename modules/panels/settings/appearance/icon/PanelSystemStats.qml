@@ -56,7 +56,7 @@ ColumnLayout {
   }
 
   Com.StyleSelectorRow {
-    title: "CPU"
+    title: AutoTranslateService.t("CPU")
     systemName: "cpu"
     styleModel: 8
     currentStyle: Settings.bar.cpu.style
@@ -74,7 +74,7 @@ ColumnLayout {
   }
 
   Com.StyleSelectorRow {
-    title: "Ram"
+    title: AutoTranslateService.t("Ram")
     systemName: "ram"
     styleModel: 8
     currentStyle: Settings.bar.ram.style
@@ -91,7 +91,7 @@ ColumnLayout {
   }
 
   Com.StyleSelectorRow {
-    title: "Bluetooth"
+    title: AutoTranslateService.t("Bluetooth")
     systemName: "bluetooth"
     styleModel: 2
     currentStyle: Settings.bar.bluetooth.style
@@ -108,7 +108,7 @@ ColumnLayout {
   }
 
   Com.StyleSelectorRow {
-    title: "Wifi"
+    title: AutoTranslateService.t("Wifi")
     systemName: "wifi"
     styleModel: 3
     currentStyle: Settings.bar.wifi.style
@@ -126,7 +126,7 @@ ColumnLayout {
   }
 
   Com.StyleSelectorRow {
-    title: "Volume"
+    title: AutoTranslateService.t("Volume")
     systemName: "volume"
     styleModel: 2
     currentStyle: Settings.bar.volume.style
