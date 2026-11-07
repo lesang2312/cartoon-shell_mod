@@ -18,6 +18,8 @@ Rectangle {
     // Compact mode is reserved for the independently resizable desktop widget.
     // Settings and the Music popup keep the full-size presentation.
     property bool compact: false
+    // Enable the shared dashboard Liquid Glass surface only where requested.
+    property bool useLiquidGlass: false
     // "short" is the compact 32-bar strip for the desktop widget; "long" is the fuller
     // 52-bar spectrum used by the Music popup and Audio Settings.
     property string visualizerMode: compact ? "short" : "long"
@@ -27,8 +29,16 @@ Rectangle {
     Layout.fillWidth: true
     // Cao theo nội dung (trước đây cố định 200px nên hàng nút bị tràn đè lên viền dưới).
     implicitHeight: row.implicitHeight + pad * 2
-    radius: ScalerService.s(Settings.appearance.radius2)
-    color: Qt.alpha(theme.primary.dim_background, 0.6)
+    radius: ScalerService.s(Settings.appearance.radius1)
+    color: glassBg.active ? "transparent" : Qt.alpha(theme.primary.dim_background, 0.6)
+
+    // Reuse the exact GlassBackdrop implementation used by the other Dashboard cards.
+    // The backdrop automatically falls back to the tinted surface when Liquid Glass is off
+    // or the compositor/GPU cannot provide the shader.
+    GlassPanel {
+        id: glassBg
+        surfaceEnabled: root.useLiquidGlass
+    }
     border.width: Settings.appearance.enableBorder ? ScalerService.s(2) : 0
     border.color: theme.button.border
 

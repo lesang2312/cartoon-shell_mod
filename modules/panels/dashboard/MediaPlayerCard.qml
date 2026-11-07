@@ -17,7 +17,7 @@ Item {
         anchors.fill: parent
         compact: true
         visualizerMode: "short"
-        color: theme.primary.background
+        useLiquidGlass: true
         border.width: Settings.appearance.enableBorder ? ScalerService.s(3) : 0
         border.color: theme.button.border
         opacity: root.animationProgress > 0.2 ? 1 : 0
