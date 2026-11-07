@@ -6,7 +6,9 @@
   - Thư mục shell là git clone → `git merge --ff-only` (không đè thay đổi cục bộ).
   - Không phải git → tải tarball đúng commit, **sao lưu** vào `~/.cache/cartoon-shell/backups/` (giữ 3 bản), rồi chép đè; mã commit lưu ở `.installed_commit`.
   - Repo kèm sẵn `VERSION` (số phiên bản hiển thị) và `.installed_commit` (mốc commit đã cài).
-  - Với bản Git, phiên bản hiển thị được đọc từ `VERSION` trong `HEAD`; với bản không có Git, đọc file `VERSION` tại thư mục cài đặt.
+  - Mọi kiểu cài đặt đều hiển thị phiên bản từ file `VERSION` thực tế trong thư mục đang chạy; không lấy `VERSION` từ Git `HEAD` để giả làm phiên bản đã cài.
+  - Nếu file `VERSION` tại máy cũ hơn phiên bản trên commit GitHub, updater vẫn báo có cập nhật kể cả khi SHA bị trùng do metadata Git cũ hoặc ZIP đóng gói nhầm `.git`.
+  - Bản ZIP phân phối không mang thư mục `.git`; `.installed_commit` dùng làm mốc commit cho kiểu cài archive. Nếu nâng cấp từ gói ZIP cũ vô tình kèm `.git`, hãy cài sang thư mục sạch để tránh Git metadata cũ làm sai trạng thái.
   - Khi không biết SHA đang cài, updater không tự ghi nhận commit mới nhất làm mốc nữa; nó sẽ đề xuất cài lại snapshot đã xác minh.
   - Version trên GitHub được đọc theo đúng SHA đang kiểm tra, không đọc theo tên nhánh đang có thể thay đổi.
   - Nếu bản Git có thay đổi cục bộ, updater giữ nguyên và báo lỗi rõ ràng thay vì ghi đè.
@@ -27,8 +29,9 @@
 - Thêm chữ mới: cứ viết bình thường (`CustomText { name: "..." }`); chạy `python3 tools/i18n/wrap.py` để bọc các prop khác và `python3 tools/i18n/extract.py` để cập nhật danh mục.
 
 ## Cách kiểm tra và cập nhật phiên bản
-- Nguồn sự thật là **commit SHA của nhánh mặc định GitHub**. Script tự đọc tên nhánh mặc định (hiện tại là `cartoon-beta`) và SHA của chính nhánh đó; không hard-code `main`/`master`.
-- `VERSION` chỉ dùng để hiển thị số phiên bản. Không dùng phép so sánh số version để quyết định có bản cập nhật hay không, vì commit mới có thể được push mà số version chưa đổi.
+- Nguồn chính là **commit SHA của nhánh mặc định GitHub**. Script tự đọc tên nhánh mặc định và SHA của chính nhánh đó; không hard-code `main`/`master`.
+- `VERSION` đọc từ file đang cài để hiển thị. Đây cũng là tín hiệu bảo vệ bổ sung: nếu version trên GitHub cao hơn version thật tại máy, updater báo có cập nhật thay vì báo mới nhất chỉ vì SHA/metadata bị lệch.
+- Commit SHA vẫn phát hiện các commit mới kể cả khi người phát hành chưa tăng số version.
 - Khi bấm cập nhật, script lấy đúng nhánh vừa kiểm tra và xác minh SHA tải về vẫn trùng với SHA đã hiển thị. Nếu repo đổi giữa hai thao tác, cập nhật bị dừng và yêu cầu kiểm tra lại thay vì tải nhầm commit.
 - Bản cài Git dùng `git merge --ff-only`, không ghi đè thay đổi cục bộ. Bản không có Git tải tarball theo SHA chính xác, sao lưu trước, rồi ghi SHA đã cài vào `.installed_commit`.
 - Nếu không xác định được commit hiện tại của bản cài, updater sẽ đề xuất cài lại snapshot mới nhất thay vì âm thầm báo đã mới nhất.

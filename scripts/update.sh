@@ -4,8 +4,8 @@
 #   update.sh check [SHELL_DIR]
 #   update.sh apply [SHELL_DIR] [REMOTE_SHA] [REMOTE_BRANCH]
 #
-# The commit SHA is the source of truth. VERSION is display-only and is read
-# from the exact same commit that is being compared/downloaded.
+# The commit SHA is the primary source of truth. VERSION is read from the
+# installed files for display and as a fallback signal for stale installs.
 set -uo pipefail
 
 REPO="${CARTOON_SHELL_REPO:-lesang2312/cartoon-shell_mod}"
@@ -82,18 +82,21 @@ read_version_file() {
 }
 
 local_version() {
+  # Report what is actually installed on disk. Reading VERSION from Git HEAD
+  # can mask a stale/modified installed VERSION file and disagree with the UI.
   local value=""
-  # For a Git checkout, report the version belonging to HEAD, not an edited
-  # working-tree VERSION file. This keeps version display aligned with SHA.
-  if is_git_checkout; then
-    value=$(git -C "$SHELL_DIR" show HEAD:VERSION 2>/dev/null | head -n1 | tr -d ' \r\n\t' | sed 's/^[vV]//')
-    if [[ "$value" =~ ^[0-9][A-Za-z0-9._+-]*$ ]]; then printf '%s' "$value"; return 0; fi
-    value=$(git -C "$SHELL_DIR" show HEAD:version.txt 2>/dev/null | head -n1 | tr -d ' \r\n\t' | sed 's/^[vV]//')
-    if [[ "$value" =~ ^[0-9][A-Za-z0-9._+-]*$ ]]; then printf '%s' "$value"; return 0; fi
-  fi
   value=$(read_version_file "$SHELL_DIR/VERSION")
   [ -n "$value" ] || value=$(read_version_file "$SHELL_DIR/version.txt")
   printf '%s' "$value"
+}
+
+version_is_newer() {
+  local candidate="${1:-}" current="${2:-}" highest
+  [[ "$candidate" =~ ^[0-9][A-Za-z0-9._+-]*$ && "$current" =~ ^[0-9][A-Za-z0-9._+-]*$ ]] || return 1
+  [ "$candidate" != "$current" ] || return 1
+  command -v sort >/dev/null 2>&1 || return 1
+  highest=$(printf '%s\n%s\n' "$candidate" "$current" | sort -V | tail -n1)
+  [ "$highest" = "$candidate" ]
 }
 
 # Read the version from the exact commit SHA being checked, not from the
@@ -156,7 +159,19 @@ do_check() {
     return 0
   fi
 
+  # Version is a second safety signal. This catches stale VERSION files even
+  # when a packaged .git directory incorrectly makes HEAD look current.
+  if [ -n "$rv" ] && { [ -z "$lv" ] || version_is_newer "$rv" "$lv"; }; then
+    out "message=$(commit_message "$remote" | tr '\r\n' '  ')"
+    out "status=available"
+    return 0
+  fi
+
   if [ "$local_" = "$remote" ]; then
+    # When both commits are identical, require a successful remote VERSION
+    # read before claiming "up to date" if this installation has a version.
+    # Otherwise a blocked/missing raw VERSION endpoint could hide a mismatch.
+    if [ -n "$lv" ] && [ -z "$rv" ]; then fail "network"; fi
     out "status=uptodate"
     return 0
   fi
@@ -203,6 +218,12 @@ do_apply() {
   assert_remote_snapshot "$remote_branch" "$remote"
 
   if is_git_checkout; then
+    # Never silently accept a dirty working tree, even when HEAD already
+    # equals the remote SHA (for example, a locally edited VERSION file).
+    if [ -n "$(git -C "$SHELL_DIR" status --porcelain 2>/dev/null)" ]; then
+      fail "local_changes"
+    fi
+
     out "step=fetch"
     git -C "$SHELL_DIR" fetch --quiet --no-tags "$REPO_URL" "refs/heads/$remote_branch" 2>&1 || fail "fetch"
     fetched=$(git -C "$SHELL_DIR" rev-parse FETCH_HEAD 2>/dev/null || true)
@@ -211,12 +232,7 @@ do_apply() {
     current=$(git -C "$SHELL_DIR" rev-parse HEAD 2>/dev/null || true)
     [ "$current" = "$remote" ] && { out "status=done"; return 0; }
 
-    # Never overwrite edits made on this machine. The user can save/commit
-    # those changes before updating; a fast-forward is then safe and exact.
-    if [ -n "$(git -C "$SHELL_DIR" status --porcelain 2>/dev/null)" ]; then
-      fail "local_changes"
-    fi
-
+    # Clean Git installs update by fast-forward only.
     out "step=merge"
     git -C "$SHELL_DIR" merge --ff-only --no-edit FETCH_HEAD 2>&1 || fail "git_conflict"
     [ "$(git -C "$SHELL_DIR" rev-parse HEAD 2>/dev/null)" = "$remote" ] || fail "stale_remote"

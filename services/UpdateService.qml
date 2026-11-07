@@ -28,7 +28,8 @@ Singleton {
   readonly property string shortLocal: localCommit !== "" ? localCommit.substring(0, 7) : ""
   readonly property string shortRemote: remoteCommit !== "" ? remoteCommit.substring(0, 7) : ""
 
-  // VERSION chỉ để hiển thị; việc xác định cập nhật luôn dựa trên commit SHA.
+  // VERSION hiển thị bản đang cài và bắt lỗi số phiên bản local bị cũ;
+  // commit SHA vẫn là tín hiệu chính để xác định code đã đồng bộ hay chưa.
   property string version: ""
   property string remoteVersion: ""
   FileView {
@@ -36,7 +37,13 @@ Singleton {
     path: Quickshell.shellPath("VERSION")
     watchChanges: true
     printErrors: false
-    onLoaded: root.version = text().trim().split("\n")[0].trim().replace(/^[vV]/, "")
+    // Fallback for the initial UI only. The updater's check result is the
+    // authoritative installed version and must not be overwritten by a late
+    // FileView load (which caused 1.0.0/1.5.6 display races).
+    onLoaded: {
+      if (root.version === "")
+        root.version = text().trim().split("\n")[0].trim().replace(/^[vV]/, "")
+    }
   }
 
   property bool _manual: false
